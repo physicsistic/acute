@@ -184,13 +184,16 @@ function scene:createScene( event )
 	function lastPlayBehaviorCallback(failed, result)
 		if not failed then
 			print("user playing behaviro retrieved from database")
-			local lastPlayedTime = json.decode(result)["last_played"]
-			nextPlayTime = lastPlayedTime + 60
-			print(nextPlayTime)
-			print(os.time())
+			if json.decode(result)== nil then
+				nextPlayTime = os.time()
+			else
+				local lastPlayedTime = json.decode(result)["last_played"]
+				nextPlayTime = lastPlayedTime + 60
+				
+			end
 			tickTimer = timer.performWithDelay(1000, function() updateCountdownTimer(nextPlayTime); end, 0)
-			coverScreen:removeSelf()
 			timer.performWithDelay(1000, function()countdownInfo.alpha=1 end)
+			coverScreen:removeSelf()
 		else
 			print("failed to retrieve result")
 		end
@@ -242,19 +245,22 @@ function scene:createScene( event )
 
 			local recentData = ((userTrend.data).data)[7]
 
-			-- get sleep quality if possible
-			if recentData[2]["s_quality"] then
-				storyboard.states.sleepQuality = recentData[2]["s_quality"]
+			if recentData == nil then
 			else
-				storyboard.states.sleepQuality = nil
-			end
+				-- get sleep quality if possible
+				if recentData[2]["s_quality"] then
+					storyboard.states.sleepQuality = recentData[2]["s_quality"]
+				else
+					storyboard.states.sleepQuality = nil
+				end
 
-			if recentData[2]["s_duration"] then
-				storyboard.states.sleepDuration = recentData[2]["s_duration"]
-			else
-				storyboard.states.sleepDuration = nil
+				if recentData[2]["s_duration"] then
+					storyboard.states.sleepDuration = recentData[2]["s_duration"]
+				else
+					storyboard.states.sleepDuration = nil
+				end
+				print(storyboard.states.sleepQuality)
 			end
-			print(storyboard.states.sleepQuality)
 
 		end
 	end

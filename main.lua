@@ -114,7 +114,7 @@ function checkLoginToken()
 			print(meta)
 			if meta["code"] == 200 then
 				print(event.response)
-				storyboard.gotoScene( "waiting" )
+				storyboard.gotoScene( "errorScreen" )
 				print("user is logged in")
 			else 
 				print("user session token doesn't exist")
@@ -126,18 +126,25 @@ function checkLoginToken()
 	local params = {}
 	local headers = {}
 	headers["Accept"] = "application/json"
-	local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
+
 
 	headers["x-nudge-token"] = loginToken
 	
 	params.headers = headers
 	network.request( "https://jawbone.com/nudge/api/users/@me/", "GET", networkListener, params)
-
-
 end
 
--- check if user is logged in
-checkLoginToken()
+
+local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
+
+if loginToken == nil then
+	storyboard.gotoScene("welcome")
+	group:removeSelf()
+else 
+	-- check if user is logged in
+	checkLoginToken()
+end
+
 
 
 

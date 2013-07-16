@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------------
 --
--- waiting.lua
+-- creature.lua
 --
--- The waitng screen when the time for rematch hasn't been reached
+-- animation of the bouncy creation for cuteness
 --
 -----------------------------------------------------------------------------------------
 
@@ -16,24 +16,6 @@ local physics = require("physics")
 display.setStatusBar( display.HiddenStatusBar )
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
-
-local colorSchemes = {
-	{44, 62, 80}, -- dark blue
-	{41, 128, 185}, -- blue
-	{39, 174, 96}, -- green
-	{241, 196, 15}, -- yellow
-	{230, 126, 34}, -- orange
-	{231, 76, 60}, -- red
-}
-
-local moodSchemes = {
-	"exhausted",
-	"dragging",
-	"meh",
-	"good",
-	"energized",
-	"amazing",
-}
 
 local function blink(obj)
 	local blinkTime = 250
