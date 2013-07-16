@@ -128,7 +128,6 @@ function checkLoginToken()
 	headers["Accept"] = "application/json"
 	local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
 
-	print("The login token is: " .. loginToken)
 	headers["x-nudge-token"] = loginToken
 	
 	params.headers = headers
