@@ -7,11 +7,12 @@
 -----------------------------------------------------------------------------------------
 
 -- Libraries
-local storyboard = require "storyboard" 
+local storyboard = require( "storyboard" )
 local widget = require( "widget" )
-local upapi = require "upapi"
+local upapi = require( "upapi" )
 local math = require( "math")
-local physics = require("physics")
+local physics = require("physics" )
+local utils = require( 'utils' )
 
 display.setStatusBar( display.HiddenStatusBar )
 local scene = storyboard.newScene()
@@ -35,24 +36,15 @@ function scene:createScene( event )
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
-	banner:setFillColor(189, 195, 199)
+	local topBar = utils.createTopBar("feeling?")
 
-	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
-	backButton.x = bannerHeight/2
-	backButton.y = bannerHeight/2
-	
-	local loginButton = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
-	loginButton:setFillColor(46, 204, 113)
-
-	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
-	checkMark.x = display.contentWidth - bannerHeight/2
-	checkMark.y = bannerHeight/2
-
-	local signupText = display.newText(group, "how do you feel?", 0, 0, storyboard.states.font.bold, 18)
-	signupText:setReferencePoint(display.CenterReferencePoint)
-	signupText.x = display.contentWidth/2
-	signupText.y = bannerHeight/2
+	function backwardCallback(event)
+		if event.phase == "ended" then
+			event.target.parent:removeSelf()
+			storyboard.gotoScene("home",  {effect="slideRight"})
+		end
+	end
+	topBar.backwardClick(backwardCallback)
 
 
 	-- instruction group for the slider
@@ -93,13 +85,14 @@ function scene:createScene( event )
 			instructionGroup:removeSelf()
 			Runtime:removeEventListener("touch", onActivation)
 
-			function checkMark:touch( event )
+			function forwardCallback( event )
 				if event.phase == "ended" then
-					storyboard.gotoScene("game")
+					event.target.parent:removeSelf()
+					storyboard.gotoScene("game", {effects="fade"})
 				end
 			end
-			checkMark:addEventListener("touch", checkMark)
-			group:insert(checkMark)
+
+			topBar.forwardClick(forwardCallback)
 
 		end
 	end

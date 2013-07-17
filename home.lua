@@ -68,7 +68,7 @@ function scene:createScene( event )
 			time = 1000,
 			transition = easing.outQuad,
 			onComplete = function()
-				storyboard.gotoScene( "game", {effect="fade"})
+				storyboard.gotoScene( "mood", {effect="fade"})
 			end
 		})
 		
