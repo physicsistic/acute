@@ -137,8 +137,19 @@ function scene:createScene( event )
 		end
 	end
 
+	function fieldTouchHandler(event)
+		local phase = event.phase
+		local field = event.target
+		if phase == "began" then
+			native.setKeyboardFocus(field)
+		end
+	end
+
 	emailGroup[1]:addEventListener("userInput", genericFieldListener)
 	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
+
+	emailGroup[1]:addEventListener("touch", fieldTouchHandler)
+	passwordGroup[1]:addEventListener("touch", fieldTouchHandler)
 
 	-- Navigation
 	function backButton:touch(event)
@@ -147,117 +158,6 @@ function scene:createScene( event )
 		end
 	end
 	backButton:addEventListener("touch", backButton)	
-	-- local emailFieldParams = {}
-	-- emailFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
-	-- emailFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2
-
-	-- emailFieldBackground = display.newRect(group, emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight)
-	-- emailFieldBackground:setFillColor(189, 195, 199)
-
-	-- -- Email input field
-	-- emailField = native.newTextField( emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight, emailListener)
-	-- emailField.align = "center"
-	-- emailField.inputType = "email"
-	-- emailField.font = native.newFont(storyboard.states.font.regular, 24)
-	-- emailField:setReferencePoint(display.BottomCenterReferencePoint)
-	-- emailField.hasBackground = false
-	-- emailField:setTextColor(236, 240, 241)
-
-	-- local emailLabel = display.newText(group, "email", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
-	-- emailLabel:setReferencePoint(display.BottomCenterReference)
-	-- emailLabel:setTextColor(127, 140, 141)
-	-- emailLabel.x = display.contentWidth / 2
-	-- emailLabel.y = emailFieldParams.y - textBackgroundHeight / 3
-	-- movingGroup:insert(emailLabel)
-
-
-	-- local pwdFieldParams = {}
-	-- pwdFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
-	-- pwdFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2 + textBackgroundHeight + fieldSeparationHeight
-
-	-- -- Password input field
-	-- pwdField = native.newTextField(pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight, pwdListener)
-	-- pwdField.align = "center"
-	-- pwdField.isSecure = true
-	-- pwdField.size = native.newFont(storyboard.states.font.regular, 24)
-	-- pwdField.hasBackground = false
-	-- pwdField.alpha = 0
-	-- emailField:setTextColor(236, 240, 241)
-
-
-	-- -- Email input label
-	-- local pwdLabel = display.newText(group, "password", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
-	-- pwdLabel:setReferencePoint(display.BottomCenterReference)
-	-- pwdLabel:setTextColor(127, 140, 141)
-	-- pwdLabel.x = display.contentWidth / 2
-	-- pwdLabel.y = pwdFieldParams.y - textBackgroundHeight / 3
-	-- movingGroup:insert(pwdLabel)
-	-- group:insert(movingGroup)
-	-- -- Password field background
-	-- pwdFieldBackground = display.newRect(group, pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight)
-	-- pwdFieldBackground:setFillColor(189, 195, 199)
-
-	-- function pwdFieldBackground:touch(event)
-	-- 	if event.phase == "began" then
-	-- 		native.setKeyboardFocus(pwdField)
-	-- 	end
-	-- end
-
-	-- pwdFieldBackground:addEventListener("touch", pwdFieldBackground)
-
-	-- pwdFieldInput = display.newText(group, "", 0, 0, storyboard.states.font.regular, fieldInfoFontSize)
-	-- pwdFieldInput:setReferencePoint(display.LeftCenterReferencePoint)
-	-- pwdFieldInput.x = pwdField.x
-	-- pwdFieldInput.y = pwdField.y
-
-	-- -- Login button display
-
-	-- local loginButton = createButton("login", display.contentWidth / 2, pwdField.y + loginButtonHeight + fieldSeparationHeight, display.contentWidth * 3/4, textBackgroundHeight)
-	
-
-	-- group:insert(loginButton)
-
-
-	-- -- Email Listener
-	-- function emailListener( event )
-	-- 	if event.phase == "began" then
- --    	elseif event.phase == "editing" then
- --    		-- emailFieldInput.text = event.text
- --    		-- if emailFieldInput.width > textBackgroundWidth then
- --    		-- 	emailFieldInput.size = emailFieldInput.size * 2/3
- --    		-- elseif emailFieldInput.width < textBackgroundWidth * 2/3 and emailFieldInput.size < fieldInfoFontSize then
- --    		-- 	emailFieldInput.size = emailFieldInput.size * 3/2
- --    		-- end
- --    		-- print(emailFieldInput.width)
-	--     elseif event.phase == "submitted" then
-
-	--     	if string.len(pwdField.text) == 0 then
-	-- 	    	native.setKeyboardFocus( pwdField )
-	--     	end
-
-	--     end
-	-- end
-
-	-- -- Password Listener
-	-- function pwdListener( event )
-	-- 	if event.phase == "began" then
-	-- 	elseif event.phase == "editing" then
-	-- 		-- local n = string.len(pwdField.text)
-	-- 		-- pwdFieldInput.text = string.rep("*", n)
-	-- 		-- if pwdFieldInput.width > textBackgroundWidth then
- --   --  			pwdFieldInput.size = pwdFieldInput.size * 2/3
- --   --  		elseif pwdFieldInput.width < textBackgroundWidth * 2/3 and pwdFieldInput.size < fieldInfoFontSize then
- --   --  			pwdFieldInput.size = pwdFieldInput.size * 3/2
- --   --  		end
- --   --  		print(pwdFieldInput.width)
-	--     elseif event.phase == "submitted" then
-
- --    		if string.len(emailField.text) == 0 then
-	-- 	    	native.setKeyboardFocus( emailField )
-	-- 	    end
-	   
-	--     end
-	-- end
 
 	
 
@@ -346,6 +246,8 @@ function scene:exitScene( event )
 	--loginBackground:removeEventListener( "touch", loginButton )
 	passwordGroup[1]:removeEventListener( "userInput", genericFieldListener )
 	emailGroup[1]:removeEventListener( "userInput", genericFieldListener)
+	passwordGroup[1]:removeEventListener( "touch", fieldTouchHandler)
+	emailGroup[1]:removeEventListener( "touch", fieldTouchHandler)
 
 	native.setKeyboardFocus(nil)
 
