@@ -169,8 +169,8 @@ function scene:createScene( event )
 
 	if not event.params then
 		event.params = {
-			ballX =  display.contentHeight/6,
-			ballY =  display.contentWidth/2
+			ballX =  display.contentWidth/2 + (math.random(-30,30)+10)*3,
+			ballY =  display.contentHeight/4
 		}
 	end
 
