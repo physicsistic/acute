@@ -159,10 +159,10 @@ function M.createTopBar(text, needCheck)
 	text.y = bannerHeight/2
 
 	if needCheck == nil or needCheck == true then
-		local checkMarkBackground = display.newRect(banner, display.contentWidth-bannerHeight, 0, bannerHeight, bannerHeight)
+		checkMarkBackground = display.newRect(banner, display.contentWidth-bannerHeight, 0, bannerHeight, bannerHeight)
 		checkMarkBackground:setFillColor(46, 204, 113)
 
-		local checkMark = display.newImageRect(banner, "check.png", bannerHeight/2, bannerHeight/2)
+		checkMark = display.newImageRect(banner, "check.png", bannerHeight/2, bannerHeight/2)
 		checkMark.x = display.contentWidth - bannerHeight/2
 		checkMark.y = bannerHeight/2
 	else
