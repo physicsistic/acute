@@ -103,7 +103,7 @@ function scene:createScene( event )
 	group:insert(replayButton)
 	function replayButton:touch(event)
 		if event.phase == "began" then
-			storyboard.gotoScene("waiting")
+			storyboard.gotoScene("home")
 			replayButton:removeEventListener("touch", replayButton)
 
 		end
