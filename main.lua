@@ -57,7 +57,7 @@ local group = display.newGroup()
 local background = display.newRect(group, 0, 0, display.contentWidth, display.contentHeight)
 background:setFillColor(236, 240, 241)
 
-local bouncy = display.newImageRect(group, "sphere.png", 72, 72)
+local bouncy = display.newImageRect(group, "Ball.png", 72, 72)
 bouncy.x = display.contentWidth/2
 bouncy.y = display.contentHeight/2
 
@@ -106,14 +106,6 @@ function checkLoginToken()
 end
 
 
-local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
-
-if loginToken == nil then
-	gotoWelcomeScreen()
-else 
-	-- check if user is logged in
-	checkLoginToken()
-end
 
 
 function gotoWelcomeScreen()
@@ -142,6 +134,14 @@ function gotoWelcomeScreen()
 end
 
 
+local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
+
+if loginToken == nil then
+	gotoWelcomeScreen()
+else 
+	-- check if user is logged in
+	checkLoginToken()
+end
 
 
 
