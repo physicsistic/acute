@@ -45,6 +45,10 @@ function scene:createScene( event )
 	playButton.fadeIn()
 	insightsButton.fadeIn()
 
+	playButton:addEventListener("touch", function(e)
+		storyboard.gotoScene( "game", {effect="fade"})
+	end)
+
 end
 
 function scene:enterScene( event )
