@@ -40,7 +40,7 @@ function scene:createScene( event )
 
 	function backArrow:touch(event)
 		if event.phase == "ended" then
-			storyboard.gotoScene("waiting")
+			storyboard.gotoScene("home")
 		end
 	end
 	backArrow:addEventListener("touch", backArrow)

@@ -22,10 +22,6 @@ local ball = require("ball")
 display.setStatusBar( display.HiddenStatusBar )
 display.setDefault( "background", 236, 240, 241 )
 
-local shadowParams = {}
-shadowParams.short = 12
-shadowParams.long = 36
-
 local gScale = 9.8*4
 local deltaT = 10
 local deltaX = 20
@@ -51,40 +47,12 @@ function scene:createScene( event )
 	group:insert(loginButton)
 	group:insert(signupButton)
 
-	function activeStateHandler(event)
-		if event.phase == "began" then
-			event.target.alpha = 0.8
-			event.target.cancelButton = false
-			display.getCurrentStage():setFocus(event.target)
-		elseif event.phase == "moved" then
-			event.target.alpha = 1
-			event.target.cancelButton = true
-		elseif event.phase == "ended" or event.phase == "cancelled" then
-			event.target.alpha = 1
-			display.getCurrentStage():setFocus(nil)	
-		end
-	end
-
-	function ifPressedGotoScene( event, sceneName )
-		if event.phase == "ended" and not event.target.cancelButton then
-			Runtime:removeEventListener("enterFrame", shadowChange)
-			for i=1, #prison do
-				physics.removeBody(prison[i])
-			end
-
-			storyboard.gotoScene( sceneName, {effect = "slideLeft"})
-		end
-	end
-
-	
-	loginButton:addEventListener("touch", function(e)
-		activeStateHandler(e)
-		ifPressedGotoScene(e, 'loginScreen')
+	loginButton.onClick(function(e)
+		storyboard.gotoScene( 'loginScreen', {effect = "slideLeft"})	
 	end)
 
-	signupButton:addEventListener("touch", function(e)
-		activeStateHandler(e)
-		ifPressedGotoScene(e, 'register')
+	signupButton.onClick(function(e)
+		storyboard.gotoScene( 'register', {effect = "slideLeft"})	
 	end)
 
 	loginButton.fadeIn()
@@ -101,15 +69,6 @@ function scene:createScene( event )
 
 	local bouncy = ball.create(event.params.ballX, event.params.ballY)
 
-	function bouncy:touch ( event )
-		if event.phase == "began" then
-			event.target:setFrame(2)
-		elseif event.phase == "ended" then
-			event.target:setFrame(1)
-		end
-	end
-
-	bouncy:addEventListener( "touch", bouncy )
 	group:insert(bouncy)
 
 
@@ -118,11 +77,8 @@ function scene:createScene( event )
 	physics.start()
 	physics.setGravity(0,1)
 	
-	for i=1, prison.numChildren do 
-		prison[i].alpha = 0
-		physics.addBody(prison[i], "static", {friction=0.5, bounce=1})
-		-- group:insert(staticGroup[i])
-	end
+	prison.addToPhysics()
+
 	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})

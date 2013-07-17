@@ -21,9 +21,15 @@ function M.create(x,y)
     bouncy.x = x
     bouncy.y = y
 
-    function bouncy.foo()
-        print( "No you didn't")
+    function bouncy:touch ( event )
+        if event.phase == "began" then
+            event.target:setFrame(2)
+        elseif event.phase == "ended" then
+            event.target:setFrame(1)
+        end
     end
+
+    bouncy:addEventListener( "touch", bouncy )
 
     return bouncy
 end
