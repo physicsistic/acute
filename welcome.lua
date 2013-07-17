@@ -69,15 +69,6 @@ function scene:createScene( event )
 
 	local bouncy = ball.create(event.params.ballX, event.params.ballY)
 
-	function bouncy:touch ( event )
-		if event.phase == "began" then
-			event.target:setFrame(2)
-		elseif event.phase == "ended" then
-			event.target:setFrame(1)
-		end
-	end
-
-	bouncy:addEventListener( "touch", bouncy )
 	group:insert(bouncy)
 
 
