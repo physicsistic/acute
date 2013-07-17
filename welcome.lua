@@ -47,35 +47,12 @@ function scene:createScene( event )
 	group:insert(loginButton)
 	group:insert(signupButton)
 
-	function activeStateHandler(event)
-		if event.phase == "began" then
-			event.target.alpha = 0.8
-			event.target.cancelButton = false
-			display.getCurrentStage():setFocus(event.target)
-		elseif event.phase == "moved" then
-			event.target.alpha = 1
-			event.target.cancelButton = true
-		elseif event.phase == "ended" or event.phase == "cancelled" then
-			event.target.alpha = 1
-			display.getCurrentStage():setFocus(nil)	
-		end
-	end
-
-	function ifPressedGotoScene( event, sceneName )
-		if event.phase == "ended" and not event.target.cancelButton then
-			storyboard.gotoScene( sceneName, {effect = "slideLeft"})
-		end
-	end
-
-	
-	loginButton:addEventListener("touch", function(e)
-		activeStateHandler(e)
-		ifPressedGotoScene(e, 'loginScreen')
+	loginButton.onClick(function(e)
+		storyboard.gotoScene( 'loginScreen', {effect = "slideLeft"})	
 	end)
 
-	signupButton:addEventListener("touch", function(e)
-		activeStateHandler(e)
-		ifPressedGotoScene(e, 'register')
+	signupButton.onClick(function(e)
+		storyboard.gotoScene( 'register', {effect = "slideLeft"})	
 	end)
 
 	loginButton.fadeIn()

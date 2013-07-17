@@ -1,6 +1,23 @@
 local storyboard = require "storyboard" 
 local M = {}
 
+function physicsStateHandler(event, callback)
+	if event.phase == "began" then
+		event.target.alpha = 0.8
+		event.target.cancelButton = false
+		display.getCurrentStage():setFocus(event.target)
+	elseif event.phase == "moved" then
+		event.target.alpha = 1
+		event.target.cancelButton = true
+	elseif event.phase == "ended" or event.phase == "cancelled" then
+		event.target.alpha = 1
+		display.getCurrentStage():setFocus(nil)	
+		if event.target.cancelButton == false then
+			callback(event)
+		end
+	end
+end
+
 function M.createButton(label, x, y, width, height)
 	local defaultButtonHeight = display.contentHeight / 10
 	local defaultButtonWidth = display.contentWidth * 3/4
@@ -33,6 +50,12 @@ function M.createButton(label, x, y, width, height)
 		button.alpha = 0
 		if time == nil then time = 500 end
 		transition.to( button, {time = time, alpha = 1} )
+	end
+
+	function button.onClick(callback)
+		button:addEventListener("touch", function(e)
+			physicsStateHandler( e, callback )
+		end)
 	end
 
 	button.setActive( true )
