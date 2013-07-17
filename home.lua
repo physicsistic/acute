@@ -32,7 +32,14 @@ function scene:createScene( event )
 
 	local prison = utils.createBallPrison()
 
-	local bouncy = ball.create()
+	if not event.params then
+		event.params = {
+			ballX =  display.contentWidth/2 + (math.random(-30,30)+10)*3,
+			ballY =  display.contentHeight/4
+		}
+	end
+
+	local bouncy = ball.create(event.params.ballX, event.params.ballY)
 
 	-- Screen buttons
 

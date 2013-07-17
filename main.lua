@@ -108,14 +108,7 @@ function checkLoginToken()
 	network.request( "https://jawbone.com/nudge/api/users/@me/", "GET", networkListener, params)
 end
 
-
-function gotoHomeScreen()
-	group:removeSelf()
-	storyboard.gotoScene( "home" )
-end
-
-
-function gotoWelcomeScreen()
+function magicTransition( toScreen )
 	local params = {
 		ballY = display.contentHeight/6,
 		ballX = display.contentWidth/2 + math.random(-100,100)
@@ -135,9 +128,19 @@ function gotoWelcomeScreen()
 		transition = easing.outQuad,
 		onComplete = function()
 			group:removeSelf()
-			storyboard.gotoScene( "welcome", {params=params} )
+			storyboard.gotoScene( toScreen, {params=params} )
 		end
 	})
+end
+
+
+function gotoHomeScreen()
+	magicTransition('home')
+end
+
+
+function gotoWelcomeScreen()
+	magicTransition('welcome')
 end
 
 
