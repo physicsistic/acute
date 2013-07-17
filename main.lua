@@ -114,7 +114,7 @@ function checkLoginToken()
 			print(meta)
 			if meta["code"] == 200 then
 				print(event.response)
-				storyboard.gotoScene( "errorScreen" )
+				storyboard.gotoScene( "waiting" )
 				print("user is logged in")
 			else 
 				print("user session token doesn't exist")

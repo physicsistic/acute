@@ -19,8 +19,8 @@ settings =
 			},
 			UIAppFonts = 
 			{
-				"TitilliumWeb-Regular.ttf",
-				"TitilliumWeb-Bold.ttf",
+				"Montserrat-Regular.ttf",
+				"Montserrat-Bold.ttf",
 			},
 			UIApplicationExitsOnSuspend = true
 		},
