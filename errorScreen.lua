@@ -25,9 +25,13 @@ function scene:createScene( event )
 
 
 
-	local errorMessage = display.newText("Oops. Something went wrong.", 0,0, display.contentWidth*4/5, display.contentHeight/4, storyboard.states.font.regular, 18)
-	errorMessage:setTextColor(127, 140, 141)
-	errorMessage.align="center"
+	local errorMessage = display.newText("Oops. Something went wrong.", 0, 0 , storyboard.states.font.regular, 18)
+	errorMessage:setReferencePoint(display.centerReferencePoint)
+	errorMessage.x = display.contentWidth/2
+	errorMessage.y = display.contentHeight/2
+	errorMessage:setTextColor(189, 195, 199)
+
+
 
 
 end
