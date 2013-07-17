@@ -83,6 +83,7 @@ end
 
 --
 function scene:createScene( event )
+	
 	local group = self.view
 
 	-- Static groups 
@@ -146,6 +147,13 @@ function scene:createScene( event )
 		ifPressedGotoScene(e, 'register')
 	end)
 
+	loginButton.alpha = 0
+	signupButton.alpha = 0
+
+	local showIt = {time = 500, alpha = 1}
+	transition.to( loginButton, showIt )
+	transition.to( signupButton, showIt )
+
 	-- Mr. Bouncy himself
 
 	local sheet = graphics.newImageSheet( "sphere-sheet.png", {
@@ -155,8 +163,9 @@ function scene:createScene( event )
 	})
 	local bouncy = display.newSprite( sheet, {start=1, count=2} )
 	bouncy:setReferencePoint(display.CenterReferencePoint)
-	bouncy.x = display.contentWidth/2 + math.random(-100,100)
-	bouncy.y = display.contentHeight/6
+	bouncy.x = event.params.ballX
+	bouncy.y = event.params.ballY
+	
 
 	function bouncy:touch ( event )
 		if event.phase == "began" then
@@ -171,12 +180,13 @@ function scene:createScene( event )
 
 
 	
-	
+
 	-- Physics engine starts
+
 	physics.start()
 	physics.setGravity(0,1)
-	print(staticGroup.numChildren)
-	for i=1,staticGroup.numChildren do 
+	
+	for i=1, staticGroup.numChildren do 
 		staticGroup[i].alpha = 0
 		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
 		-- group:insert(staticGroup[i])
@@ -215,13 +225,10 @@ function scene:createScene( event )
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
 
-
-
-
 end
 
 function scene:enterScene( event )
-	local group = self.view	
+	local group = self.view
 end
 
 function scene:exitScene( event )
