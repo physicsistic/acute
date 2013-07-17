@@ -62,7 +62,6 @@ local function dragBody( event )
 end
 
 
-
 -- Initialize New Scene
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
@@ -84,6 +83,7 @@ end
 
 --
 function scene:createScene( event )
+	
 	local group = self.view
 
 	-- Static groups 
@@ -94,85 +94,120 @@ function scene:createScene( event )
 	background:setFillColor(236, 240, 241)
 	group:insert(background)
 
+	-- Physics walls
+
+	local ground = display.newLine(staticGroup, 0, display.contentHeight, 2*display.contentWidth, display.contentHeight)
+	local leftWall = display.newLine(staticGroup, 0, 0, 0, 2*display.contentHeight)
+	local rightWall = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
+	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
+
+	group:insert(staticGroup)	
+
+	-- Screen buttons
+
 	local loginButton = createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5, buttonWidth, buttonHeight)
+	local signupButton = createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
+	
 	group:insert(loginButton)
+	group:insert(signupButton)
 
 	function activeStateHandler(event)
 		if event.phase == "began" then
 			event.target.alpha = 0.8
+			event.target.cancelButton = false
 			display.getCurrentStage():setFocus(event.target)
+		elseif event.phase == "moved" then
+			event.target.alpha = 1
+			event.target.cancelButton = true
 		elseif event.phase == "ended" or event.phase == "cancelled" then
 			event.target.alpha = 1
 			display.getCurrentStage():setFocus(nil)	
 		end
 	end
 
-
-	function loginButton:touch(event)
-		if event.phase == "ended" then
+	function ifPressedGotoScene( event, sceneName )
+		if event.phase == "ended" and not event.target.cancelButton then
 			Runtime:removeEventListener("enterFrame", shadowChange)
-			for i=1,staticGroup.numChildren do
+			for i=1, #staticGroup do
 				physics.removeBody(staticGroup[i])
 			end
-			storyboard.gotoScene("loginScreen")
-    	end
-	end
-	loginButton:addEventListener("touch", activeStateHandler)
-	loginButton:addEventListener("touch", loginButton)
-
-	local signupButton = createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
-	group:insert(signupButton)
-
-	function signupButton:touch(event)
-		if event.phase == "ended" then
-			Runtime:removeEventListener("enterFrame", shadowChange)
-			for i=1,staticGroup.numChildren do
-				physics.removeBody(staticGroup[i])
-			end
-			storyboard.gotoScene("register")
+			storyboard.gotoScene( sceneName )
 		end
 	end
-	signupButton:addEventListener("touch", activeStateHandler)
-	signupButton:addEventListener("touch", signupButton)
 
 	
-	local ground = display.newLine(staticGroup, 0, display.contentHeight, 2*display.contentWidth, display.contentHeight)
-	local leftWall = display.newLine(staticGroup, 0, 0, 0, 2*display.contentHeight)
-	local rightWall = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
-	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
+	loginButton:addEventListener("touch", function(e)
+		activeStateHandler(e)
+		ifPressedGotoScene(e, 'loginScreen')
+	end)
 
 
-	local bouncy = display.newImageRect("sphere.png", 72, 72)
+	signupButton:addEventListener("touch", function(e)
+		activeStateHandler(e)
+		ifPressedGotoScene(e, 'register')
+	end)
+
+	loginButton.alpha = 0
+	signupButton.alpha = 0
+
+	local showIt = {time = 500, alpha = 1}
+	transition.to( loginButton, showIt )
+	transition.to( signupButton, showIt )
+
+	-- Mr. Bouncy himself
+
+	local sheet = graphics.newImageSheet( "sphere-sheet.png", {
+    	width = 72,
+    	height = 72,
+    	numFrames = 2,
+	})
+	local bouncy = display.newSprite( sheet, {start=1, count=2} )
 	bouncy:setReferencePoint(display.CenterReferencePoint)
-	bouncy.x = display.contentWidth/2 + math.random(-100,100)
-	bouncy.y = display.contentHeight/6
+	bouncy.x = event.params.ballX
+	bouncy.y = event.params.ballY
+	
 
+	function bouncy:touch ( event )
+		if event.phase == "began" then
+			event.target:setFrame(2)
+		elseif event.phase == "ended" then
+			event.target:setFrame(1)
+		end
+	end
 
-
+	bouncy:addEventListener( "touch", bouncy )
 	group:insert(bouncy)
-	group:insert(staticGroup)
+
 
 	
+
 	-- Physics engine starts
+
 	physics.start()
 	physics.setGravity(0,1)
-	print(staticGroup.numChildren)
-	for i=1,staticGroup.numChildren do 
+	
+	for i=1, staticGroup.numChildren do 
 		staticGroup[i].alpha = 0
 		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
 		-- group:insert(staticGroup[i])
 	end
-	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=1, density=2})
-	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=1, density=2})
+	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=.9, density=1})
+	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
 
-	--physics.setDrawMode("hybrid")
+	local loginJoint = physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
+	local signupJoint = physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
 
-	physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
-	physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
+	local range = 25
+
+	loginJoint.isLimitEnabled = true
+	signupJoint.isLimitEnabled = true
+	loginJoint:setRotationLimits( -range, range )
+	signupJoint:setRotationLimits( -range, range )
 
 	bouncy:addEventListener( "touch", dragBody )
-	--loginButton:addEventListener( "touch", dragBody )
+	loginButton:addEventListener( "touch", dragBody )
+	signupButton:addEventListener( "touch", dragBody )
 
 	bouncy.gravityScale = gScale
 	
@@ -190,13 +225,10 @@ function scene:createScene( event )
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
 
-
-
-
 end
 
 function scene:enterScene( event )
-	local group = self.view	
+	local group = self.view
 end
 
 function scene:exitScene( event )

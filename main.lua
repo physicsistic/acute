@@ -61,11 +61,12 @@ local bouncy = display.newImageRect(group, "sphere.png", 72, 72)
 bouncy.x = display.contentWidth/2
 bouncy.y = display.contentHeight/2
 
+
 local function flash(obj, frameTime)
-	transition.to(obj, {time = frameTime, alpha=0, transition = easing.inOutQuad, onComplete = function () transition.to(obj, {time=frameTime, alpha=1, transition=easing.inOutQuad}) end})
+	transition.to(obj, {time = frameTime, alpha=.5, transition = easing.inOutQuad, onComplete = function () transition.to(obj, {time=frameTime, alpha=1, transition=easing.inOutQuad}) end})
 end
 
-local text = display.newText(group, "loading...", 0, 0, storyboard.states.font.bold, 24)
+local text = display.newText(group, "inflating ball...", 0, 0, storyboard.states.font.bold, 24)
 text:setTextColor(189, 195, 199)
 text.x = display.contentWidth/2
 text.y = display.contentHeight * 5/6
@@ -80,7 +81,6 @@ function checkLoginToken()
 			print ( "Network error!", event.status, event.response)
 		else
 			print(event.response)
-			group:removeSelf()
 			local meta = json.decode(event.response)["meta"]
 			print(meta)
 			if meta["code"] == 200 then
@@ -89,7 +89,7 @@ function checkLoginToken()
 				print("user is logged in")
 			else 
 				print("user session token doesn't exist")
-				storyboard.gotoScene( "welcome" )
+				gotoWelcomeScreen()
 			end
 		end
 
@@ -109,109 +109,38 @@ end
 local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
 
 if loginToken == nil then
-	storyboard.gotoScene("welcome")
-	group:removeSelf()
+	gotoWelcomeScreen()
 else 
 	-- check if user is logged in
 	checkLoginToken()
 end
 
 
+function gotoWelcomeScreen()
+	local params = {
+		ballY = display.contentHeight/6,
+		ballX = display.contentWidth/2 + math.random(-100,100)
+	}
 
+	timer.cancel( flashingTimer )
 
+	transition.to( text, {
+		time = 500,
+		alpha = 0
+	})
 
-
--- -- Static groups 
--- local staticGroup = display.newGroup()
--- local ground = display.newLine(staticGroup, 0, display.contentHeight * 3/4, 2*display.contentWidth, display.contentHeight * 3/4)
--- local leftWall = display.newLine(staticGroup, 0, 0, 0, display.contentHeight)
--- local rightWall = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, display.contentHeight)
--- local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
-
--- local shadow = display.newRoundedRect(0, 0, 20, 6, 3 )
--- shadow:setReferencePoint(display.CenterReferencePoint)
--- shadow.x = display.contentWidth/2
--- shadow.y = display.contentHeight * 3/4
--- shadow:setFillColor(189, 195, 199)
-
--- local bouncy = display.newCircle(display.contentWidth/2, display.contentHeight/4, 18)
--- bouncy:setFillColor(230, 126, 34)
-
-
-
--- -- Physics engine starts
--- physics.start()
--- physics.setGravity(0,1)
--- for i=1,staticGroup.numChildren do 
--- 	staticGroup[i].alpha = 0
--- 	physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=0.95})
--- end
--- physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
--- bouncy.gravityScale = gScale
-
-
-
-
-
--- -- Visual effects
--- local function shadowChange(event)
--- 	distanceFromGround = ground.y - bouncy.y
--- 	shadow.width =(bouncy.width/2 - shadowParams.short) * (1 - distanceFromGround /(display.contentHeight/2)) + shadowParams.short
--- 	shadow.x = bouncy.x
--- 	shadow.y = display.contentHeight * 3/4 - 20 + bouncy.height / 2
--- end
-
--- transition.to(bouncy, {time=5000, height = 1500, width = 1500, transition = easing.inQuad})
-
-
--- Runtime:addEventListener("enterFrame", shadowChange)
-
--- -- end of displays
-
-
-
-function exitScene()
-	physics.stop()
-	bouncy:removeSelf()
-	background:removeSelf()
-	leftWall:removeSelf()
-	rightWall:removeSelf()
-	ceiling:removeSelf()
-	Runtime:removeEventListener("enterFrame", shadowChange)
-
-	-- Check if the tokenPath file exist
-
-	local function networkListener( event )
-		if event.isError then 
-			print ( "Network error!", event.status, event.response)
+	transition.to( bouncy, {
+		x=params.ballX,
+		y=params.ballY,
+		time= 2000,
+		transition = easing.outQuad,
+		onComplete = function()
+			group:removeSelf()
+			storyboard.gotoScene( "welcome", {params=params} )
 		end
-
-		local meta = json.decode(event.response)["meta"]
-		if meta["code"] == 200 then
-
-			storyboard.gotoScene( "game" )
-			print("user is logged in")
-		else 
-			print("user session token doesn't exist")
-			storyboard.gotoScene( "welcome" )
-		end
-
-	end
-	local params = {}
-	local headers = {}
-	headers["Accept"] = "application/json"
-	local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
-
-	print("The login token is: " .. loginToken)
-	headers["x-nudge-token"] = loginToken
-	
-	params.headers = headers
-	network.request( "https://jawbone.com/nudge/api/users/@me/", "GET", networkListener, params)
-
+	})
 end
 
-
--- exitSceneTimer = timer.performWithDelay(5000, exitScene)
 
 
 
