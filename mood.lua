@@ -64,8 +64,8 @@ function scene:createScene( event )
 
 
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
-	moodText:setTextColor(236, 240, 241)
-	moodText.y = display.contentHeight/2
+	moodText:setTextColor(189, 195, 199)
+	moodText.y = display.contentHeight*3/4
 	group:insert(moodText)
 
 
@@ -95,7 +95,7 @@ function scene:createScene( event )
     })
 
 
-    local bouncyMood = display.newSprite( moodSheet, {start=1, count=7} )
+    local bouncyMood = display.newSprite( moodSheet, {start=1, count=7, loopCount=0} )
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2
@@ -110,6 +110,8 @@ function scene:createScene( event )
 			if index > 0 and index < 8 then
 				print(index)
 				bouncyMood:setFrame(index)
+				moodText.text = moodSchemes[index]
+				moodText.x = display.contentWidth/2
 			end
 		end
 	end
