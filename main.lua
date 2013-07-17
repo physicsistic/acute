@@ -84,9 +84,8 @@ function checkLoginToken()
 			local meta = json.decode(event.response)["meta"]
 			print(meta)
 			if meta["code"] == 200 then
-				print(event.response)
-				storyboard.gotoScene( "waiting" )
 				print("user is logged in")
+				gotoMainScreen()
 			else 
 				print("user session token doesn't exist")
 				gotoWelcomeScreen()
@@ -106,6 +105,11 @@ function checkLoginToken()
 end
 
 
+function gotoMainScreen()
+	group:removeSelf()
+	storyboard.gotoScene( "waiting" )
+
+end
 
 
 function gotoWelcomeScreen()

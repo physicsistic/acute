@@ -12,6 +12,7 @@ local widget = require( "widget" )
 local upapi = require "upapi"
 local math = require( "math")
 local physics = require("physics")
+local utils = require("utils")
 
 -- Local variables for parameters in this screen
 local buttonHeight = display.contentHeight / 10
@@ -30,58 +31,10 @@ local gScale = 9.8*4
 local deltaT = 10
 local deltaX = 20
 
--- A general function for dragging physics bodies
-local function dragBody( event )
-    local body = event.target
-    local phase = event.phase
-    local stage = display.getCurrentStage()
-
-    if "began" == phase then
-        stage:setFocus( body, event.id )
-        body.isFocus = true
-
-        -- Create a temporary touch joint and store it in the object for later reference
-        body.tempJoint = physics.newJoint( "touch", body, event.x, event.y )
-
-    elseif body.isFocus then
-        if "moved" == phase then
-        
-            -- Update the joint to track the touch
-            body.tempJoint:setTarget( event.x, event.y )
-
-        elseif "ended" == phase or "cancelled" == phase then
-            stage:setFocus( body, nil )
-            body.isFocus = false
-            
-            -- Remove the joint when the touch ends                 
-            body.tempJoint:removeSelf()
-                
-        end
-    end
-
-    -- Stop further propagation of touch event
-    return true
-end
-
 
 -- Initialize New Scene
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
-
-local function createButton(label, x, y, width, height)
-	local button = display.newGroup()
-	button.x = x
-	button.y = y
-	local buttonBackground = display.newRect(0, 0, width, height)
-	buttonBackground:setFillColor(46, 204, 113)
-	buttonBackground:setStrokeColor(236, 240, 241)
-	buttonBackground.strokeWidth = 1
-	local buttonLabel = display.newText(label, 0, 0, storyboard.states.font.bold, 20)
-	button:insert(buttonLabel, true)
-	button:insert(1, buttonBackground, true)
-	button.bg = buttonBackground
-	return button
-end
 
 --
 function scene:createScene( event )
@@ -107,8 +60,8 @@ function scene:createScene( event )
 
 	-- Screen buttons
 
-	local loginButton = createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5, buttonWidth, buttonHeight)
-	local signupButton = createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
+	local loginButton = utils.createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5, buttonWidth, buttonHeight)
+	local signupButton = utils.createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
 	
 	group:insert(loginButton)
 	group:insert(signupButton)
@@ -190,8 +143,6 @@ function scene:createScene( event )
 	group:insert(bouncy)
 
 
-	
-
 	-- Physics engine starts
 
 	physics.start()
@@ -216,9 +167,9 @@ function scene:createScene( event )
 	loginJoint:setRotationLimits( -range, range )
 	signupJoint:setRotationLimits( -range, range )
 
-	bouncy:addEventListener( "touch", dragBody )
-	loginButton:addEventListener( "touch", dragBody )
-	signupButton:addEventListener( "touch", dragBody )
+	bouncy:addEventListener( "touch", utils.dragBody )
+	loginButton:addEventListener( "touch", utils.dragBody )
+	signupButton:addEventListener( "touch", utils.dragBody )
 
 	bouncy.gravityScale = gScale
 	

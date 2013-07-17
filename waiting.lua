@@ -13,21 +13,10 @@ local upapi = require "upapi"
 local math = require( "math")
 local physics = require("physics")
 local json = require("json")
+local utils = require("utils")
 display.setStatusBar( display.HiddenStatusBar )
 
 local gScale = 9.8
-
-local function createButton(label, x, y, width, height)
-	local button = display.newGroup()
-	button.x = x
-	button.y = y
-	local buttonBackground = display.newRect(0, 0, width, height)
-	buttonBackground:setFillColor(46, 204, 113)
-	local buttonLabel = display.newText(label, 0, 0, storyboard.states.font.bold, 20)
-	button:insert(buttonLabel, true)
-	button:insert(1, buttonBackground, true)
-	return button
-end
 
 local function tadaLeft(obj)
 	local dT = 50
@@ -107,7 +96,7 @@ function scene:createScene( event )
 	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
 	group:insert(staticGroup)
 
-	local insightsButton = createButton("insights", display.contentWidth/2, display.contentHeight*5/6, display.contentWidth * 3/4, display.contentHeight/10)
+	local insightsButton = utils.createButton("insights", display.contentWidth/2, display.contentHeight*5/6, display.contentWidth * 3/4, display.contentHeight/10)
 	group:insert(insightsButton)
 
 
@@ -149,7 +138,7 @@ function scene:createScene( event )
 			countdownTimer:removeSelf()
 			countdownInfo:removeSelf()
 			timer.cancel(tickTimer)
-			local playButton = createButton("play", display.contentWidth/2, display.contentHeight/2, display.contentWidth /2, display.contentHeight/10)
+			local playButton = utils.createButton("play", display.contentWidth/2, display.contentHeight/2, display.contentWidth /2, display.contentHeight/10)
 			group:insert(playButton)
 			print("user free to play next game")
 			insightsButton:removeSelf()
