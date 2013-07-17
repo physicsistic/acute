@@ -61,6 +61,15 @@ local function dragBody( event )
     return true
 end
 
+local function tint( event )
+	
+	if event.phase == "began" then
+		event.target:setFrame(2)
+	elseif event.phase == "ended" then
+		event.target:setFrame(1)
+	end
+end
+
 
 
 -- Initialize New Scene
@@ -155,7 +164,13 @@ function scene:createScene( event )
 	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
 
 
-	local bouncy = display.newImageRect("sphere.png", 72, 72)
+	--local bouncy = display.newImageRect("sphere.png", 72, 72)
+	local sheet = graphics.newImageSheet( "sphere-sheet.png", {
+    	width = 72,
+    	height = 72,
+    	numFrames = 2,
+	})
+	local bouncy = display.newSprite( sheet, {start=1, count=2} )
 	bouncy:setReferencePoint(display.CenterReferencePoint)
 	bouncy.x = display.contentWidth/2 + math.random(-100,100)
 	bouncy.y = display.contentHeight/6
@@ -175,18 +190,27 @@ function scene:createScene( event )
 		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
 		-- group:insert(staticGroup[i])
 	end
-	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=1, density=2})
-	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=1, density=2})
+	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=.9, density=1})
+	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
 
 	--physics.setDrawMode("hybrid")
 
-	physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
-	physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
+	local loginJoint = physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
+	local signupJoint = physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
+
+	local range = 25
+
+	loginJoint.isLimitEnabled = true
+	loginJoint:setRotationLimits( -range, range )
+	signupJoint.isLimitEnabled = true
+	signupJoint:setRotationLimits( -range, range )
 
 	bouncy:addEventListener( "touch", dragBody )
 	loginButton:addEventListener( "touch", dragBody )
 	signupButton:addEventListener( "touch", dragBody )
+
+	bouncy:addEventListener( "touch", tint)
 
 	bouncy.gravityScale = gScale
 	
