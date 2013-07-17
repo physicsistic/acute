@@ -40,22 +40,8 @@ function scene:createScene( event )
 	
 	local group = self.view
 
-	-- Static groups 
-	local staticGroup = display.newGroup()
-
-	-- Background Color
-	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
-	background:setFillColor(236, 240, 241)
-	group:insert(background)
-
-	-- Physics walls
-
-	local ground = display.newLine(staticGroup, 0, display.contentHeight, 2*display.contentWidth, display.contentHeight)
-	local leftWall = display.newLine(staticGroup, 0, 0, 0, 2*display.contentHeight)
-	local rightWall = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
-	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
-
-	group:insert(staticGroup)	
+	local prison = utils.createBallPrison()
+	group:insert(prison)
 
 	-- Screen buttons
 
@@ -82,8 +68,8 @@ function scene:createScene( event )
 	function ifPressedGotoScene( event, sceneName )
 		if event.phase == "ended" and not event.target.cancelButton then
 			Runtime:removeEventListener("enterFrame", shadowChange)
-			for i=1, #staticGroup do
-				physics.removeBody(staticGroup[i])
+			for i=1, #prison do
+				physics.removeBody(prison[i])
 			end
 
 			storyboard.gotoScene( sceneName, {effect = "slideLeft"})
@@ -132,17 +118,17 @@ function scene:createScene( event )
 	physics.start()
 	physics.setGravity(0,1)
 	
-	for i=1, staticGroup.numChildren do 
-		staticGroup[i].alpha = 0
-		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
+	for i=1, prison.numChildren do 
+		prison[i].alpha = 0
+		physics.addBody(prison[i], "static", {friction=0.5, bounce=1})
 		-- group:insert(staticGroup[i])
 	end
 	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
 
-	local loginJoint = physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
-	local signupJoint = physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
+	local loginJoint = physics.newJoint('pivot', loginButton, prison.ceiling, loginButton.x, loginButton.y )
+	local signupJoint = physics.newJoint('pivot', signupButton, prison.ceiling, signupButton.x, signupButton.y )
 
 	local range = 25
 

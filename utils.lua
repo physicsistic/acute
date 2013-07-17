@@ -75,4 +75,18 @@ function M.dragBody( event )
     return true
 end
 
+function M.createBallPrison()
+	-- Static groups 
+	local staticGroup = display.newGroup()
+
+	-- Physics walls
+
+	staticGroup.ground = display.newLine(staticGroup, 0, display.contentHeight, 2*display.contentWidth, display.contentHeight)
+	staticGroup.left = display.newLine(staticGroup, 0, 0, 0, 2*display.contentHeight)
+	staticGroup.right = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
+	staticGroup.ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
+
+	return staticGroup
+end
+
 return M
