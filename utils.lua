@@ -7,6 +7,7 @@ function physicsStateHandler(event, callback)
 		event.target.cancelButton = false
 		display.getCurrentStage():setFocus(event.target)
 	elseif event.phase == "moved" then
+		-- TODO: This should have a threshold of moving where it isn't canceled
 		event.target.alpha = 1
 		event.target.cancelButton = true
 	elseif event.phase == "ended" or event.phase == "cancelled" then

@@ -84,9 +84,9 @@ function checkLoginToken()
 			local meta = json.decode(event.response)["meta"]
 			print(meta)
 			if meta["code"] == 200 then
-				group:removeSelf()
+				--group:removeSelf()
 				print(event.response)
-				storyboard.gotoScene( "waiting" )
+				--storyboard.gotoScene( "waiting" )
 
 				print("user is logged in")
 				gotoHomeScreen()
@@ -112,7 +112,6 @@ end
 function gotoHomeScreen()
 	group:removeSelf()
 	storyboard.gotoScene( "home" )
-
 end
 
 
