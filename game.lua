@@ -178,6 +178,8 @@ function Ball:gotoRandomSpot()
 	transition.to( bouncy, {
 		x=x,
 		y=y,
+		xScale = 1,
+		yScale = 1,
 		time=400,
 		transition=easing.outExpo
 	})
@@ -205,7 +207,9 @@ function  scene:createScene(event)
 	local prison = utils.createBallPrison()
 
 	--bouncy = display.newCircle(group, event.params.ballX, event.params.ballY, 36)
-	bouncy = display.newCircle(group, 0, 0, 36)
+	bouncy = display.newCircle(group, display.contentWidth/2, display.contentHeight/2, 36)
+	bouncy.xScale = 2
+	bouncy.yScale = 2
 	bouncy:setFillColor(189, 195, 199)
 
 	Ball:gotoRandomSpot()
