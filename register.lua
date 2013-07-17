@@ -130,7 +130,7 @@ function scene:createScene( event )
 	-- Navigation
 	function backButton:touch(event)
 		if event.phase == "ended" then
-			storyboard.gotoScene("welcome")
+			storyboard.gotoScene("welcome",  {effect="slideRight"})
 		end
 	end
 	backButton:addEventListener("touch", backButton)
