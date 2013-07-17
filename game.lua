@@ -9,39 +9,26 @@ local upapi = require "upapi"
 local json = require("json")
 local math = require( "math")
 local physics = require("physics")
-
+local utils = require("utils")
+local ball = require("ball")
 
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
 local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
-local gScale = 9.8/2
+local gScale = 9.8/4
 
 
 function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, x = obj.x + deltaX, y = obj.y + deltaY})
+	transition.to(obj, {time = 100, xScale = 1 + deltaX, yScale = 1 + deltaY})
 end
 
 function wobble(obj)
-	moveBouncy(obj, 10, 6)
-	timer.performWithDelay(100, function () moveBouncy(obj, -18, -12) end)
-	timer.performWithDelay(200, function () moveBouncy(obj, 16, 10) end)
-	timer.performWithDelay(300, function () moveBouncy(obj, -14, -8) end)
-	timer.performWithDelay(400, function () moveBouncy(obj, 6, 4) end)
-	timer.performWithDelay(500, function () physics.start() end)
-end
-
-function flash(obj)
-	local frameTime = 100
-	transition.to(obj, {time = frameTime, alpha = 0, transition=easing.outQuad})
-	timer.performWithDelay( frameTime * 2, function () transition.to(obj, {time = frameTime, alpha = 1, transition=easing.inQuad})end)
-	timer.performWithDelay( frameTime * 3, function () transition.to(obj, {time = frameTime, alpha = 0, transition=easing.outQuad})end)
-	timer.performWithDelay( frameTime * 4, function () transition.to(obj, {time = frameTime, alpha = 1, transition=easing.inQuad})end)
-	timer.performWithDelay( frameTime * 5, function () transition.to(obj, {time = frameTime, alpha = 0, transition=easing.outQuad})end)
-	timer.performWithDelay( frameTime * 6, function () transition.to(obj, {time = frameTime, alpha = 1, transition=easing.inQuad})end)
-	timer.performWithDelay( frameTime * 7, function () physics.start() end)
-
+	moveBouncy(obj, .3, -.3)
+	timer.performWithDelay(100, function () moveBouncy(obj, -.2, .2) end)
+	timer.performWithDelay(200, function () moveBouncy(obj, .1, -.1) end)
+	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
 end
 
 
@@ -50,6 +37,7 @@ function  scene:createScene(event)
 	local group = self.view
 	-- Display and graphics
 	display.setStatusBar(display.HiddenStatusBar)
+	display.setDefault( "background", 236, 240, 241 )
 
 	-- Holder object for the popping circle
 
@@ -57,20 +45,8 @@ function  scene:createScene(event)
 	local roundNum = 1
 	sessionData = {}
 	
-
-		-- Static groups 
-	local staticGroup = display.newGroup()
-
-	-- Background Color
-	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
-	background:setFillColor(236, 240, 241)
-
-
-
-	local ground = display.newLine(staticGroup, 0, display.contentHeight, 2*display.contentWidth, display.contentHeight)
-	local leftWall = display.newLine(staticGroup, 0, 0, 0, 2*display.contentHeight)
-	local rightWall = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
-	local ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
+	-- Static groups 
+	local prison = utils.createBallPrison()
 
 	bouncy = display.newCircle(group, display.contentWidth/2, display.contentHeight/2, 36)
 	bouncy:setFillColor(189, 195, 199)
@@ -79,21 +55,22 @@ function  scene:createScene(event)
 		if event.phase == "began" then
 			tapTime = system.getTimer()
 			print("Bouncy is tapped at time = " .. tapTime)
+			pauseTimer()
 			if tapTime < popCompleted then
 				print("tapped too early")
 				timer.cancel( popTimer )
-				physics.pause()
+				--physics.pause()
 				wobble(bouncy)
-				local fx = (1-math.random()) * 100
-				local fy = (1-math.random()) * 100
+				-- local fx = (1-math.random()) * 100
+				-- local fy = (1-math.random()) * 100
 				bouncy:setFillColor(192, 57, 43)
-				bouncy:applyLinearImpulse(fx, fy, bouncy.x, bouncy.y)
+				-- bouncy:applyLinearImpulse(fx, fy, bouncy.x, bouncy.y)
 				timer.performWithDelay(1000, function()bouncy:setFillColor(189, 195, 199) end)
 
 			else
 				print("tapped after signal turned")
 				bouncy:setFillColor(39, 174, 96)
-				flash(bouncy)
+				wobble(bouncy)
 				local function resetBouncy()
 					if bouncy ~= nil then
 						print(bouncy)
@@ -110,6 +87,7 @@ function  scene:createScene(event)
 				print("reaction time = " .. tapTime-popCompleted)
 	
 			end
+
 			if roundNum > storyboard.states.totalNumRounds then
 				print("game over")
 				local endGameEvent = { name = "endGame", target = Runtime }
@@ -125,25 +103,22 @@ function  scene:createScene(event)
 				
 		end
 	end
-	bouncy:addEventListener("touch", bouncy)
+	bouncy:addEventListener( "touch", bouncy)
+	--bouncy:addEventListener( "touch", utils.dragBody )
 
 	-- Physics engine starts
 	physics.start()
 
 	local function randomizeGravity()
-		local fy = (math.random() - 0.5) * 3
-		local fx = (math.random() - 0.5) * 2
+		local fy = (math.random() - 0.5)
+		local fx = (math.random() - 0.5)
 		physics.setGravity(fx, fy)
 	end
 
 	randomizeGravity()
 
 	physics.setGravity(0,1)
-	print(staticGroup.numChildren)
-	for i=1,staticGroup.numChildren do 
-		staticGroup[i].alpha = 0
-		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=0.75})
-	end
+	prison.addToPhysics()
 	physics.addBody(bouncy, {friction=0.5, bounce=0.85, radius = 36})
 	bouncy.gravityScale = gScale
 
@@ -180,11 +155,17 @@ function  scene:createScene(event)
 		print("Round = " .. roundNum)
 		popDelay = math.random(2500, 5000)
 		popStart = system.getTimer()
-		popTimer = timer.performWithDelay(popDelay, function () bouncy:setFillColor(230, 126, 34)end)
+		popTimer = timer.performWithDelay(popDelay, function ()
+			bouncy:setFillColor(230, 126, 34)
+		end)
 		print("Start = " .. popStart)
 		print("Delay = " .. popDelay)
 		popCompleted = popStart + popDelay
 		print("Completed = " .. popCompleted)
+	end
+
+	function pauseTimer()
+		timer.cancel(popTimer)
 	end
 
 
