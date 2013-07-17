@@ -28,7 +28,6 @@ storyboard.purgeOnSceneChange = true
 local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
 local gScale = 9.8/4
-local Ball = {}
 
 function moveBouncy(obj, deltaX, deltaY)
 	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
@@ -41,159 +40,158 @@ function wobble(obj)
 	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
 end
 
--- State Object
-
-local State = {
-	totalNumberOfRounds = 5,
-	currentRound = 1,
-	misses = 0,
-	gracePeriod = 1500, -- in MS
-	minCountDownTime = 2700,
-	maxCountDownTime = 6000, 
-	state = "waiting"
-}
-
-function State:prematureHit()
-	print( "FAIL" )
-	State.misses = State.misses + 1
-
-	audio.play( badRoundSound )
-	State:cancelCountDown('angry')
-end
-
-function State:reactionHit()
-	if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
-	local elapsed = system.getTimer()-State.startTime
-	print( "ELAPSED", elapsed, State.currentRound )
-	State.currentRound = State.currentRound+1
-	State:setState('waiting')
-
-	audio.play(roundSounds[State.currentRound])
-
-	if State.currentRound > State.totalNumberOfRounds then
-		print( "DONE" )
-		-- timer.performWithDelay(1000, function()
-		-- 	storyboard.gotoScene( "home", {effect="fade"})
-		-- end)
-	end
-
-end
-
-
-function State:startCountDown()
-	local delay = math.random(State.minCountDownTime, State.maxCountDownTime)
-	if State.countDownTimer then timer.cancel( State.countDownTimer ) end
-	State.countDownTimer = timer.performWithDelay(delay, State.startReactionTimer, 1)
-	State:setState("countdown")
-	print( "START COUNTDOWN")
-end
-
-function State:cancelCountDown(state)
-	timer.cancel( State.countDownTimer )
-	State:setState(state or 'waiting')
-	print( "CANCLE COUNT DOWN")
-end
-
-function State:startReactionTimer()
-	print( "START REACTION TIMER" )
-	State:setState('reaction')
-	State.gracePeriodTimer = timer.performWithDelay(
-		State.gracePeriod,
-		State.cancelReactionTimer,
-		1
-	)
-	State.startTime = system.getTimer()
-end
-
-function State:cancelReactionTimer()
-	print( "CANCELING REACTION TIMER ")
-	State:startCountDown()
-end
-
-
-function State:setState( state )
-	print( "SETTING STATE", state)
-	State.state = state
-	Ball:setState(state)
-end
-
--- Ball Event Handlers
-
-function Ball:touchDown(e)
-	print("TOUCH DOWN")
-	wobble( bouncy )
-	bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
-
-	if State.state == "countdown" then
-		State:prematureHit()
-	elseif State.state == "reaction" then
-		State:reactionHit()
-	end
-end
-
-function Ball:touchMove(e)
-	if bouncy.tempJoint then bouncy.tempJoint:setTarget( e.x, e.y ) end
-end
-
-function Ball:touchUp(e)
-	if bouncy.tempJoint then bouncy.tempJoint:removeSelf() end
-	
-	-- Sloooow the ball down
-	local maxV = 1
-	vx, vy = bouncy:getLinearVelocity( )
-	vx = math.max(math.min( vx, maxV ), -maxV)
-	vy = math.max(math.min( vy, maxV ), -maxV)
-	bouncy:setLinearVelocity( vx, vy )
-
-	Ball:gotoRandomSpot()
-
-	State:startCountDown()
-end
-
-function Ball:setState( state )
-	if state == "waiting" or state == "countdown" then
-		bouncy:setFillColor(189, 195, 199)
-	elseif state == "reaction" then
-		bouncy:setFillColor(39, 174, 96)
-	elseif state == "angry" then
-		bouncy:setFillColor(174, 39, 96)
-	end
-end
-
-function Ball:gotoRandomSpot()
-	local dx = 0
-	local dy = 0
-	local x = 0
-	local y = 0
-
-
-	while math.sqrt(dx*dx+dy*dy) < 150 do
-		x = math.random(50, display.contentWidth-50)
-		y = math.random(50, display.contentHeight-50)
-		dx = x-bouncy.x
-		dy = y-bouncy.y
-		print( math.sqrt(dx*dx+dy*dy) )
-	end
-	print( x, y)
-	transition.to( bouncy, {
-		x=x,
-		y=y,
-		time=400,
-		transition=easing.outExpo
-	})
-
-	wobble(bouncy)
-end
-
-
-
-
-
 function  scene:createScene(event)
 	local group = self.view
 	-- Display and graphics
 	display.setStatusBar(display.HiddenStatusBar)
 	display.setDefault( "background", 236, 240, 241 )
+
+	local Ball = {}
+
+	-- State Object
+
+	local State = {
+		totalNumberOfRounds = 5,
+		currentRound = 1,
+		misses = 0,
+		gracePeriod = 1500, -- in MS
+		minCountDownTime = 2700,
+		maxCountDownTime = 6000, 
+		state = "waiting"
+	}
+
+	function State:prematureHit()
+		print( "FAIL" )
+		State.misses = State.misses + 1
+
+		audio.play( badRoundSound )
+		State:cancelCountDown('angry')
+	end
+
+	function State:reactionHit()
+		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
+		local elapsed = system.getTimer()-State.startTime
+		print( "ELAPSED", elapsed, State.currentRound )
+		State.currentRound = State.currentRound+1
+		State:setState('waiting')
+
+		audio.play(roundSounds[State.currentRound])
+
+		if State.currentRound > State.totalNumberOfRounds then
+			print( "DONE" )
+			-- timer.performWithDelay(1000, function()
+			-- 	storyboard.gotoScene( "home", {effect="fade"})
+			-- end)
+		end
+
+	end
+
+
+	function State:startCountDown()
+		local delay = math.random(State.minCountDownTime, State.maxCountDownTime)
+		if State.countDownTimer then timer.cancel( State.countDownTimer ) end
+		State.countDownTimer = timer.performWithDelay(delay, State.startReactionTimer, 1)
+		State:setState("countdown")
+		print( "START COUNTDOWN")
+	end
+
+	function State:cancelCountDown(state)
+		timer.cancel( State.countDownTimer )
+		State:setState(state or 'waiting')
+		print( "CANCLE COUNT DOWN")
+	end
+
+	function State:startReactionTimer()
+		print( "START REACTION TIMER" )
+		State:setState('reaction')
+		State.gracePeriodTimer = timer.performWithDelay(
+			State.gracePeriod,
+			State.cancelReactionTimer,
+			1
+		)
+		State.startTime = system.getTimer()
+	end
+
+	function State:cancelReactionTimer()
+		print( "CANCELING REACTION TIMER ")
+		State:startCountDown()
+	end
+
+
+	function State:setState( state )
+		print( "SETTING STATE", state)
+		State.state = state
+		Ball:setState(state)
+	end
+
+	-- Ball Event Handlers
+
+	function Ball:touchDown(e)
+		print("TOUCH DOWN")
+		wobble( bouncy )
+		bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
+
+		if State.state == "countdown" then
+			State:prematureHit()
+		elseif State.state == "reaction" then
+			State:reactionHit()
+		end
+	end
+
+	function Ball:touchMove(e)
+		if bouncy.tempJoint then bouncy.tempJoint:setTarget( e.x, e.y ) end
+	end
+
+	function Ball:touchUp(e)
+		if bouncy.tempJoint then bouncy.tempJoint:removeSelf() end
+		
+		-- Sloooow the ball down
+		local maxV = 1
+		vx, vy = bouncy:getLinearVelocity( )
+		vx = math.max(math.min( vx, maxV ), -maxV)
+		vy = math.max(math.min( vy, maxV ), -maxV)
+		bouncy:setLinearVelocity( vx, vy )
+
+		Ball:gotoRandomSpot()
+
+		State:startCountDown()
+	end
+
+	function Ball:setState( state )
+		if state == "waiting" or state == "countdown" then
+			bouncy:setFillColor(189, 195, 199)
+		elseif state == "reaction" then
+			bouncy:setFillColor(39, 174, 96)
+		elseif state == "angry" then
+			bouncy:setFillColor(174, 39, 96)
+		end
+	end
+
+	function Ball:gotoRandomSpot()
+		local dx = 0
+		local dy = 0
+		local x = 0
+		local y = 0
+
+
+		while math.sqrt(dx*dx+dy*dy) < 150 do
+			x = math.random(50, display.contentWidth-50)
+			y = math.random(50, display.contentHeight-50)
+			dx = x-bouncy.x
+			dy = y-bouncy.y
+			print( math.sqrt(dx*dx+dy*dy) )
+		end
+		print( x, y)
+		transition.to( bouncy, {
+			x=x,
+			y=y,
+			time=400,
+			transition=easing.outExpo
+		})
+
+		wobble(bouncy)
+	end
+
 
 	-- Holder object for the popping circle
 
@@ -227,6 +225,23 @@ function  scene:createScene(event)
 
 	bouncy:addEventListener( "touch", bouncy )
 
+	local instructionText = display.newText(
+		"tap ball when green",
+		0,
+		display.contentHeight-50,
+		storyboard.states.font.bold,
+		24
+	)
+	instructionText.x = display.contentWidth/2
+	instructionText:setTextColor(189, 195, 199)
+	-- TODO: 'green' should be in green
+
+	utils.fadeIn(instructionText)
+	timer.performWithDelay(3000, function()
+		utils.fadeOut(instructionText, 1000)
+	end)
+
+	
 	-- Physics engine starts
 	physics.start()
 

@@ -24,6 +24,11 @@ function M.fadeIn( obj, time )
 	transition.to( obj, {time=time or 500, alpha = 1})
 end
 
+function M.fadeOut( obj, time )
+	obj.alpha = 1
+	transition.to( obj, {time=time or 500, alpha = 0})
+end
+
 function M.createButton(label, x, y, width, height)
 	local defaultButtonHeight = display.contentHeight / 10
 	local defaultButtonWidth = display.contentWidth * 3/4
