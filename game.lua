@@ -31,7 +31,7 @@ local gScale = 9.8/4
 local Ball = {}
 
 function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, xScale = 1 + deltaX, yScale = 1 + deltaY})
+	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
 end
 
 function wobble(obj)
@@ -178,8 +178,6 @@ function Ball:gotoRandomSpot()
 	transition.to( bouncy, {
 		x=x,
 		y=y,
-		xScale = 1,
-		yScale = 1,
 		time=400,
 		transition=easing.outExpo
 	})
