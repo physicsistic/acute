@@ -63,22 +63,13 @@ function scene:createScene( event )
 	downArrow.y = 50
 
 
-
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
 	moodText:setTextColor(236, 240, 241)
 	moodText.y = display.contentHeight/2
 	group:insert(moodText)
 
 
-	function checkTouchHeight(event)
-		if event.phase == "moved" or event.phase == "began" then
-			local offset = display.contentHeight/12
-			local colorIndex = math.floor((event.y - offset)/ ((display.contentHeight-offset)/7)) + 1
-			if colorIndex > 0 and colorIndex < 7 then
 
-			end
-		end
-	end
 
 	function onActivation( event )
 		if event.phase == "began" then
@@ -103,10 +94,25 @@ function scene:createScene( event )
         numFrames = 7,
     })
 
-    local bouncyMood = display.newSprite( moodSheet, {start=4, count=7} )
+
+    local bouncyMood = display.newSprite( moodSheet, {start=1, count=7} )
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2
+    group:insert(bouncyMood)
+
+
+	function checkTouchHeight(event)
+		if event.phase == "moved" or event.phase == "began" then
+			local offset = display.contentHeight/12
+			print(topBar.height)
+			local index = math.floor((event.y - topBar.height)/ ((display.contentHeight-topBar.height)/7)) + 1
+			if index > 0 and index < 8 then
+				print(index)
+				bouncyMood:setFrame(index)
+			end
+		end
+	end
 
 	Runtime:addEventListener("touch", checkTouchHeight)
 	Runtime:addEventListener("touch", onActivation)
@@ -118,6 +124,7 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
+
 	Runtime:removeEventListener("touch", checkTouchHeight)
 end
 

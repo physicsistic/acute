@@ -164,6 +164,8 @@ function M.createTopBar(text)
 		checkMarkBackground:addEventListener("touch", callback)
 	end
 
+	banner.height = bannerHeight
+
 	return banner
 end
 
