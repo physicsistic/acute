@@ -53,6 +53,12 @@ function M.createButton(label, x, y, width, height)
 		transition.to( button, {time = time, alpha = 1} )
 	end
 
+	function button.fadeOut(time)
+		button.alpha = 0
+		if time == nil then time = 500 end
+		transition.to( button, {time = time, alpha = 0} )
+	end
+
 	function button.onClick(callback)
 		button:addEventListener("touch", function(e)
 			physicsStateHandler( e, callback )
