@@ -133,7 +133,8 @@ function scene:createScene( event )
 			for i=1, #staticGroup do
 				physics.removeBody(staticGroup[i])
 			end
-			storyboard.gotoScene( sceneName )
+
+			storyboard.gotoScene( sceneName, {effect = "slideLeft"})
 		end
 	end
 
