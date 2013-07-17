@@ -13,11 +13,10 @@ local upapi = require "upapi"
 local math = require( "math")
 local physics = require("physics")
 local utils = require("utils")
+local ball = require("ball")
 
 -- Local variables for parameters in this screen
-local buttonHeight = display.contentHeight / 10
-local buttonWidth = display.contentWidth * 3/4
-local buttonSep = display.contentHeight / 20
+
 
 
 display.setStatusBar( display.HiddenStatusBar )
@@ -60,8 +59,8 @@ function scene:createScene( event )
 
 	-- Screen buttons
 
-	local loginButton = utils.createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5, buttonWidth, buttonHeight)
-	local signupButton = utils.createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
+	local loginButton = utils.createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5)
+	local signupButton = utils.createButton("register", display.contentWidth/2, loginButton.y + utils.buttonSep + loginButton.height)
 	
 	group:insert(loginButton)
 	group:insert(signupButton)
@@ -97,28 +96,15 @@ function scene:createScene( event )
 		ifPressedGotoScene(e, 'loginScreen')
 	end)
 
-
 	signupButton:addEventListener("touch", function(e)
 		activeStateHandler(e)
 		ifPressedGotoScene(e, 'register')
 	end)
 
-	loginButton.alpha = 0
-	signupButton.alpha = 0
-
-	local showIt = {time = 500, alpha = 1}
-	transition.to( loginButton, showIt )
-	transition.to( signupButton, showIt )
+	loginButton.fadeIn()
+	signupButton.fadeIn()
 
 	-- Mr. Bouncy himself
-
-	local sheet = graphics.newImageSheet( "sphere-sheet.png", {
-    	width = 72,
-    	height = 72,
-    	numFrames = 2,
-	})
-	local bouncy = display.newSprite( sheet, {start=1, count=2} )
-	bouncy:setReferencePoint(display.CenterReferencePoint)
 
 	if not event.params then
 		event.params = {
@@ -127,9 +113,7 @@ function scene:createScene( event )
 		}
 	end
 
-	bouncy.x = event.params.ballX
-	bouncy.y = event.params.ballY
-	
+	local bouncy = ball.create(event.params.ballX, event.params.ballY)
 
 	function bouncy:touch ( event )
 		if event.phase == "began" then

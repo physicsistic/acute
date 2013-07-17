@@ -85,7 +85,7 @@ function checkLoginToken()
 			print(meta)
 			if meta["code"] == 200 then
 				print("user is logged in")
-				gotoMainScreen()
+				gotoHomeScreen()
 			else 
 				print("user session token doesn't exist")
 				gotoWelcomeScreen()
@@ -105,9 +105,9 @@ function checkLoginToken()
 end
 
 
-function gotoMainScreen()
+function gotoHomeScreen()
 	group:removeSelf()
-	storyboard.gotoScene( "waiting" )
+	storyboard.gotoScene( "home" )
 
 end
 
