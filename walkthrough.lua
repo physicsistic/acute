@@ -17,6 +17,9 @@ storyboard.purgeOnSceneChange = true
 
 function scene:createScene( event )
 	local group = self.view
+	local walkthroughView = native.newWebView( 0, 0, display.contentWidth, display.contentHeight)
+	walkthroughView:request("walkthrough.html", system.ResourceDirectory)
+
 end
 
 function scene:enterScene( event )
