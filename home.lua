@@ -90,14 +90,34 @@ function scene:createScene( event )
 	physics.addBody(insightsButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
 
-	local playJoin = physics.newJoint('pivot', playButton, prison.ceiling, playButton.x, playButton.y )
+	local playJoint = physics.newJoint('pivot', playButton, prison.ceiling, playButton.x, playButton.y )
 	local insightsJoint = physics.newJoint('pivot', insightsButton, prison.ceiling, insightsButton.x, insightsButton.y )
+
+	local range = 25
+
+	playJoint.isLimitEnabled = true
+	insightsJoint.isLimitEnabled = true
+	playJoint:setRotationLimits( -range, range )
+	insightsJoint:setRotationLimits( -range, range )
+
 
 	bouncy:addEventListener( "touch", utils.dragBody )
 	playButton:addEventListener( "touch", utils.dragBody )
 	insightsButton:addEventListener( "touch", utils.dragBody )
 
 	bouncy.gravityScale = gScale
+
+	-- Accelerometer 
+	system.setAccelerometerInterval( 50 )
+	function onAccelerate(event)
+		physics.setGravity(event.xInstant + event.xGravity, (event.yInstant + event.yGravity)*(-1))
+		local function resetGravityListener () 
+			physics.setGravity(event.xGravity, 1) 
+		end
+		timer.performWithDelay(50, resetGravityListener)
+	end
+
+	Runtime:addEventListener("accelerometer", onAccelerate)
 
 end
 
