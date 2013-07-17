@@ -87,7 +87,9 @@ function checkLoginToken()
 				group:removeSelf()
 				print(event.response)
 				storyboard.gotoScene( "waiting" )
+
 				print("user is logged in")
+				gotoHomeScreen()
 			else 
 				print("user session token doesn't exist")
 				gotoWelcomeScreen()
@@ -107,6 +109,11 @@ function checkLoginToken()
 end
 
 
+function gotoHomeScreen()
+	group:removeSelf()
+	storyboard.gotoScene( "home" )
+
+end
 
 
 function gotoWelcomeScreen()
