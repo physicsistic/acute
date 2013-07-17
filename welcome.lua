@@ -100,7 +100,20 @@ function scene:createScene( event )
 	function activeStateHandler(event)
 		if event.phase == "began" then
 			event.target.alpha = 0.8
+			event.target.cancelButton = false
 			display.getCurrentStage():setFocus(event.target)
+		elseif event.phase == "moved" then
+			local hits = physics.rayCast( event.x, event.y, event.target.x, event.target.y)
+			if hits then
+				-- If you move your finger out
+				event.target.alpha = 1
+				event.target.cancelButton = true
+			else
+				-- If you move your finger back in
+				event.target.alpha = 1
+				event.target.cancelButton = true
+			end
+
 		elseif event.phase == "ended" or event.phase == "cancelled" then
 			event.target.alpha = 1
 			display.getCurrentStage():setFocus(nil)	
@@ -109,7 +122,7 @@ function scene:createScene( event )
 
 
 	function loginButton:touch(event)
-		if event.phase == "ended" then
+		if event.phase == "ended" and not event.target.cancelButton then
 			Runtime:removeEventListener("enterFrame", shadowChange)
 			for i=1,staticGroup.numChildren do
 				physics.removeBody(staticGroup[i])
@@ -124,7 +137,7 @@ function scene:createScene( event )
 	group:insert(signupButton)
 
 	function signupButton:touch(event)
-		if event.phase == "ended" then
+		if event.phase == "ended" and not event.target.cancelButton then
 			Runtime:removeEventListener("enterFrame", shadowChange)
 			for i=1,staticGroup.numChildren do
 				physics.removeBody(staticGroup[i])
@@ -172,7 +185,8 @@ function scene:createScene( event )
 	physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
 
 	bouncy:addEventListener( "touch", dragBody )
-	--loginButton:addEventListener( "touch", dragBody )
+	loginButton:addEventListener( "touch", dragBody )
+	signupButton:addEventListener( "touch", dragBody )
 
 	bouncy.gravityScale = gScale
 	
