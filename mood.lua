@@ -35,12 +35,32 @@ local moodSchemes = {
 	"exhausted",
 }
 
+local bannerHeight = display.contentHeight/10
 
 function scene:createScene( event )
 	local group = self.view
 	
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
+
+	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
+	banner:setFillColor(189, 195, 199)
+
+	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
+	backButton.x = bannerHeight/2
+	backButton.y = bannerHeight/2
+	
+	local loginButton = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
+	loginButton:setFillColor(46, 204, 113)
+
+	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
+	checkMark.x = display.contentWidth - bannerHeight/2
+	checkMark.y = bannerHeight/2
+
+	local signupText = display.newText(group, "how do you feel?", 0, 0, storyboard.states.font.bold, 18)
+	signupText:setReferencePoint(display.CenterReferencePoint)
+	signupText.x = display.contentWidth/2
+	signupText.y = bannerHeight/2
 
 
 	-- instruction group for the slider
@@ -58,26 +78,12 @@ function scene:createScene( event )
 	instructionGroup:insert(downArrow, true)
 	downArrow.y = 50
 
-	local questionBackground = display.newRect(0, 0, display.contentWidth, display.contentHeight/12)
-	questionBackground:setFillColor(189, 195, 199)
-	group:insert(questionBackground)
-
-	local questionText = display.newText("How do you feel today?", 0, 0, storyboard.states.font.bold, 18)
-	questionText:setReferencePoint(display.CenterLeftReferencePoint)
-	questionText:setTextColor(236, 240, 241)
-	questionText.x = 10
-	questionText.y = display.contentHeight/24
-	group:insert(questionText)
-	
 
 
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
 	moodText:setTextColor(236, 240, 241)
 	moodText.y = display.contentHeight/2
 	group:insert(moodText)
-
-	local checkMark = nil
-
 
 
 	function checkTouchHeight(event)
@@ -98,10 +104,7 @@ function scene:createScene( event )
 		if event.phase == "began" then
 			instructionGroup:removeSelf()
 			Runtime:removeEventListener("touch", onActivation)
-			checkMark = display.newImageRect("check.png", 32, 26)
-			checkMark:setReferencePoint(display.CenterRightReferencePoint)
-			checkMark.x = display.contentWidth - 10
-			checkMark.y = display.contentHeight/24
+
 			function checkMark:touch( event )
 				if event.phase == "ended" then
 					storyboard.gotoScene("game")
@@ -112,6 +115,17 @@ function scene:createScene( event )
 
 		end
 	end
+
+    local moodSheet = graphics.newImageSheet( "Moods@2x.png", {
+        width = 144,
+        height = 144,
+        numFrames = 7,
+    })
+
+    local bouncyMood = display.newSprite( moodSheet, {start=4, count=7} )
+    bouncyMood:setReferencePoint(display.CenterReferencePoint)
+    bouncyMood.x = display.contentWidth/2
+    bouncyMood.y = display.contentHeight/2
 
 	Runtime:addEventListener("touch", checkTouchHeight)
 	Runtime:addEventListener("touch", onActivation)
