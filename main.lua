@@ -51,35 +51,6 @@ storyboard.states.totalNumRounds = 5
 
 storyboard.states.location = {}
 
--- Capture user location
-
--- local myMap = native.newMapView( 0, 0, 1, 1)
--- local myLocation = myMap:getUserLocation()
-
--- local function mapAddressHandler( event )
--- 	print("event handler is called")
---     -- handle mapAddress event here
---     if event.isError then
---         print( "mapView Error: " .. event.errorMessage )
---     else
---         storyboard.states.location.city = event.city
---         storyboard.states.location.postalCode = event.postalCode
-
---         print(event.city)
---     end
--- end
--- myMap:nearestAddress(myLocation.latitude, myLocation.longitude, mapAddressHandler)
--- Runtime:addEventListener("mapAddress", mapAddressHandler)
-
--- -- local loginStatus = upapi.isLoggedIn()
-
--- -- Displays
--- local shadowParams = {}
--- shadowParams.short = 16
--- shadowParams.long = 36
-
--- local gScale = 9.8 *2
-
 
 local group = display.newGroup()
 

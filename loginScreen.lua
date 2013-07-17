@@ -15,24 +15,53 @@ local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
 
--- Resolution properties
-local pixelPerInch = 163
-local pointPerInch = 72
-local pointPerPixel = pointPerInch / pointPerInch
+-- -- Resolution properties
+-- local pixelPerInch = 163
+-- local pointPerInch = 72
+-- local pointPerPixel = pointPerInch / pointPerInch
 
 
--- Display object properties
-local textBackgroundHeight = math.round(display.contentHeight / 12)
-local textBackgroundWidth = display.contentWidth / 4 * 3
-local fieldSeparationHeight = display.contentHeight / 18
+-- -- Display object properties
+-- local textBackgroundHeight = math.round(display.contentHeight / 12)
+-- local textBackgroundWidth = display.contentWidth / 4 * 3
+-- local fieldSeparationHeight = display.contentHeight / 18
 
-local loginButtonHeight = math.round(textBackgroundHeight * 0.8)
-local loginButtonWidth = math.round(display.contentWidth / 3)
-local fieldFontSize = math.round(textBackgroundHeight * 0.8 * pointPerPixel)
-local fieldInfoFontSize = math.round(fieldFontSize / 2)
-local fieldLabelFontSize = math.round(fieldFontSize * 0.8)
-local loginTextSize = math.round(loginButtonHeight * 0.5 * pointPerPixel)
+-- local loginButtonHeight = math.round(textBackgroundHeight * 0.8)
+-- local loginButtonWidth = math.round(display.contentWidth / 3)
+-- local fieldFontSize = math.round(textBackgroundHeight * 0.8 * pointPerPixel)
+-- local fieldInfoFontSize = math.round(fieldFontSize / 2)
+-- local fieldLabelFontSize = math.round(fieldFontSize * 0.8)
+-- local loginTextSize = math.round(loginButtonHeight * 0.5 * pointPerPixel)
 
+local fieldParams = {}
+fieldParams.width = display.contentWidth * 3/4
+fieldParams.height = display.contentHeight/12
+
+local bannerHeight = display.contentHeight/10
+
+function createTextField(name, x, y, width, height) -- where x and y are both top left referenced
+	local fieldGroup = display.newGroup()
+	local field = native.newTextField(x, y, width, height)
+	field.font = native.newFont(storyboard.states.font.regular, 24)
+	field.hasBackground = false
+	field:setTextColor(189, 195, 199)
+	fieldGroup:insert(field)
+	field.align = "center"
+
+	local fieldBackground = display.newRect(x, y, width, height)
+	-- fieldBackground:setFillColor(189, 195, 199)
+	
+
+	local fieldLabel = display.newText(name, 0, 0, storyboard.states.font.regular, 16)
+	fieldLabel:setReferencePoint(display.CenterReferencePoint)
+	fieldLabel.x = field.x 
+	fieldLabel.y = field.y
+	fieldLabel:setTextColor(189, 195, 199)
+	fieldGroup:insert(fieldBackground)
+	fieldGroup:insert(fieldLabel)
+
+	return fieldGroup
+end
 
 ----------------------------------------------------------------------------------
 -- 
@@ -65,140 +94,177 @@ function scene:createScene( event )
 	local background = display.newRect( group, 0, 0, display.contentWidth, display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
+
+	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
+	banner:setFillColor(189, 195, 199)
+
+	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
+	backButton.x = bannerHeight/2
+	backButton.y = bannerHeight/2
 	
-	local emailFieldParams = {}
-	emailFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
-	emailFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2
+	local loginButton = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
+	loginButton:setFillColor(46, 204, 113)
 
-	emailFieldBackground = display.newRect(group, emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight)
-	emailFieldBackground:setFillColor(189, 195, 199)
+	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
+	checkMark.x = display.contentWidth - bannerHeight/2
+	checkMark.y = bannerHeight/2
 
-	-- Email input field
-	emailField = native.newTextField( emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight, emailListener)
-	emailField.align = "center"
-	emailField.inputType = "email"
-	emailField.font = native.newFont(storyboard.states.font.regular, 24)
-	emailField:setReferencePoint(display.BottomCenterReferencePoint)
-	emailField.hasBackground = false
-	emailField:setTextColor(236, 240, 241)
-	-- Email field background
-
-	-- function emailFieldBackground:touch(event)
-	-- 	if event.phase == "began" then
-	-- 		native.setKeyboardFocus(emailField)
-	-- 		print("field focused on email")
-	-- 	end
-	-- end
-
-	-- emailFieldBackground:addEventListener("touch", emailFieldBackground)
-
-	-- emailFieldInput = display.newText(group, "", 0, 0, storyboard.states.font.regular, fieldInfoFontSize)
-	-- emailFieldInput:setReferencePoint(display.LeftCenterReferencePoint)
-	-- emailFieldInput.x = emailFieldBackground.x
-	-- emailFieldInput.y = emailFieldBackground.y
-	-- Email input label
-	local emailLabel = display.newText(group, "email", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
-	emailLabel:setReferencePoint(display.BottomCenterReference)
-	emailLabel:setTextColor(127, 140, 141)
-	emailLabel.x = display.contentWidth / 2
-	emailLabel.y = emailFieldParams.y - textBackgroundHeight / 3
-	movingGroup:insert(emailLabel)
+	local signupText = display.newText(group, "login", 0, 0, storyboard.states.font.bold, 24)
+	signupText:setReferencePoint(display.CenterReferencePoint)
+	signupText.x = display.contentWidth/2
+	signupText.y = bannerHeight/2
 
 
-	local pwdFieldParams = {}
-	pwdFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
-	pwdFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2 + textBackgroundHeight + fieldSeparationHeight
+	emailGroup = createTextField("email", display.contentWidth/8, bannerHeight + 20, fieldParams.width, fieldParams.height)
+	passwordGroup = createTextField("password", display.contentWidth/8, emailGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
+	passwordGroup[1].isSecure = true
 
-	-- Password input field
-	pwdField = native.newTextField(pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight, pwdListener)
-	pwdField.align = "center"
-	pwdField.isSecure = true
-	pwdField.size = native.newFont(storyboard.states.font.regular, 24)
-	pwdField.hasBackground = false
-	pwdField.alpha = 0
-	emailField:setTextColor(236, 240, 241)
+	group:insert(emailGroup)
+	group:insert(passwordGroup)
 
+	function genericFieldListener(event)
+		local field = event.target
+		local phase = event.phase
 
-	-- Email input label
-	local pwdLabel = display.newText(group, "password", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
-	pwdLabel:setReferencePoint(display.BottomCenterReference)
-	pwdLabel:setTextColor(127, 140, 141)
-	pwdLabel.x = display.contentWidth / 2
-	pwdLabel.y = pwdFieldParams.y - textBackgroundHeight / 3
-	movingGroup:insert(pwdLabel)
-	group:insert(movingGroup)
-	-- Password field background
-	pwdFieldBackground = display.newRect(group, pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight)
-	pwdFieldBackground:setFillColor(189, 195, 199)
-
-	function pwdFieldBackground:touch(event)
-		if event.phase == "began" then
-			native.setKeyboardFocus(pwdField)
+		if phase == "began" then
+			field.parent[3].alpha = 0
+		elseif phase == "submitted" then
+			print( field.text )
+		elseif phase == "ended" then
+			if string.len(field.text) == 0 then
+				field.parent[3].alpha = 1
+			end
 		end
 	end
 
-	pwdFieldBackground:addEventListener("touch", pwdFieldBackground)
+	emailGroup[1]:addEventListener("userInput", genericFieldListener)
+	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
 
-	pwdFieldInput = display.newText(group, "", 0, 0, storyboard.states.font.regular, fieldInfoFontSize)
-	pwdFieldInput:setReferencePoint(display.LeftCenterReferencePoint)
-	pwdFieldInput.x = pwdField.x
-	pwdFieldInput.y = pwdField.y
+	-- Navigation
+	function backButton:touch(event)
+		if event.phase == "ended" then
+			storyboard.gotoScene("welcome")
+		end
+	end
+	backButton:addEventListener("touch", backButton)	
+	-- local emailFieldParams = {}
+	-- emailFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
+	-- emailFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2
 
-	-- Login button display
+	-- emailFieldBackground = display.newRect(group, emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight)
+	-- emailFieldBackground:setFillColor(189, 195, 199)
 
-	local loginButton = createButton("login", display.contentWidth / 2, pwdField.y + loginButtonHeight + fieldSeparationHeight, display.contentWidth * 3/4, textBackgroundHeight)
+	-- -- Email input field
+	-- emailField = native.newTextField( emailFieldParams.x, emailFieldParams.y, textBackgroundWidth, textBackgroundHeight, emailListener)
+	-- emailField.align = "center"
+	-- emailField.inputType = "email"
+	-- emailField.font = native.newFont(storyboard.states.font.regular, 24)
+	-- emailField:setReferencePoint(display.BottomCenterReferencePoint)
+	-- emailField.hasBackground = false
+	-- emailField:setTextColor(236, 240, 241)
+
+	-- local emailLabel = display.newText(group, "email", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
+	-- emailLabel:setReferencePoint(display.BottomCenterReference)
+	-- emailLabel:setTextColor(127, 140, 141)
+	-- emailLabel.x = display.contentWidth / 2
+	-- emailLabel.y = emailFieldParams.y - textBackgroundHeight / 3
+	-- movingGroup:insert(emailLabel)
+
+
+	-- local pwdFieldParams = {}
+	-- pwdFieldParams.x = display.contentWidth/2 - textBackgroundWidth/2
+	-- pwdFieldParams.y = (display.contentHeight/2 - 2 * textBackgroundHeight - fieldSeparationHeight) / 2 + textBackgroundHeight + fieldSeparationHeight
+
+	-- -- Password input field
+	-- pwdField = native.newTextField(pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight, pwdListener)
+	-- pwdField.align = "center"
+	-- pwdField.isSecure = true
+	-- pwdField.size = native.newFont(storyboard.states.font.regular, 24)
+	-- pwdField.hasBackground = false
+	-- pwdField.alpha = 0
+	-- emailField:setTextColor(236, 240, 241)
+
+
+	-- -- Email input label
+	-- local pwdLabel = display.newText(group, "password", 0, 0, storyboard.states.font.regular, fieldFontSize / 3)
+	-- pwdLabel:setReferencePoint(display.BottomCenterReference)
+	-- pwdLabel:setTextColor(127, 140, 141)
+	-- pwdLabel.x = display.contentWidth / 2
+	-- pwdLabel.y = pwdFieldParams.y - textBackgroundHeight / 3
+	-- movingGroup:insert(pwdLabel)
+	-- group:insert(movingGroup)
+	-- -- Password field background
+	-- pwdFieldBackground = display.newRect(group, pwdFieldParams.x, pwdFieldParams.y, textBackgroundWidth, textBackgroundHeight)
+	-- pwdFieldBackground:setFillColor(189, 195, 199)
+
+	-- function pwdFieldBackground:touch(event)
+	-- 	if event.phase == "began" then
+	-- 		native.setKeyboardFocus(pwdField)
+	-- 	end
+	-- end
+
+	-- pwdFieldBackground:addEventListener("touch", pwdFieldBackground)
+
+	-- pwdFieldInput = display.newText(group, "", 0, 0, storyboard.states.font.regular, fieldInfoFontSize)
+	-- pwdFieldInput:setReferencePoint(display.LeftCenterReferencePoint)
+	-- pwdFieldInput.x = pwdField.x
+	-- pwdFieldInput.y = pwdField.y
+
+	-- -- Login button display
+
+	-- local loginButton = createButton("login", display.contentWidth / 2, pwdField.y + loginButtonHeight + fieldSeparationHeight, display.contentWidth * 3/4, textBackgroundHeight)
 	
 
-	group:insert(loginButton)
+	-- group:insert(loginButton)
 
 
-	-- Email Listener
-	function emailListener( event )
-		if event.phase == "began" then
-    	elseif event.phase == "editing" then
-    		-- emailFieldInput.text = event.text
-    		-- if emailFieldInput.width > textBackgroundWidth then
-    		-- 	emailFieldInput.size = emailFieldInput.size * 2/3
-    		-- elseif emailFieldInput.width < textBackgroundWidth * 2/3 and emailFieldInput.size < fieldInfoFontSize then
-    		-- 	emailFieldInput.size = emailFieldInput.size * 3/2
-    		-- end
-    		-- print(emailFieldInput.width)
-	    elseif event.phase == "submitted" then
+	-- -- Email Listener
+	-- function emailListener( event )
+	-- 	if event.phase == "began" then
+ --    	elseif event.phase == "editing" then
+ --    		-- emailFieldInput.text = event.text
+ --    		-- if emailFieldInput.width > textBackgroundWidth then
+ --    		-- 	emailFieldInput.size = emailFieldInput.size * 2/3
+ --    		-- elseif emailFieldInput.width < textBackgroundWidth * 2/3 and emailFieldInput.size < fieldInfoFontSize then
+ --    		-- 	emailFieldInput.size = emailFieldInput.size * 3/2
+ --    		-- end
+ --    		-- print(emailFieldInput.width)
+	--     elseif event.phase == "submitted" then
 
-	    	if string.len(pwdField.text) == 0 then
-		    	native.setKeyboardFocus( pwdField )
-	    	end
+	--     	if string.len(pwdField.text) == 0 then
+	-- 	    	native.setKeyboardFocus( pwdField )
+	--     	end
 
-	    end
-	end
+	--     end
+	-- end
 
-	-- Password Listener
-	function pwdListener( event )
-		if event.phase == "began" then
-		elseif event.phase == "editing" then
-			-- local n = string.len(pwdField.text)
-			-- pwdFieldInput.text = string.rep("*", n)
-			-- if pwdFieldInput.width > textBackgroundWidth then
-   --  			pwdFieldInput.size = pwdFieldInput.size * 2/3
-   --  		elseif pwdFieldInput.width < textBackgroundWidth * 2/3 and pwdFieldInput.size < fieldInfoFontSize then
-   --  			pwdFieldInput.size = pwdFieldInput.size * 3/2
-   --  		end
-   --  		print(pwdFieldInput.width)
-	    elseif event.phase == "submitted" then
+	-- -- Password Listener
+	-- function pwdListener( event )
+	-- 	if event.phase == "began" then
+	-- 	elseif event.phase == "editing" then
+	-- 		-- local n = string.len(pwdField.text)
+	-- 		-- pwdFieldInput.text = string.rep("*", n)
+	-- 		-- if pwdFieldInput.width > textBackgroundWidth then
+ --   --  			pwdFieldInput.size = pwdFieldInput.size * 2/3
+ --   --  		elseif pwdFieldInput.width < textBackgroundWidth * 2/3 and pwdFieldInput.size < fieldInfoFontSize then
+ --   --  			pwdFieldInput.size = pwdFieldInput.size * 3/2
+ --   --  		end
+ --   --  		print(pwdFieldInput.width)
+	--     elseif event.phase == "submitted" then
 
-    		if string.len(emailField.text) == 0 then
-		    	native.setKeyboardFocus( emailField )
-		    end
+ --    		if string.len(emailField.text) == 0 then
+	-- 	    	native.setKeyboardFocus( emailField )
+	-- 	    end
 	   
-	    end
-	end
+	--     end
+	-- end
 
 	
 
 	-- Login button handler
 	function loginButton:touch( event )
 		if event.phase == "ended" then
-			if (string.len(pwdField.text) > 0) and (string.len(emailField.text) > 0) then
+			if (string.len(passwordGroup[1].text) > 0) and (string.len(emailGroup[1].text) > 0) then
 				-- Login callback
 				local function loginCallback(loginError, result)
 					print("Are there any login errors?")
@@ -211,7 +277,7 @@ function scene:createScene( event )
 							local wrongInfoPrompt = display.newText("darn. check what you typed!", 0, 0, storyboard.states.font.regular, 16)
 							wrongInfoPrompt:setReferencePoint(display.TopCenterReferencePoint)
 							wrongInfoPrompt.x = display.contentWidth / 2
-							wrongInfoPrompt.y = 10
+							wrongInfoPrompt.y = passwordGroup[1].y + fieldParams.height
 							wrongInfoPrompt:setTextColor(39, 174, 96)
 
 							timer.performWithDelay(750, function() wrongInfoPrompt:removeSelf() end)
@@ -245,22 +311,22 @@ function scene:createScene( event )
 						print( "Error in getting response.")
 					end
 				end
-				upapi.login(emailField.text, pwdField.text, loginCallback)
+				upapi.login(emailGroup[1].text, passwordGroup[1].text, loginCallback)
 			else
 				print("Missing login information called")
 				local missingInfoPrompt = display.newText("oops. you forgot something!", 0, 0, storyboard.states.font.regular, 16)
 				missingInfoPrompt:setReferencePoint(display.TopCenterReferencePoint)
 				missingInfoPrompt.x = display.contentWidth / 2
-				missingInfoPrompt.y = 10
+				missingInfoPrompt.y = passwordGroup[1].y + fieldParams.height
 				missingInfoPrompt:setTextColor(39, 174, 96)
 				timer.performWithDelay(750, function() missingInfoPrompt:removeSelf() end)
 			end
-			pwdField.text = nil
-			emailField.text = nil
+			passwordGroup[1].text = nil
+			emailGroup[1].text = nil
 		end
 	end
-	emailField:addEventListener("userInput", emailListener)
-	pwdField:addEventListener("userInput", pwdListener)
+	emailGroup[1]:addEventListener("userInput", genericFieldListener)
+	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
 	loginButton:addEventListener("touch", loginButton)
 
 end
@@ -278,14 +344,14 @@ end
 function scene:exitScene( event )
 	local group = self.view
 	--loginBackground:removeEventListener( "touch", loginButton )
-	pwdField:removeEventListener( "userInput", pwdField )
-	emailField:removeEventListener( "userInput", emailField)
+	passwordGroup[1]:removeEventListener( "userInput", genericFieldListener )
+	emailGroup[1]:removeEventListener( "userInput", genericFieldListener)
 
 	native.setKeyboardFocus(nil)
 
 	-- Manually remove all field objects
-	pwdField:removeSelf()
-	emailField:removeSelf()
+	passwordGroup[1]:removeSelf()
+	emailGroup[1]:removeSelf()
 end
 
 

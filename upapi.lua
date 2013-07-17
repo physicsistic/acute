@@ -132,8 +132,17 @@ function createFirebaseUser( xid, userMeta )
 
 end
 
-function createUpUser(data)
+function signup(params, callback)
 
+	local signupURL = "https://nudgestage.jawbone.com/user/signin/login"
+
+	local signupInfo = ""
+	for key, value in pairs(params) do
+		signupInfo = signupInfo .. key .. "=" .. value .. "&"
+	end
+
+
+	rawPOSTRequest(signupURL, signupInfo, callback)
 end
 
 function updateTimings( sessionData )
