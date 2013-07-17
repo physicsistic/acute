@@ -62,13 +62,18 @@ function scene:createScene( event )
 		playButton.fadeOut()
 		insightsButton.fadeOut()
 
+		local params = {
+			ballX = math.random(50, display.contentWidth-50),
+			ballY = math.random(50, display.contentHeight-50)
+		}
+
 		transition.to( bouncy, {
-			x = display.contentWidth/2,
-			y = display.contentHeight/2+15,
+			x = params.ballX,
+			y = params.ballY,
 			time = 1000,
 			transition = easing.outQuad,
 			onComplete = function()
-				storyboard.gotoScene( "game", {effect="fade"})
+				storyboard.gotoScene( "game", {effect="fade", params=params})
 			end
 		})
 		

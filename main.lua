@@ -84,10 +84,6 @@ function checkLoginToken()
 			local meta = json.decode(event.response)["meta"]
 			print(meta)
 			if meta["code"] == 200 then
-				--group:removeSelf()
-				print(event.response)
-				--storyboard.gotoScene( "waiting" )
-
 				print("user is logged in")
 				gotoHomeScreen()
 			else 
@@ -124,7 +120,7 @@ function magicTransition( toScreen )
 	transition.to( bouncy, {
 		x=params.ballX,
 		y=params.ballY,
-		time= 2000,
+		time= 1300,
 		transition = easing.outQuad,
 		onComplete = function()
 			group:removeSelf()
