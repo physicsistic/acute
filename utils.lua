@@ -132,4 +132,25 @@ function M.createBallPrison()
 	return staticGroup
 end
 
+function M.createNavigationBanner(text, backwardScreen, forwardScreen)
+	local defaultBannerHeight = display.contentHeight/10
+
+	local banner = display.newGroup()
+	local bannerBackground = display.newRe(banner, 0,0, display.contentWidth, defaultBannerHeight)
+	bannerBackground:setFillColor(189, 195, 199)
+
+	local back = display.newImageRect(banner, "arrow_left_clouds.png", defaultBannerHeight/2, defaultBannerHeight/2)
+	back.x = bannerHeight/2
+	back.y = bannerHeight/2
+
+	local checkMark = display.newImageRect(banner, "check.png", defaultBannerHeight/2, defaultBannerHeight/2)
+	checkMark.x = display.contentWidth - bannerHeight/2
+	checkMark.y = bannerHeight/2
+
+	local text = display.newText(banner, text, 0, 0, storyboard.states.font.regular)
+	text:setReferencePoint(display.CenterReferencePoint)
+	text.x = display.contentWidth/2
+	text.y = defaultBannerHeight/2
+end
+
 return M

@@ -17,15 +17,6 @@ display.setStatusBar( display.HiddenStatusBar )
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
-local colorSchemes = {
-	{231, 76, 60}, -- red
-	{230, 126, 34}, -- orange
-	{241, 196, 15}, -- yellow
-	{39, 174, 96}, -- green
-	{41, 128, 185}, -- blue
-	{44, 62, 80}, -- dark blue
-}
-
 local moodSchemes = {
 	"amazing",
 	"energized",
@@ -33,6 +24,7 @@ local moodSchemes = {
 	"meh",
 	"dragging",
 	"exhausted",
+	"totall done",
 }
 
 local bannerHeight = display.contentHeight/10
@@ -89,13 +81,9 @@ function scene:createScene( event )
 	function checkTouchHeight(event)
 		if event.phase == "moved" or event.phase == "began" then
 			local offset = display.contentHeight/12
-			local colorIndex = math.floor((event.y - offset)/ ((display.contentHeight-offset)/6)) + 1
-			-- set color scheme
+			local colorIndex = math.floor((event.y - offset)/ ((display.contentHeight-offset)/7)) + 1
 			if colorIndex > 0 and colorIndex < 7 then
-				background:setFillColor(colorSchemes[colorIndex][1], colorSchemes[colorIndex][2], colorSchemes[colorIndex][3])
-				moodText.text = moodSchemes[colorIndex]
-				moodText.x = display.contentWidth/2
-				storyboard.states.userMood = moodSchemes[colorIndex]
+
 			end
 		end
 	end
