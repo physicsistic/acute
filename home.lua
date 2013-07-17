@@ -73,7 +73,7 @@ function scene:createScene( event )
 			time = 1000,
 			transition = easing.outQuad,
 			onComplete = function()
-				storyboard.gotoScene( "game", {effect="fade", params=params})
+				storyboard.gotoScene( "mood", {effect="fade"})
 			end
 		})
 		
@@ -123,6 +123,39 @@ function scene:createScene( event )
 	end
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
+
+	-- Get user information and trends for analysis later
+	local function userTrendsCallback(failed, result)
+		if failed then
+			print("Network failure. Please try again.")
+		else
+			print("printing user call back result: " .. result)
+			local userTrend = json.decode(result)
+
+			local recentData = ((userTrend.data).data)[8]
+
+			if recentData == nil then
+			else
+				-- get sleep quality if possible
+				if recentData[2]["s_quality"] then
+					storyboard.states.sleepQuality = recentData[2]["s_quality"]
+				else
+					storyboard.states.sleepQuality = nil
+				end
+
+				if recentData[2]["s_duration"] then
+					storyboard.states.sleepDuration = recentData[2]["s_duration"]
+				else
+					storyboard.states.sleepDuration = nil
+				end
+				print(storyboard.states.sleepQuality)
+			end
+
+		end
+	end
+
+	upapi.getUserMetrics("trends", userTrendsCallback)
+
 
 end
 

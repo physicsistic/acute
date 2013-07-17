@@ -113,6 +113,8 @@ function scene:createScene( event )
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
 
+
+
 end
 
 function scene:enterScene( event )

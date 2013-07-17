@@ -132,4 +132,41 @@ function M.createBallPrison()
 	return staticGroup
 end
 
+function M.createTopBar(text)
+	local bannerHeight = display.contentHeight/10
+
+	local banner = display.newGroup()
+	local bannerBackground = display.newRect(banner, 0,0, display.contentWidth, bannerHeight)
+	bannerBackground:setFillColor(189, 195, 199)
+
+	local back = display.newImageRect(banner, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
+	back.x = bannerHeight/2
+	back.y = bannerHeight/2
+
+	local checkMarkBackground = display.newRect(banner, display.contentWidth-bannerHeight, 0, bannerHeight, bannerHeight)
+	checkMarkBackground:setFillColor(46, 204, 113)
+
+
+	local checkMark = display.newImageRect(banner, "check.png", bannerHeight/2, bannerHeight/2)
+	checkMark.x = display.contentWidth - bannerHeight/2
+	checkMark.y = bannerHeight/2
+
+	local text = display.newText(banner, text, 0, 0, storyboard.states.font.regular, 24)
+	text:setReferencePoint(display.CenterReferencePoint)
+	text.x = display.contentWidth/2
+	text.y = bannerHeight/2
+
+	function banner.backwardClick(callback)
+		back:addEventListener("touch", callback)
+	end
+
+	function banner.forwardClick(callback)
+		checkMarkBackground:addEventListener("touch", callback)
+	end
+
+	banner.height = bannerHeight
+
+	return banner
+end
+
 return M

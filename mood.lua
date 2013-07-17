@@ -7,24 +7,16 @@
 -----------------------------------------------------------------------------------------
 
 -- Libraries
-local storyboard = require "storyboard" 
+local storyboard = require( "storyboard" )
 local widget = require( "widget" )
-local upapi = require "upapi"
+local upapi = require( "upapi" )
 local math = require( "math")
-local physics = require("physics")
+local physics = require("physics" )
+local utils = require( 'utils' )
 
 display.setStatusBar( display.HiddenStatusBar )
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
-
-local colorSchemes = {
-	{231, 76, 60}, -- red
-	{230, 126, 34}, -- orange
-	{241, 196, 15}, -- yellow
-	{39, 174, 96}, -- green
-	{41, 128, 185}, -- blue
-	{44, 62, 80}, -- dark blue
-}
 
 local moodSchemes = {
 	"amazing",
@@ -33,6 +25,7 @@ local moodSchemes = {
 	"meh",
 	"dragging",
 	"exhausted",
+	"totall done",
 }
 
 local bannerHeight = display.contentHeight/10
@@ -43,24 +36,15 @@ function scene:createScene( event )
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
-	banner:setFillColor(189, 195, 199)
+	local topBar = utils.createTopBar("feeling?")
 
-	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
-	backButton.x = bannerHeight/2
-	backButton.y = bannerHeight/2
-	
-	local loginButton = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
-	loginButton:setFillColor(46, 204, 113)
-
-	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
-	checkMark.x = display.contentWidth - bannerHeight/2
-	checkMark.y = bannerHeight/2
-
-	local signupText = display.newText(group, "how do you feel?", 0, 0, storyboard.states.font.bold, 18)
-	signupText:setReferencePoint(display.CenterReferencePoint)
-	signupText.x = display.contentWidth/2
-	signupText.y = bannerHeight/2
+	function backwardCallback(event)
+		if event.phase == "ended" then
+			event.target.parent:removeSelf()
+			storyboard.gotoScene("home",  {effect="slideRight"})
+		end
+	end
+	topBar.backwardClick(backwardCallback)
 
 
 	-- instruction group for the slider
@@ -79,39 +63,27 @@ function scene:createScene( event )
 	downArrow.y = 50
 
 
-
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
-	moodText:setTextColor(236, 240, 241)
-	moodText.y = display.contentHeight/2
+	moodText:setTextColor(189, 195, 199)
+	moodText.y = display.contentHeight*3/4
 	group:insert(moodText)
 
 
-	function checkTouchHeight(event)
-		if event.phase == "moved" or event.phase == "began" then
-			local offset = display.contentHeight/12
-			local colorIndex = math.floor((event.y - offset)/ ((display.contentHeight-offset)/6)) + 1
-			-- set color scheme
-			if colorIndex > 0 and colorIndex < 7 then
-				background:setFillColor(colorSchemes[colorIndex][1], colorSchemes[colorIndex][2], colorSchemes[colorIndex][3])
-				moodText.text = moodSchemes[colorIndex]
-				moodText.x = display.contentWidth/2
-				storyboard.states.userMood = moodSchemes[colorIndex]
-			end
-		end
-	end
+
 
 	function onActivation( event )
 		if event.phase == "began" then
 			instructionGroup:removeSelf()
 			Runtime:removeEventListener("touch", onActivation)
 
-			function checkMark:touch( event )
+			function forwardCallback( event )
 				if event.phase == "ended" then
-					storyboard.gotoScene("game")
+					event.target.parent:removeSelf()
+					storyboard.gotoScene("game", {effects="fade"})
 				end
 			end
-			checkMark:addEventListener("touch", checkMark)
-			group:insert(checkMark)
+
+			topBar.forwardClick(forwardCallback)
 
 		end
 	end
@@ -122,10 +94,27 @@ function scene:createScene( event )
         numFrames = 7,
     })
 
-    local bouncyMood = display.newSprite( moodSheet, {start=4, count=7} )
+
+    local bouncyMood = display.newSprite( moodSheet, {start=1, count=7, loopCount=0} )
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2
+    group:insert(bouncyMood)
+
+
+	function checkTouchHeight(event)
+		if event.phase == "moved" or event.phase == "began" then
+			local offset = display.contentHeight/12
+			print(topBar.height)
+			local index = math.floor((event.y - topBar.height)/ ((display.contentHeight-topBar.height)/7)) + 1
+			if index > 0 and index < 8 then
+				print(index)
+				bouncyMood:setFrame(index)
+				moodText.text = moodSchemes[index]
+				moodText.x = display.contentWidth/2
+			end
+		end
+	end
 
 	Runtime:addEventListener("touch", checkTouchHeight)
 	Runtime:addEventListener("touch", onActivation)
@@ -137,6 +126,7 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
+
 	Runtime:removeEventListener("touch", checkTouchHeight)
 end
 

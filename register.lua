@@ -7,10 +7,11 @@
 -----------------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
-local upapi = require "upapi"
-local json = require("json")
-local math = require "math"
-local native = require "native"
+local upapi = require( "upapi" )
+local json = require( "json" )
+local math = require( "math" )
+local native = require( "native" )
+local utils = require( "utils" )
 
 local scene = storyboard.newScene()
 
@@ -72,24 +73,26 @@ function scene:createScene( event )
 	local background = display.newRect( group, 0, 0, display.contentWidth, display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
-	banner:setFillColor(189, 195, 199)
+	local topBar = utils.createTopBar("signup")
 
-	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
-	backButton.x = bannerHeight/2
-	backButton.y = bannerHeight/2
+	-- local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
+	-- banner:setFillColor(189, 195, 199)
+
+	-- local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
+	-- backButton.x = bannerHeight/2
+	-- backButton.y = bannerHeight/2
 	
-	local checkMarkBackground = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
-	checkMarkBackground:setFillColor(46, 204, 113)
+	-- local checkMarkBackground = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
+	-- checkMarkBackground:setFillColor(46, 204, 113)
 
-	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
-	checkMark.x = display.contentWidth - bannerHeight/2
-	checkMark.y = bannerHeight/2
+	-- local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
+	-- checkMark.x = display.contentWidth - bannerHeight/2
+	-- checkMark.y = bannerHeight/2
 
-	local signupText = display.newText(group, "signup", 0, 0, storyboard.states.font.bold, 24)
-	signupText:setReferencePoint(display.CenterReferencePoint)
-	signupText.x = display.contentWidth/2
-	signupText.y = bannerHeight/2
+	-- local signupText = display.newText(group, "signup", 0, 0, storyboard.states.font.bold, 24)
+	-- signupText:setReferencePoint(display.CenterReferencePoint)
+	-- signupText.x = display.contentWidth/2
+	-- signupText.y = bannerHeight/2
 
 
 	firstNameGroup = createTextField("first", display.contentWidth/8, bannerHeight + 20, fieldParams.width/2-5, fieldParams.height)
@@ -128,21 +131,23 @@ function scene:createScene( event )
 	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
 
 	-- Navigation
-	function backButton:touch(event)
+	function backwardCallback(event)
 		if event.phase == "ended" then
+			event.target.parent:removeSelf()
 			storyboard.gotoScene("welcome",  {effect="slideRight"})
 		end
 	end
-	backButton:addEventListener("touch", backButton)
 
-	function checkMarkBackground:touch(event)
+	topBar.backwardClick(backwardCallback)
+
+	function forwardCallback(event)
 		if event.phase == "ended" then
 			print("user clicked signup check mark")
 			upapi.signup(signupInfo, callback)
 		end
 	end
 
-	checkMarkBackground:addEventListener("touch", checkMarkBackground)
+	topBar.forwardClick(forwardCallback)
 
 end
 
@@ -151,14 +156,12 @@ end
 function scene:enterScene( event )
         local group = self.view
 
-
 end
 
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
         local group = self.view
-
 end
 
 

@@ -19,6 +19,9 @@ local physics = require "physics"
 local math = require "math"
 local native = require "native"
 local animate = require "animate"
+local analysis = require "analysis"
+
+analysis.getUserHistory()
 
 
 
@@ -148,7 +151,5 @@ else
 	-- check if user is logged in
 	checkLoginToken()
 end
-
-
 
 

@@ -204,8 +204,11 @@ function  scene:createScene(event)
 	-- Static groups 
 	local prison = utils.createBallPrison()
 
-	bouncy = display.newCircle(group, event.params.ballX, event.params.ballY, 36)
+	--bouncy = display.newCircle(group, event.params.ballX, event.params.ballY, 36)
+	bouncy = display.newCircle(group, 0, 0, 36)
 	bouncy:setFillColor(189, 195, 199)
+
+	Ball:gotoRandomSpot()
 
 	function bouncy:touch(e)
 		if e.phase == "began" then

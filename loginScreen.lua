@@ -9,7 +9,9 @@
 local storyboard = require( "storyboard" )
 local math = require( "math" )
 local json = require( "json" )
-local upapi = require "upapi"
+local upapi = require( "upapi" )
+local utils = require( "utils" )
+
 
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
@@ -75,25 +77,9 @@ function scene:createScene( event )
 	local background = display.newRect( group, 0, 0, display.contentWidth, display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
+	local topBar = utils.createTopBar("login")
 
-	local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
-	banner:setFillColor(189, 195, 199)
 
-	local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
-	backButton.x = bannerHeight/2
-	backButton.y = bannerHeight/2
-	
-	local loginButton = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
-	loginButton:setFillColor(46, 204, 113)
-
-	local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
-	checkMark.x = display.contentWidth - bannerHeight/2
-	checkMark.y = bannerHeight/2
-
-	local signupText = display.newText(group, "login", 0, 0, storyboard.states.font.bold, 24)
-	signupText:setReferencePoint(display.CenterReferencePoint)
-	signupText.x = display.contentWidth/2
-	signupText.y = bannerHeight/2
 
 
 	emailGroup = createTextField("email", display.contentWidth/8, bannerHeight + 20, fieldParams.width, fieldParams.height)
@@ -133,17 +119,16 @@ function scene:createScene( event )
 	passwordGroup[1]:addEventListener("touch", fieldTouchHandler)
 
 	-- Navigation
-	function backButton:touch(event)
+	function backwardCallback(event)
 		if event.phase == "ended" then
+			event.target.parent:removeSelf()
 			storyboard.gotoScene("welcome", {effect="slideRight"})
 		end
 	end
-	backButton:addEventListener("touch", backButton)	
-
 	
 
 	-- Login button handler
-	function loginButton:touch( event )
+	function forwardCallback( event )
 		if event.phase == "ended" then
 			if (string.len(passwordGroup[1].text) > 0) and (string.len(emailGroup[1].text) > 0) then
 				-- Login callback
@@ -164,8 +149,8 @@ function scene:createScene( event )
 							timer.performWithDelay(750, function() wrongInfoPrompt:removeSelf() end)
 
 						else
+							event.target.parent:removeSelf()
 							print("Program should only come here when there is no login error.\n Login succeeded.")
-							loginButton:removeEventListener("touch", loginButton)
 							upapi.writeFile(storyboard.states.userInfoFilePath, result)
 
 							local token = response["token"]
@@ -185,7 +170,7 @@ function scene:createScene( event )
 							upapi.writeFile(storyboard.states.upAPILoginTokenPath, token)
 							storyboard.states.loginToken = token
 
-							storyboard.gotoScene("home")
+							storyboard.gotoScene("home", {effect="slideLeft"})
 							
 						end
 					else
@@ -208,7 +193,9 @@ function scene:createScene( event )
 	end
 	emailGroup[1]:addEventListener("userInput", genericFieldListener)
 	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
-	loginButton:addEventListener("touch", loginButton)
+
+	topBar.backwardClick(backwardCallback)
+	topBar.forwardClick(forwardCallback)
 
 end
 
@@ -224,7 +211,6 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	--loginBackground:removeEventListener( "touch", loginButton )
 	passwordGroup[1]:removeEventListener( "userInput", genericFieldListener )
 	emailGroup[1]:removeEventListener( "userInput", genericFieldListener)
 	passwordGroup[1]:removeEventListener( "touch", fieldTouchHandler)
