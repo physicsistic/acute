@@ -22,7 +22,7 @@ local moodSchemes = {
 	"meh",
 	"dragging",
 	"exhausted",
-	"totall done",
+	"dead",
 }
 
 
@@ -39,7 +39,7 @@ function sleepPattern(rawdata)
 	local medianSleepDuration
 
 	for k, v in pairs(sessionHistory) do
-		if v["sleepDuration"] ~= nil do
+		if v["sleepDuration"] ~= nil then
 			table.insert( temp, v["sleepDuration"] )
 			print(v["fastestReactTime"])
 			table.sort( temp )
@@ -49,12 +49,15 @@ function sleepPattern(rawdata)
 				medianSleepDuration = temp[math.ceil(#temp/2)]
 			end
 		end
+
+		if v["mood"] ~= nil then
+			
+		end
 	end
 
-	print("median sleep is" .. medianSleepDuration)
 
 	for k, v in pairs(sessionHistory) do
-		if v["sleepDuration"] ~= nil do
+		if v["sleepDuration"] ~= nil then
 			if v["sleepDuration"] < medianSleepDuration then
 				lessSleep.total = lessSleep.total + v["fastestReactTime"]
 				lessSleep.count = lessSleep.count + 1
