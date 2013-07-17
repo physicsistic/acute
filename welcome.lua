@@ -28,6 +28,38 @@ local gScale = 9.8*4
 local deltaT = 10
 local deltaX = 20
 
+-- A general function for dragging physics bodies
+local function dragBody( event )
+    local body = event.target
+    local phase = event.phase
+    local stage = display.getCurrentStage()
+
+    if "began" == phase then
+        stage:setFocus( body, event.id )
+        body.isFocus = true
+
+        -- Create a temporary touch joint and store it in the object for later reference
+        body.tempJoint = physics.newJoint( "touch", body, event.x, event.y )
+
+    elseif body.isFocus then
+        if "moved" == phase then
+        
+            -- Update the joint to track the touch
+            body.tempJoint:setTarget( event.x, event.y )
+
+        elseif "ended" == phase or "cancelled" == phase then
+            stage:setFocus( body, nil )
+            body.isFocus = false
+            
+            -- Remove the joint when the touch ends                 
+            body.tempJoint:removeSelf()
+                
+        end
+    end
+
+    -- Stop further propagation of touch event
+    return true
+end
 
 
 
@@ -41,17 +73,13 @@ local function createButton(label, x, y, width, height)
 	button.y = y
 	local buttonBackground = display.newRect(0, 0, width, height)
 	buttonBackground:setFillColor(46, 204, 113)
+	buttonBackground:setStrokeColor(236, 240, 241)
+	buttonBackground.strokeWidth = 1
 	local buttonLabel = display.newText(label, 0, 0, storyboard.states.font.bold, 20)
 	button:insert(buttonLabel, true)
 	button:insert(1, buttonBackground, true)
+	button.bg = buttonBackground
 	return button
-end
-
-local function wobble(obj)
-	
-	local goCenter = function (obj) transition.to(obj, {time=deltaT, x = x+deltaX}) end
-	local goLeft = function (obj) transition.to(obj, {time=deltaT*2, x = x - deltaX*2, onComplete = goCenter}) end
-	transition.to(obj, {time=deltaT, x = x + deltaX, onComplete = goLeft})
 end
 
 --
@@ -69,6 +97,17 @@ function scene:createScene( event )
 	local loginButton = createButton("login with UP", display.contentWidth/2, display.contentHeight*3/5, buttonWidth, buttonHeight)
 	group:insert(loginButton)
 
+	function activeStateHandler(event)
+		if event.phase == "began" then
+			event.target.alpha = 0.8
+			display.getCurrentStage():setFocus(event.target)
+		elseif event.phase == "ended" or event.phase == "cancelled" then
+			event.target.alpha = 1
+			display.getCurrentStage():setFocus(nil)	
+		end
+	end
+
+
 	function loginButton:touch(event)
 		if event.phase == "ended" then
 			Runtime:removeEventListener("enterFrame", shadowChange)
@@ -76,9 +115,9 @@ function scene:createScene( event )
 				physics.removeBody(staticGroup[i])
 			end
 			storyboard.gotoScene("loginScreen")
-			
-		end
+    	end
 	end
+	loginButton:addEventListener("touch", activeStateHandler)
 	loginButton:addEventListener("touch", loginButton)
 
 	local signupButton = createButton("register", display.contentWidth/2, loginButton.y + buttonSep + buttonHeight, buttonWidth, buttonHeight)
@@ -93,6 +132,7 @@ function scene:createScene( event )
 			storyboard.gotoScene("register")
 		end
 	end
+	signupButton:addEventListener("touch", activeStateHandler)
 	signupButton:addEventListener("touch", signupButton)
 
 	
@@ -104,18 +144,15 @@ function scene:createScene( event )
 
 	local bouncy = display.newImageRect("sphere.png", 72, 72)
 	bouncy:setReferencePoint(display.CenterReferencePoint)
-	bouncy.x = display.contentWidth/2
+	bouncy.x = display.contentWidth/2 + math.random(-100,100)
 	bouncy.y = display.contentHeight/6
 
 
 
 	group:insert(bouncy)
-	
 	group:insert(staticGroup)
 
 	
-	
-
 	-- Physics engine starts
 	physics.start()
 	physics.setGravity(0,1)
@@ -125,8 +162,18 @@ function scene:createScene( event )
 		physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
 		-- group:insert(staticGroup[i])
 	end
-	physics.addBody(loginButton, "static", {friction=0.5, bounce=1})
+	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=1, density=2})
+	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=1, density=2})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
+
+	--physics.setDrawMode("hybrid")
+
+	physics.newJoint('pivot', loginButton, ceiling, loginButton.x, loginButton.y )
+	physics.newJoint('pivot', signupButton, ceiling, signupButton.x, signupButton.y )
+
+	bouncy:addEventListener( "touch", dragBody )
+	--loginButton:addEventListener( "touch", dragBody )
+
 	bouncy.gravityScale = gScale
 	
 
