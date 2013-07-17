@@ -19,6 +19,11 @@ function physicsStateHandler(event, callback)
 	end
 end
 
+function M.fadeIn( obj, time )
+	obj.alpha = 0
+	transition.to( obj, {time=time or 500, alpha = 1})
+end
+
 function M.createButton(label, x, y, width, height)
 	local defaultButtonHeight = display.contentHeight / 10
 	local defaultButtonWidth = display.contentWidth * 3/4

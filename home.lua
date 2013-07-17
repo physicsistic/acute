@@ -70,7 +70,7 @@ function scene:createScene( event )
 			time = 700,
 			transition = easing.outExpo,
 			onComplete = function()
-				storyboard.gotoScene( "mood", {effect="fade", time=0})
+				storyboard.gotoScene( "mood" )
 			end
 		})
 		

@@ -62,6 +62,9 @@ function scene:createScene( event )
 	instructionGroup:insert(downArrow, true)
 	downArrow.y = 50
 
+	utils.fadeIn(instructionGroup)
+	utils.fadeIn(topBar)
+
 
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
 	moodText:setTextColor(189, 195, 199)
@@ -71,7 +74,13 @@ function scene:createScene( event )
 
 	function onActivation( event )
 		if event.phase == "began" then
-			instructionGroup:removeSelf()
+			transition.to(instructionGroup, {
+				alpha=0,
+				time=200,
+				onComplete = function()
+					instructionGroup:removeSelf()
+				end
+			})
 			Runtime:removeEventListener("touch", onActivation)
 		end
 	end
