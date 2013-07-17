@@ -185,7 +185,7 @@ function scene:createScene( event )
 							upapi.writeFile(storyboard.states.upAPILoginTokenPath, token)
 							storyboard.states.loginToken = token
 
-							storyboard.gotoScene("waiting")
+							storyboard.gotoScene("home")
 							
 						end
 					else
