@@ -25,7 +25,7 @@ local moodSchemes = {
 	"meh",
 	"dragging",
 	"exhausted",
-	"totall done",
+	"dead",
 }
 
 local bannerHeight = display.contentHeight/10
@@ -96,6 +96,7 @@ function scene:createScene( event )
 
 
     local bouncyMood = display.newSprite( moodSheet, {start=1, count=7, loopCount=0} )
+    bouncyMood:setFrame(2)
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2

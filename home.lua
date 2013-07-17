@@ -64,11 +64,13 @@ function scene:createScene( event )
 
 		transition.to( bouncy, {
 			x = display.contentWidth/2,
-			y = display.contentHeight/2+15,
-			time = 1000,
-			transition = easing.outQuad,
+			y = display.contentHeight/2,
+			xScale = 2,
+			yScale = 2,
+			time = 700,
+			transition = easing.outExpo,
 			onComplete = function()
-				storyboard.gotoScene( "mood", {effect="fade"})
+				storyboard.gotoScene( "mood", {effect="fade", time=0})
 			end
 		})
 		

@@ -12,16 +12,26 @@ local physics = require("physics")
 local utils = require("utils")
 local ball = require("ball")
 
+local roundSounds = {
+	audio.loadSound("round1.mp3"),
+	audio.loadSound("round2.mp3"),
+	audio.loadSound("round3.mp3"),
+	audio.loadSound("round4.mp3"),
+	audio.loadSound("round5.mp3")
+}
+
+local badRoundSound = audio.loadSound("badround.mp3")
+
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
 local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
 local gScale = 9.8/4
-
+local Ball = {}
 
 function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, xScale = 1 + deltaX, yScale = 1 + deltaY})
+	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
 end
 
 function wobble(obj)
@@ -30,6 +40,152 @@ function wobble(obj)
 	timer.performWithDelay(200, function () moveBouncy(obj, .1, -.1) end)
 	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
 end
+
+-- State Object
+
+local State = {
+	totalNumberOfRounds = 5,
+	currentRound = 1,
+	misses = 0,
+	gracePeriod = 1500, -- in MS
+	minCountDownTime = 2700,
+	maxCountDownTime = 6000, 
+	state = "waiting"
+}
+
+function State:prematureHit()
+	print( "FAIL" )
+	State.misses = State.misses + 1
+
+	audio.play( badRoundSound )
+	State:cancelCountDown('angry')
+end
+
+function State:reactionHit()
+	if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
+	local elapsed = system.getTimer()-State.startTime
+	print( "ELAPSED", elapsed, State.currentRound )
+	State.currentRound = State.currentRound+1
+	State:setState('waiting')
+
+	audio.play(roundSounds[State.currentRound])
+
+	if State.currentRound > State.totalNumberOfRounds then
+		print( "DONE" )
+		-- timer.performWithDelay(1000, function()
+		-- 	storyboard.gotoScene( "home", {effect="fade"})
+		-- end)
+	end
+
+end
+
+
+function State:startCountDown()
+	local delay = math.random(State.minCountDownTime, State.maxCountDownTime)
+	if State.countDownTimer then timer.cancel( State.countDownTimer ) end
+	State.countDownTimer = timer.performWithDelay(delay, State.startReactionTimer, 1)
+	State:setState("countdown")
+	print( "START COUNTDOWN")
+end
+
+function State:cancelCountDown(state)
+	timer.cancel( State.countDownTimer )
+	State:setState(state or 'waiting')
+	print( "CANCLE COUNT DOWN")
+end
+
+function State:startReactionTimer()
+	print( "START REACTION TIMER" )
+	State:setState('reaction')
+	State.gracePeriodTimer = timer.performWithDelay(
+		State.gracePeriod,
+		State.cancelReactionTimer,
+		1
+	)
+	State.startTime = system.getTimer()
+end
+
+function State:cancelReactionTimer()
+	print( "CANCELING REACTION TIMER ")
+	State:startCountDown()
+end
+
+
+function State:setState( state )
+	print( "SETTING STATE", state)
+	State.state = state
+	Ball:setState(state)
+end
+
+-- Ball Event Handlers
+
+function Ball:touchDown(e)
+	print("TOUCH DOWN")
+	wobble( bouncy )
+	bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
+
+	if State.state == "countdown" then
+		State:prematureHit()
+	elseif State.state == "reaction" then
+		State:reactionHit()
+	end
+end
+
+function Ball:touchMove(e)
+	if bouncy.tempJoint then bouncy.tempJoint:setTarget( e.x, e.y ) end
+end
+
+function Ball:touchUp(e)
+	if bouncy.tempJoint then bouncy.tempJoint:removeSelf() end
+	
+	-- Sloooow the ball down
+	local maxV = 1
+	vx, vy = bouncy:getLinearVelocity( )
+	vx = math.max(math.min( vx, maxV ), -maxV)
+	vy = math.max(math.min( vy, maxV ), -maxV)
+	bouncy:setLinearVelocity( vx, vy )
+
+	Ball:gotoRandomSpot()
+
+	State:startCountDown()
+end
+
+function Ball:setState( state )
+	if state == "waiting" or state == "countdown" then
+		bouncy:setFillColor(189, 195, 199)
+	elseif state == "reaction" then
+		bouncy:setFillColor(39, 174, 96)
+	elseif state == "angry" then
+		bouncy:setFillColor(174, 39, 96)
+	end
+end
+
+function Ball:gotoRandomSpot()
+	local dx = 0
+	local dy = 0
+	local x = 0
+	local y = 0
+
+
+	while math.sqrt(dx*dx+dy*dy) < 150 do
+		x = math.random(50, display.contentWidth-50)
+		y = math.random(50, display.contentHeight-50)
+		dx = x-bouncy.x
+		dy = y-bouncy.y
+		print( math.sqrt(dx*dx+dy*dy) )
+	end
+	print( x, y)
+	transition.to( bouncy, {
+		x=x,
+		y=y,
+		time=400,
+		transition=easing.outExpo
+	})
+
+	wobble(bouncy)
+end
+
+
 
 
 
@@ -48,156 +204,107 @@ function  scene:createScene(event)
 	-- Static groups 
 	local prison = utils.createBallPrison()
 
+	--bouncy = display.newCircle(group, event.params.ballX, event.params.ballY, 36)
 	bouncy = display.newCircle(group, display.contentWidth/2, display.contentHeight/2, 36)
+	bouncy.xScale = 2
+	bouncy.yScale = 2
 	bouncy:setFillColor(189, 195, 199)
 
-	function bouncy:touch(event)
-		if event.phase == "began" then
-			tapTime = system.getTimer()
-			print("Bouncy is tapped at time = " .. tapTime)
-			pauseTimer()
-			if tapTime < popCompleted then
-				print("tapped too early")
-				timer.cancel( popTimer )
-				--physics.pause()
-				wobble(bouncy)
-				-- local fx = (1-math.random()) * 100
-				-- local fy = (1-math.random()) * 100
-				bouncy:setFillColor(192, 57, 43)
-				-- bouncy:applyLinearImpulse(fx, fy, bouncy.x, bouncy.y)
-				timer.performWithDelay(1000, function()bouncy:setFillColor(189, 195, 199) end)
+	Ball:gotoRandomSpot()
 
-			else
-				print("tapped after signal turned")
-				bouncy:setFillColor(39, 174, 96)
-				wobble(bouncy)
-				local function resetBouncy()
-					if bouncy ~= nil then
-						print(bouncy)
-						bouncy:setFillColor(189, 195, 199)
-					end
-				end
-
-				if roundNum < storyboard.states.totalNumRounds then
-					timer.performWithDelay(1000, resetBouncy)
-				end
-				reactionTime = math.round(tapTime - popCompleted)/1000
-				updateTime(reactionTime)
-				roundNum = roundNum + 1
-				print("reaction time = " .. tapTime-popCompleted)
-	
-			end
-
-			if roundNum > storyboard.states.totalNumRounds then
-				print("game over")
-				local endGameEvent = { name = "endGame", target = Runtime }
-				Runtime:dispatchEvent(endGameEvent)
-			else
-				-- timer.performWithDelay(500, function () bouncy:setFillColor(230, 126, 34) end)
-				local testReactionEvent = { name = "testReaction", target = Runtime }
-				Runtime:dispatchEvent(testReactionEvent)
-
-				print("game goes on ")
-				
-			end
-				
+	function bouncy:touch(e)
+		if e.phase == "began" then
+			display.getCurrentStage():setFocus(e.target)
+			Ball:touchDown(e)
+		elseif e.phase == "moved" then
+			Ball:touchMove(e)
+		elseif e.phase == "ended" then
+			display.getCurrentStage():setFocus(nil)
+			Ball:touchUp(e)
 		end
+
 	end
-	bouncy:addEventListener( "touch", bouncy)
-	--bouncy:addEventListener( "touch", utils.dragBody )
+
+	bouncy:addEventListener( "touch", bouncy )
 
 	-- Physics engine starts
 	physics.start()
 
-	local function randomizeGravity()
-		local fy = (math.random() - 0.5)
-		local fx = (math.random() - 0.5)
+	-- Gravity points towards the center of the screen
+	local function centerGravity()
+		local dx = bouncy.x - display.contentCenterX
+		local dy = bouncy.y - display.contentCenterY
+
+		fx = -3*dx/display.contentWidth + (math.random()*.2-.1)
+		fy = -3*dy/display.contentHeight + (math.random()*.2-.1)
+
 		physics.setGravity(fx, fy)
 	end
 
-	randomizeGravity()
+	centerGravity()
 
-	physics.setGravity(0,1)
 	prison.addToPhysics()
-	physics.addBody(bouncy, {friction=0.5, bounce=0.85, radius = 36})
+	physics.addBody(bouncy, {friction=0.5, bounce=0.5, radius = 36})
+	gravityTimer = timer.performWithDelay(50, centerGravity, 0)
 	bouncy.gravityScale = gScale
 
-	gravityTimer = timer.performWithDelay(500, randomizeGravity, 0)
+	State:startCountDown()
 
 
-
-	-- Variables for keeping track of game progres
-	local tapTime = nil
-	local popTime = nil
-	local aveReactTime = nil
-	local fastestReactTime = nil
-
-
-	function updateTime(newTime)
-		if aveReactTime == nil then aveReactTime = newTime
-		else
-			preciseAveReactTime = (aveReactTime * (roundNum - 1) + newTime) / roundNum
-			aveReactTime = math.round(preciseAveReactTime * 1000) / 1000
-		end
-		if fastestReactTime == nil then fastestReactTime = newTime
-		elseif fastestReactTime > newTime then fastestReactTime = newTime
-		end
-
-		local t = os.date('*t')
-		local reactionTimingInstance = {}
-		reactionTimingInstance.timestamp = t
-		reactionTimingInstance.reactionTime = newTime
-		upapi.insertTimingToDatabase(reactionTimingInstance)
-		sessionData.timings[roundNum]=newTime
-	end
-
-	function testReaction()
-		print("Round = " .. roundNum)
-		popDelay = math.random(2500, 5000)
-		popStart = system.getTimer()
-		popTimer = timer.performWithDelay(popDelay, function ()
-			bouncy:setFillColor(230, 126, 34)
-		end)
-		print("Start = " .. popStart)
-		print("Delay = " .. popDelay)
-		popCompleted = popStart + popDelay
-		print("Completed = " .. popCompleted)
-	end
-
-	function pauseTimer()
-		timer.cancel(popTimer)
-	end
+	-- -- Variables for keeping track of game progres
+	-- local tapTime = nil
+	-- local popTime = nil
+	-- local aveReactTime = nil
+	-- local fastestReactTime = nil
 
 
+	-- function updateTime(newTime)
+	-- 	if aveReactTime == nil then aveReactTime = newTime
+	-- 	else
+	-- 		preciseAveReactTime = (aveReactTime * (roundNum - 1) + newTime) / roundNum
+	-- 		aveReactTime = math.round(preciseAveReactTime * 1000) / 1000
+	-- 	end
+	-- 	if fastestReactTime == nil then fastestReactTime = newTime
+	-- 	elseif fastestReactTime > newTime then fastestReactTime = newTime
+	-- 	end
 
-	function endGame( )
-		sessionData.endTime = os.time()
-		sessionData.fastestReactTime = fastestReactTime
-		sessionData.aveReactTime = aveReactTime
-		sessionData.userMood = storyboard.states.userMood
-		sessionData.sleepQuality = storyboard.states.sleepQuality
-		sessionData.sleepDuration = storyboard.states.sleepDuration
-		print(json.encode(sessionData.timings))
-		local behavior = {}
-		behavior.last_played = sessionData.endTime
-		behavior.duration = sessionData.endTime - sessionData.startTime
+	-- 	local t = os.date('*t')
+	-- 	local reactionTimingInstance = {}
+	-- 	reactionTimingInstance.timestamp = t
+	-- 	reactionTimingInstance.reactionTime = newTime
+	-- 	upapi.insertTimingToDatabase(reactionTimingInstance)
+	-- 	sessionData.timings[roundNum]=newTime
+	-- end
 
-		upapi.updateBehavior(behavior)
-		upapi.updateTimings(sessionData)
-		timer.performWithDelay(5,function() storyboard.gotoScene("stats") end)
-	end
+
+	-- function endGame( )
+	-- 	sessionData.endTime = os.time()
+	-- 	sessionData.fastestReactTime = fastestReactTime
+	-- 	sessionData.aveReactTime = aveReactTime
+	-- 	sessionData.userMood = storyboard.states.userMood
+	-- 	sessionData.sleepQuality = storyboard.states.sleepQuality
+	-- 	sessionData.sleepDuration = storyboard.states.sleepDuration
+	-- 	print(json.encode(sessionData.timings))
+	-- 	local behavior = {}
+	-- 	behavior.last_played = sessionData.endTime
+	-- 	behavior.duration = sessionData.endTime - sessionData.startTime
+
+	-- 	upapi.updateBehavior(behavior)
+	-- 	upapi.updateTimings(sessionData)
+	-- 	timer.performWithDelay(5,function() storyboard.gotoScene("stats") end)
+	-- end
 
 	
 
-	Runtime:addEventListener( "testReaction", testReaction)
-	Runtime:addEventListener( "endGame", endGame)
+	-- Runtime:addEventListener( "testReaction", testReaction)
+	-- Runtime:addEventListener( "endGame", endGame)
 
-	if roundNum == 1 then
-		local testReactionEvent = { name = "testReaction", target = Runtime }
-		Runtime:dispatchEvent(testReactionEvent)
-		sessionData.startTime = os.time()
-		sessionData.timings = {}
-	end
+	-- if roundNum == 1 then
+	-- 	local testReactionEvent = { name = "testReaction", target = Runtime }
+	-- 	--Runtime:dispatchEvent(testReactionEvent)
+	-- 	sessionData.startTime = os.time()
+	-- 	sessionData.timings = {}
+	-- end
 
 -- physics.setDrawMode( "hybrid" ) 
 
