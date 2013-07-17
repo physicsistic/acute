@@ -20,6 +20,8 @@ local buttonSep = display.contentHeight / 20
 
 
 display.setStatusBar( display.HiddenStatusBar )
+display.setDefault( "background", 236, 240, 241 )
+
 local shadowParams = {}
 shadowParams.short = 12
 shadowParams.long = 36
@@ -163,6 +165,14 @@ function scene:createScene( event )
 	})
 	local bouncy = display.newSprite( sheet, {start=1, count=2} )
 	bouncy:setReferencePoint(display.CenterReferencePoint)
+
+	if not event.params then
+		event.params = {
+			ballX =  display.contentHeight/6,
+			ballY =  display.contentWidth/2
+		}
+	end
+
 	bouncy.x = event.params.ballX
 	bouncy.y = event.params.ballY
 	
