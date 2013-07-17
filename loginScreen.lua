@@ -14,25 +14,6 @@ local upapi = require "upapi"
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
-
--- -- Resolution properties
--- local pixelPerInch = 163
--- local pointPerInch = 72
--- local pointPerPixel = pointPerInch / pointPerInch
-
-
--- -- Display object properties
--- local textBackgroundHeight = math.round(display.contentHeight / 12)
--- local textBackgroundWidth = display.contentWidth / 4 * 3
--- local fieldSeparationHeight = display.contentHeight / 18
-
--- local loginButtonHeight = math.round(textBackgroundHeight * 0.8)
--- local loginButtonWidth = math.round(display.contentWidth / 3)
--- local fieldFontSize = math.round(textBackgroundHeight * 0.8 * pointPerPixel)
--- local fieldInfoFontSize = math.round(fieldFontSize / 2)
--- local fieldLabelFontSize = math.round(fieldFontSize * 0.8)
--- local loginTextSize = math.round(loginButtonHeight * 0.5 * pointPerPixel)
-
 local fieldParams = {}
 fieldParams.width = display.contentWidth * 3/4
 fieldParams.height = display.contentHeight/12

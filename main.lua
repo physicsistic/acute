@@ -27,14 +27,14 @@ local animate = require "animate"
 storyboard.states = {}
 
 
-storyboard.states.upAPILoginTokenPath = system.pathForFile( "react_upapi_token", system.DocumentsDirectory )
-storyboard.states.userXIDPath = system.pathForFile( "react_user_xid", system.DocumentsDirectory )
+storyboard.states.upAPILoginTokenPath = system.pathForFile( "react_upapi_token", system.CachesDirectory )
+storyboard.states.userXIDPath = system.pathForFile( "react_user_xid", system.CachesDirectory )
 storyboard.states.loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
 
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
-storyboard.states.userInfoFilePath = system.pathForFile("react_user_info", system.DocumentsDirectory )
+storyboard.states.userInfoFilePath = system.pathForFile("react_user_info", system.CachesDirectory )
 
 -- Font states
 storyboard.states.font = {}
@@ -84,6 +84,7 @@ function checkLoginToken()
 			local meta = json.decode(event.response)["meta"]
 			print(meta)
 			if meta["code"] == 200 then
+				group:removeSelf()
 				print(event.response)
 				storyboard.gotoScene( "waiting" )
 				print("user is logged in")
