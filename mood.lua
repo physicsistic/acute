@@ -23,7 +23,7 @@ local moodSchemes = {
 	"energized",
 	"good",
 	"meh",
-	"dragging",
+	"not so good",
 	"exhausted",
 	"dead",
 }
@@ -36,7 +36,7 @@ function scene:createScene( event )
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local topBar = utils.createTopBar("feeling?")
+	local topBar = utils.createTopBar("how ya feeling?", false)
 
 	function backwardCallback(event)
 		if event.phase == "ended" then
@@ -69,22 +69,10 @@ function scene:createScene( event )
 	group:insert(moodText)
 
 
-
-
 	function onActivation( event )
 		if event.phase == "began" then
 			instructionGroup:removeSelf()
 			Runtime:removeEventListener("touch", onActivation)
-
-			function forwardCallback( event )
-				if event.phase == "ended" then
-					event.target.parent:removeSelf()
-					storyboard.gotoScene("game", {effects="fade"})
-				end
-			end
-
-			topBar.forwardClick(forwardCallback)
-
 		end
 	end
 
@@ -115,6 +103,12 @@ function scene:createScene( event )
 				moodText.x = display.contentWidth/2
 			end
 		end
+
+		if event.phase == "ended" then
+			group:removeSelf()
+			topBar:removeSelf()
+			storyboard.gotoScene("game", {effects="fade"})
+		end
 	end
 
 	Runtime:addEventListener("touch", checkTouchHeight)
@@ -127,7 +121,6 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
-
 	Runtime:removeEventListener("touch", checkTouchHeight)
 end
 
