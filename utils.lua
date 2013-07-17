@@ -86,6 +86,19 @@ function M.createBallPrison()
 	staticGroup.right = display.newLine(staticGroup, display.contentWidth, 0, display.contentWidth, 2*display.contentHeight)
 	staticGroup.ceiling = display.newLine(staticGroup, 0, 0, 2*display.contentWidth, 0)
 
+	function staticGroup.addToPhysics()
+		for i=1, staticGroup.numChildren do
+			staticGroup[i].alpha = 0
+			physics.addBody(staticGroup[i], "static", {friction=0.5, bounce=1})
+		end
+	end
+
+	function staticGroup.removeFromPhysics()
+		for i=1, staticGroup.numChildren do
+			physics.removeBody(staticGroup[i])
+		end
+	end
+
 	return staticGroup
 end
 

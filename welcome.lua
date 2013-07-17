@@ -22,10 +22,6 @@ local ball = require("ball")
 display.setStatusBar( display.HiddenStatusBar )
 display.setDefault( "background", 236, 240, 241 )
 
-local shadowParams = {}
-shadowParams.short = 12
-shadowParams.long = 36
-
 local gScale = 9.8*4
 local deltaT = 10
 local deltaX = 20
@@ -67,11 +63,6 @@ function scene:createScene( event )
 
 	function ifPressedGotoScene( event, sceneName )
 		if event.phase == "ended" and not event.target.cancelButton then
-			Runtime:removeEventListener("enterFrame", shadowChange)
-			for i=1, #prison do
-				physics.removeBody(prison[i])
-			end
-
 			storyboard.gotoScene( sceneName, {effect = "slideLeft"})
 		end
 	end
@@ -118,11 +109,8 @@ function scene:createScene( event )
 	physics.start()
 	physics.setGravity(0,1)
 	
-	for i=1, prison.numChildren do 
-		prison[i].alpha = 0
-		physics.addBody(prison[i], "static", {friction=0.5, bounce=1})
-		-- group:insert(staticGroup[i])
-	end
+	prison.addToPhysics()
+
 	physics.addBody(loginButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(signupButton, "dynamic", {friction=0.5, bounce=.9, density=1})
 	physics.addBody(bouncy, {friction=0.5, bounce=1, radius = 36})
