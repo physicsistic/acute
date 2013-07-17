@@ -56,7 +56,27 @@ function scene:createScene( event )
 	insightsButton.fadeIn()
 
 	playButton.onClick(function(e)
-		storyboard.gotoScene( "game", {effect="fade"})
+		physics.removeBody( playButton )
+		physics.removeBody( bouncy )
+
+		playButton.fadeOut()
+		insightsButton.fadeOut()
+
+		transition.to( bouncy, {
+			x = display.contentWidth/2,
+			y = display.contentHeight/2+15,
+			time = 1000,
+			transition = easing.outQuad,
+			onComplete = function()
+				storyboard.gotoScene( "game", {effect="fade"})
+			end
+		})
+		
+		
+	end)
+
+	insightsButton.onClick(function(e)
+		native.showAlert( "Bouncy Doesn't Know You", "You'll need to play with bouncy more before you get deep insights.")
 	end)
 
 -- Physics engine starts
