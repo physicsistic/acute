@@ -31,11 +31,10 @@ local userFirebaseURL = 'https://react.firebaseio.com/users/'
 function sleepPattern(rawdata)
 	print(rawdata)
 	local sessionHistory = json.decode(rawdata)
+	local lessSleep = {total = 0, count = 0, average = 0}
+	local moreSleep = {total = 0, count = 0, average = 0}
 
-	local lessSleepTotal = 0
-	local lessSleepCount = 0
-	local moreSleepTotal = 0
-	local moreSleepCount = 0
+	
 	local temp = {}
 	local medianSleepDuration
 
@@ -55,20 +54,23 @@ function sleepPattern(rawdata)
 	print("median sleep is" .. medianSleepDuration)
 
 	for k, v in pairs(sessionHistory) do
-		if v["sleepDuration"] < medianSleepDuration then
-			lessSleepTotal = lessSleepTotal + v["fastestReactTime"]
-			lessSleepCount = lessSleepCount + 1
+		if v["sleepDuration"] ~= nil do
+			if v["sleepDuration"] < medianSleepDuration then
+				lessSleep.total = lessSleep.total + v["fastestReactTime"]
+				lessSleep.count = lessSleep.count + 1
+			else
+				moreSleep.total = moreSleep.total + v["fastestReactTime"]
+				moreSleep.count = moreSleep.count + 1
+			end
+			lessSleep.average = lessSleep.total / lessSleep.count
+			moreSleep.average = moreSleep.total / moreSleep.count
 		else
-			moreSleepTotal = moreSleepTotal + v["fastestReactTime"]
-			moreSleepCount = moreSleepCount + 1
+			lessSleep.average = ""
 		end
 	end
 
-	print("less sleep count = " .. lessSleepCount)
-	print("more sleep count = " .. moreSleepCount)
-
-	print("less sleep fastest reaction time = " .. (lessSleepTotal / lessSleepCount))
-	print("more sleep fastest reaction time = " .. (moreSleepTotal / moreSleepCount))
+	print("less sleep count = " .. lessSleep.count)
+	print("more sleep count = " .. moreSleep.count)
 
 end
 
