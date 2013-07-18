@@ -162,6 +162,8 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
+	Runtime:removeEventListener("accelerometer", onAccelerate)
+
 end
 
 function scene:destroyScene( event )
