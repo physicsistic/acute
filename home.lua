@@ -126,7 +126,7 @@ function scene:createScene( event )
 		if failed then
 			print("Network failure. Please try again.")
 		else
-			print("printing user call back result: " .. result)
+			-- print("printing user call back result: " .. result)
 			local userTrend = json.decode(result)
 
 			local recentData = ((userTrend.data).data)[8]

@@ -11,6 +11,7 @@ local math = require( "math")
 local physics = require("physics")
 local utils = require("utils")
 local ball = require("ball")
+local analysis = require("analysis")
 
 local roundSounds = {
 	audio.loadSound("round1.mp3"),
@@ -332,6 +333,9 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
+
+	analysis.getUserHistory(storyboard.states.userXID )
+
 end
 
 function scene:exitScene( event )
