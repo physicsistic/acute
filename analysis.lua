@@ -32,6 +32,8 @@ local userFirebaseURL = 'https://react.firebaseio.com/users/'
 storyboard.states.screen1 = {}
 storyboard.states.screen2 = {}
 storyboard.states.screen3 = {}
+storyboard.states.screen3.moods = {}
+storyboard.states.screen3.timings ={}
 
 function sleepPattern(rawdata)
 	local sessionHistory = json.decode(rawdata)
@@ -41,6 +43,7 @@ function sleepPattern(rawdata)
 	
 	local temp = {}
 	local medianSleepDuration
+
 
 	for k, v in pairs(sessionHistory) do
 		if v["sleepDuration"] ~= nil then
@@ -56,8 +59,10 @@ function sleepPattern(rawdata)
 
 		if v["userMood"] ~= nil then
 			print(v["userMood"])
-			local coordStr = string.format("(%d,%.3f)", moodSchemes[v["userMood"]], v["fastestReactTime"])
-			table.insert(storyboard.states.screen3, coordStr)
+			if v["aveReactTime"] < 1.5 then
+				table.insert(storyboard.states.screen3.moods, moodSchemes[v["userMood"]])
+				table.insert(storyboard.states.screen3.timings, v["aveReactTime"])
+			end
 		end
 	end
 
@@ -77,7 +82,6 @@ function sleepPattern(rawdata)
 			storyboard.states.screen1.moreSleep = moreSleep.average
 			storyboard.states.screen1.lessSleep = lessSleep.average
 		else
-			storboard.states.screen1 = nil
 		end
 	end
 
@@ -100,7 +104,9 @@ end
 
 function getUserHistory(xid)
 	-- sample data from Zach for testing
-	zach_xid = "RGaCBFg9CsBWTbPeM_ZTiw"
-	ye_xid = "RGaCBFg9CsBNhnVrZnP0Fg"
-	network.request(userFirebaseURL .. zach_xid .. "/sessions.json", "GET", networkErrorHandler)
+	if xid == nil then
+		xid = "RGaCBFg9CsBWTbPeM_ZTiw"
+	end
+	print("user xid is " .. xid)
+	network.request(userFirebaseURL .. xid .. "/sessions.json", "GET", networkErrorHandler)
 end
