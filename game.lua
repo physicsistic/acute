@@ -57,7 +57,8 @@ function  scene:createScene(event)
 		gracePeriod = 1500, -- in MS
 		minCountDownTime = 2700,
 		maxCountDownTime = 6000, 
-		state = "waiting"
+		state = "waiting",
+		gameOver = false
 	}
 
 	function State:prematureHit()
@@ -72,19 +73,13 @@ function  scene:createScene(event)
 		local elapsed = system.getTimer()-State.startTime
 		print( "ELAPSED", elapsed, State.currentRound )
 		updateTime( elapsed )
+		audio.play(roundSounds[State.currentRound])
 		State.currentRound = State.currentRound+1
 		State:setState('waiting')
 
-
-		audio.play(roundSounds[State.currentRound])
-
-		if State.currentRound >= State.totalNumberOfRounds then
+		if State.currentRound > State.totalNumberOfRounds then
 			print( "DONE" )
-			endGame()
-
-			-- timer.performWithDelay(1000, function()
-			-- 	storyboard.gotoScene( "home", {effect="fade"})
-			-- end)
+			State.gameOver = true
 		end
 
 	end
@@ -148,6 +143,11 @@ function  scene:createScene(event)
 	function Ball:touchUp(e)
 		if bouncy.tempJoint then bouncy.tempJoint:removeSelf() end
 		
+		if State.gameOver then
+			endGame()
+			return
+		end
+
 		-- Sloooow the ball down
 		local maxV = 1
 		vx, vy = bouncy:getLinearVelocity( )
@@ -262,7 +262,7 @@ function  scene:createScene(event)
 	centerGravity()
 
 	prison.addToPhysics()
-	physics.addBody(bouncy, {friction=0.5, bounce=0.5, radius = 36})
+	physics.addBody(bouncy, {friction=0.5, bounce=0.5, radius = 36*1.5})
 	gravityTimer = timer.performWithDelay(50, centerGravity, 0)
 	bouncy.gravityScale = gScale
 
@@ -304,7 +304,22 @@ function  scene:createScene(event)
 
 		upapi.updateBehavior(behavior)
 		upapi.updateTimings(sessionData)
-		--timer.performWithDelay(5,function() storyboard.gotoScene("stats") end)
+		
+		
+
+		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
+		if State.countDownTimer then timer.cancel( State.countDownTimer ) end
+		if gravityTimer then timer.cancel( gravityTimer ) end
+
+		bouncy:removeEventListener( "touch", bouncy )
+
+		timer.performWithDelay(
+			1000,
+			function()
+				storyboard.gotoScene("stats")
+				--group:removeSelf()
+			end
+		)
 	end
 
 
@@ -319,11 +334,6 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
-	Runtime:removeEventListener("testReaction", testReaction)
-	print("Removed event listener for test reaction")
-	Runtime:removeEventListener("touch", randomTap)
-	print("Remove event listener for randomTap")
-	timer.cancel(gravityTimer)
 	-- Update user performance if relevant
 
 	
