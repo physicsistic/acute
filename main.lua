@@ -119,7 +119,7 @@ function magicTransition( toScreen )
 		x=params.ballX,
 		y=params.ballY,
 		time= 1300,
-		transition = easing.outQuad,
+		transition = easing.outExpo,
 		onComplete = function()
 			group:removeSelf()
 			storyboard.gotoScene( toScreen, {params=params} )

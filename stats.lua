@@ -99,7 +99,7 @@ function scene:createScene( event )
 	group:insert(webView)
 
 	-- button to replay
-	local replayButton = createButton("play again", display.contentWidth/2, display.contentHeight * 10/11, display.contentWidth/2, display.contentHeight/11)
+	local replayButton = createButton("home", display.contentWidth/2, display.contentHeight * 10/11, display.contentWidth/2, display.contentHeight/11)
 	group:insert(replayButton)
 	function replayButton:touch(event)
 		if event.phase == "began" then
