@@ -292,6 +292,43 @@ function  scene:createScene(event)
 	end
 
 
+	function explodeBall()
+		balls = {}
+
+		local r = 10
+		local force = 10
+
+		function c() return math.random(-20,20) end
+
+		for i=1,100 do
+			local b = display.newCircle(group, 0, 0, r)
+			b:setFillColor(189+c(), 195+c(), 199+c())
+			local angle = math.random(0, 360)
+			local d = math.random(0,36*1.5)
+			b.x = bouncy.x + math.sin(angle)*d
+			b.y = bouncy.y + math.cos(angle)*d
+			balls[i] = b
+			group:insert(b)
+			physics.addBody(b, {friction=0.5, bounce=0.5, radius = r})
+			
+			timer.performWithDelay(math.random(0,150), function()
+				b:applyForce(
+					math.random(-force,force),
+					math.random(-force,force),
+					b.x, b.y)
+			end)
+			
+		end
+
+		if gravityTimer then timer.cancel( gravityTimer ) end
+		physics.setGravity(0, 30)
+
+		bouncy.alpha = 0
+		bouncy.y = 1000
+		physics.removeBody( prison.ground )
+
+	end
+
 	function endGame( )
 		sessionData.endTime = os.time()
 		sessionData.fastestReactTime = fastestReactTime
@@ -314,11 +351,12 @@ function  scene:createScene(event)
 		if gravityTimer then timer.cancel( gravityTimer ) end
 
 		bouncy:removeEventListener( "touch", bouncy )
+		explodeBall()
 
 		timer.performWithDelay(
-			1000,
+			1500,
 			function()
-				storyboard.gotoScene("stats")
+				storyboard.gotoScene("stats", {effect="slideDown"})
 				--group:removeSelf()
 			end
 		)
