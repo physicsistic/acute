@@ -58,11 +58,11 @@ function  scene:createScene(event)
 		gracePeriod = 1500, -- in MS
 		minCountDownTime = 2700,
 		maxCountDownTime = 6000, 
-		state = "waiting"
+		state = "waiting",
+		gameOver = false
 	}
 
 	function State:prematureHit()
-		print( "FAIL" )
 		State.misses = State.misses + 1
 
 		audio.play( badRoundSound )
@@ -73,16 +73,14 @@ function  scene:createScene(event)
 		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
 		local elapsed = system.getTimer()-State.startTime
 		print( "ELAPSED", elapsed, State.currentRound )
+		updateTime( elapsed )
+		audio.play(roundSounds[State.currentRound])
 		State.currentRound = State.currentRound+1
 		State:setState('waiting')
 
-		audio.play(roundSounds[State.currentRound])
-
 		if State.currentRound > State.totalNumberOfRounds then
 			print( "DONE" )
-			-- timer.performWithDelay(1000, function()
-			-- 	storyboard.gotoScene( "home", {effect="fade"})
-			-- end)
+			State.gameOver = true
 		end
 
 	end
@@ -93,17 +91,17 @@ function  scene:createScene(event)
 		if State.countDownTimer then timer.cancel( State.countDownTimer ) end
 		State.countDownTimer = timer.performWithDelay(delay, State.startReactionTimer, 1)
 		State:setState("countdown")
-		print( "START COUNTDOWN")
+		-- print( "START COUNTDOWN")
 	end
 
 	function State:cancelCountDown(state)
 		timer.cancel( State.countDownTimer )
 		State:setState(state or 'waiting')
-		print( "CANCLE COUNT DOWN")
+		-- print( "CANCLE COUNT DOWN")
 	end
 
 	function State:startReactionTimer()
-		print( "START REACTION TIMER" )
+		-- print( "START REACTION TIMER" )
 		State:setState('reaction')
 		State.gracePeriodTimer = timer.performWithDelay(
 			State.gracePeriod,
@@ -114,13 +112,13 @@ function  scene:createScene(event)
 	end
 
 	function State:cancelReactionTimer()
-		print( "CANCELING REACTION TIMER ")
+		-- print( "CANCELING REACTION TIMER ")
 		State:startCountDown()
 	end
 
 
 	function State:setState( state )
-		print( "SETTING STATE", state)
+		-- print( "SETTING STATE", state)
 		State.state = state
 		Ball:setState(state)
 	end
@@ -128,7 +126,7 @@ function  scene:createScene(event)
 	-- Ball Event Handlers
 
 	function Ball:touchDown(e)
-		print("TOUCH DOWN")
+		-- print("TOUCH DOWN")
 		wobble( bouncy )
 		bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
 
@@ -146,6 +144,11 @@ function  scene:createScene(event)
 	function Ball:touchUp(e)
 		if bouncy.tempJoint then bouncy.tempJoint:removeSelf() end
 		
+		if State.gameOver then
+			endGame()
+			return
+		end
+
 		-- Sloooow the ball down
 		local maxV = 1
 		vx, vy = bouncy:getLinearVelocity( )
@@ -180,9 +183,7 @@ function  scene:createScene(event)
 			y = math.random(50, display.contentHeight-50)
 			dx = x-bouncy.x
 			dy = y-bouncy.y
-			print( math.sqrt(dx*dx+dy*dy) )
 		end
-		print( x, y)
 		transition.to( bouncy, {
 			x=x,
 			y=y,
@@ -196,8 +197,6 @@ function  scene:createScene(event)
 
 	-- Holder object for the popping circle
 
-	local popTimer = nil
-	local roundNum = 1
 	sessionData = {}
 	
 	-- Static groups 
@@ -238,7 +237,11 @@ function  scene:createScene(event)
 	-- TODO: 'green' should be in green
 
 	utils.fadeIn(instructionText)
+	-- START EVERYTHIGN
 	timer.performWithDelay(3000, function()
+		State:startCountDown()
+		sessionData.startTime = os.time()
+		sessionData.timings = {}		
 		utils.fadeOut(instructionText, 1000)
 	end)
 
@@ -260,67 +263,66 @@ function  scene:createScene(event)
 	centerGravity()
 
 	prison.addToPhysics()
-	physics.addBody(bouncy, {friction=0.5, bounce=0.5, radius = 36})
+	physics.addBody(bouncy, {friction=0.5, bounce=0.5, radius = 36*1.5})
 	gravityTimer = timer.performWithDelay(50, centerGravity, 0)
 	bouncy.gravityScale = gScale
 
-	State:startCountDown()
+
+	-- Variables for keeping track of game progres
+	local aveReactTime = nil
+	local fastestReactTime = nil
+
+	function updateTime(newTime)
+		if aveReactTime == nil then aveReactTime = newTime
+		else
+			preciseAveReactTime = (aveReactTime * (State.currentRound - 1) + newTime) / State.currentRound
+			aveReactTime = math.round(preciseAveReactTime * 1000) / 1000
+		end
+		if fastestReactTime == nil then fastestReactTime = newTime
+		elseif fastestReactTime > newTime then fastestReactTime = newTime
+		end
+
+		local t = os.date('*t')
+		local reactionTimingInstance = {}
+		reactionTimingInstance.timestamp = t
+		reactionTimingInstance.reactionTime = newTime
+		upapi.insertTimingToDatabase(reactionTimingInstance)
+		sessionData.timings[State.currentRound]=newTime
+	end
 
 
-	-- -- Variables for keeping track of game progres
-	-- local tapTime = nil
-	-- local popTime = nil
-	-- local aveReactTime = nil
-	-- local fastestReactTime = nil
+	function endGame( )
+		sessionData.endTime = os.time()
+		sessionData.fastestReactTime = fastestReactTime
+		sessionData.aveReactTime = aveReactTime
+		sessionData.userMood = storyboard.states.userMood
+		sessionData.sleepQuality = storyboard.states.sleepQuality
+		sessionData.sleepDuration = storyboard.states.sleepDuration
+		print("Encoded Timings", json.encode(sessionData.timings))
+		local behavior = {}
+		behavior.last_played = sessionData.endTime
+		behavior.duration = sessionData.endTime - sessionData.startTime
 
+		upapi.updateBehavior(behavior)
+		upapi.updateTimings(sessionData)
+		
+		
 
-	-- function updateTime(newTime)
-	-- 	if aveReactTime == nil then aveReactTime = newTime
-	-- 	else
-	-- 		preciseAveReactTime = (aveReactTime * (roundNum - 1) + newTime) / roundNum
-	-- 		aveReactTime = math.round(preciseAveReactTime * 1000) / 1000
-	-- 	end
-	-- 	if fastestReactTime == nil then fastestReactTime = newTime
-	-- 	elseif fastestReactTime > newTime then fastestReactTime = newTime
-	-- 	end
+		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
+		if State.countDownTimer then timer.cancel( State.countDownTimer ) end
+		if gravityTimer then timer.cancel( gravityTimer ) end
 
-	-- 	local t = os.date('*t')
-	-- 	local reactionTimingInstance = {}
-	-- 	reactionTimingInstance.timestamp = t
-	-- 	reactionTimingInstance.reactionTime = newTime
-	-- 	upapi.insertTimingToDatabase(reactionTimingInstance)
-	-- 	sessionData.timings[roundNum]=newTime
-	-- end
+		bouncy:removeEventListener( "touch", bouncy )
 
+		timer.performWithDelay(
+			1000,
+			function()
+				storyboard.gotoScene("stats")
+				--group:removeSelf()
+			end
+		)
+	end
 
-	-- function endGame( )
-	-- 	sessionData.endTime = os.time()
-	-- 	sessionData.fastestReactTime = fastestReactTime
-	-- 	sessionData.aveReactTime = aveReactTime
-	-- 	sessionData.userMood = storyboard.states.userMood
-	-- 	sessionData.sleepQuality = storyboard.states.sleepQuality
-	-- 	sessionData.sleepDuration = storyboard.states.sleepDuration
-	-- 	print(json.encode(sessionData.timings))
-	-- 	local behavior = {}
-	-- 	behavior.last_played = sessionData.endTime
-	-- 	behavior.duration = sessionData.endTime - sessionData.startTime
-
-	-- 	upapi.updateBehavior(behavior)
-	-- 	upapi.updateTimings(sessionData)
-	-- 	timer.performWithDelay(5,function() storyboard.gotoScene("stats") end)
-	-- end
-
-	
-
-	-- Runtime:addEventListener( "testReaction", testReaction)
-	-- Runtime:addEventListener( "endGame", endGame)
-
-	-- if roundNum == 1 then
-	-- 	local testReactionEvent = { name = "testReaction", target = Runtime }
-	-- 	--Runtime:dispatchEvent(testReactionEvent)
-	-- 	sessionData.startTime = os.time()
-	-- 	sessionData.timings = {}
-	-- end
 
 -- physics.setDrawMode( "hybrid" ) 
 
@@ -336,11 +338,6 @@ end
 
 function scene:exitScene( event )
 	local group = self.view
-	Runtime:removeEventListener("testReaction", testReaction)
-	print("Removed event listener for test reaction")
-	Runtime:removeEventListener("touch", randomTap)
-	print("Remove event listener for randomTap")
-	timer.cancel(gravityTimer)
 	-- Update user performance if relevant
 
 	

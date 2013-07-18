@@ -116,10 +116,8 @@ function scene:createScene( event )
 	function checkTouchHeight(event)
 		if event.phase == "moved" or event.phase == "began" then
 			local offset = display.contentHeight/12
-			print(topBar.height)
 			local index = math.floor((event.y - topBar.height)/ ((display.contentHeight-topBar.height)/7)) + 1
 			if index > 0 and index < 8 then
-				print(index)
 				if index ~= bouncyMood.curFrame and system.getTimer()-bouncyMood.lastAnimation > 300 then
 					wobble(bouncyMood, (8-index)/3)
 					bouncyMood.curFrame = index
