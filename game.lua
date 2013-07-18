@@ -331,8 +331,8 @@ function  scene:createScene(event)
 
 	function endGame( )
 		sessionData.endTime = os.time()
-		sessionData.fastestReactTime = fastestReactTime
-		sessionData.aveReactTime = aveReactTime
+		sessionData.fastestReactTime = fastestReactTime/1000
+		sessionData.aveReactTime = aveReactTime/1000
 		sessionData.userMood = storyboard.states.userMood
 		sessionData.sleepQuality = storyboard.states.sleepQuality
 		sessionData.sleepDuration = storyboard.states.sleepDuration
