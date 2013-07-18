@@ -66,7 +66,6 @@ function  scene:createScene(event)
 		State.misses = State.misses + 1
 
 		audio.play( badRoundSound )
-		system.vibrate()
 		State:cancelCountDown('angry')
 	end
 
