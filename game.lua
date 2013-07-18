@@ -66,6 +66,7 @@ function  scene:createScene(event)
 		State.misses = State.misses + 1
 
 		audio.play( badRoundSound )
+		system.vibrate()
 		State:cancelCountDown('angry')
 	end
 
@@ -77,6 +78,7 @@ function  scene:createScene(event)
 		audio.play(roundSounds[State.currentRound])
 		State.currentRound = State.currentRound+1
 		State:setState('waiting')
+		system.vibrate()
 
 		if State.currentRound > State.totalNumberOfRounds then
 			print( "DONE" )
