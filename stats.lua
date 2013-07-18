@@ -95,7 +95,8 @@ function scene:createScene( event )
 
 	-- webview scorecards
 	local webView = native.newWebView(0, bestCard.y + cardHeight * 2/3, display.contentWidth, display.contentHeight/2)
-	webView:request("index.html", system.ResourceDirectory)
+	webView:request("stats.html", system.ResourceDirectory)
+	webView.hasBackground = false
 	group:insert(webView)
 
 	-- button to replay
