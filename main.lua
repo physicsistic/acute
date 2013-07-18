@@ -22,7 +22,6 @@ local animate = require "animate"
 -- local analysis = require "analysis"
 
 
-
 -- persistent states that go between screens 
 
 storyboard.states = {}
@@ -81,9 +80,7 @@ function checkLoginToken()
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
 		else
-			print(event.response)
 			local meta = json.decode(event.response)["meta"]
-			print(meta)
 			if meta["code"] == 200 then
 				print("user is logged in")
 				gotoHomeScreen()
