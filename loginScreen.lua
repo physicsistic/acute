@@ -11,6 +11,7 @@ local math = require( "math" )
 local json = require( "json" )
 local upapi = require( "upapi" )
 local utils = require( "utils" )
+local widget = require( "widget" )
 
 
 local scene = storyboard.newScene()
@@ -104,13 +105,23 @@ function scene:createScene( event )
 	function forwardCallback( event )
 		if event.phase == "ended" then
 			if (string.len(passwordGroup[3].text) > 0) and (string.len(emailGroup[3].text) > 0) then
+				local spinnerSize = 30
+				loadingWidget = widget.newSpinner({
+					width = spinnerSize,
+					height = spinnerSize,
+					left = display.contentWidth/2 - spinnerSize/2,
+					top = display.contentHeight/2 - spinnerSize/2,
+					time = 2000,
+					incrementEvery = 100,
+					})
+				loadingWidget:start()
 				-- Login callback
 				local function loginCallback(loginError, result)
+					
 					print("Are there any login errors?")
 					print(loginError)
 					if not loginError then
 						response = json.decode(result)
-
 						if response["error"] then
 							print("Login failed. Please try again.")
 							local wrongInfoPrompt = display.newText("darn. check what you typed!", 0, 0, storyboard.states.font.regular, 16)
@@ -118,7 +129,8 @@ function scene:createScene( event )
 							wrongInfoPrompt.x = display.contentWidth / 2
 							wrongInfoPrompt.y = passwordGroup[3].y + fieldParams.height
 							wrongInfoPrompt:setTextColor(39, 174, 96)
-
+							loadingWidget:stop()
+							loadingWidget:removeSelf()
 							timer.performWithDelay(750, function() wrongInfoPrompt:removeSelf() end)
 
 						else
@@ -142,7 +154,8 @@ function scene:createScene( event )
 							print("user xid = " .. xid)
 							upapi.writeFile(storyboard.states.upAPILoginTokenPath, token)
 							storyboard.states.loginToken = token
-
+							loadingWidget:stop()
+							loadingWidget:removeSelf()
 							storyboard.gotoScene("home", {effect="slideLeft"})
 							
 						end
