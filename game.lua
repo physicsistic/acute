@@ -30,16 +30,16 @@ local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
 local gScale = 9.8/4
 
-function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
-end
+-- function moveBouncy(obj, deltaX, deltaY)
+-- 	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
+-- end
 
-function wobble(obj)
-	moveBouncy(obj, .3, -.3)
-	timer.performWithDelay(100, function () moveBouncy(obj, -.2, .2) end)
-	timer.performWithDelay(200, function () moveBouncy(obj, .1, -.1) end)
-	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
-end
+-- function wobble(obj)
+-- 	moveBouncy(obj, .3, -.3)
+-- 	timer.performWithDelay(100, function () moveBouncy(obj, -.2, .2) end)
+-- 	timer.performWithDelay(200, function () moveBouncy(obj, .1, -.1) end)
+-- 	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
+-- end
 
 function  scene:createScene(event)
 	local group = self.view
@@ -128,7 +128,7 @@ function  scene:createScene(event)
 
 	function Ball:touchDown(e)
 		-- print("TOUCH DOWN")
-		wobble( bouncy )
+		utils.wobble(bouncy, 1)
 		bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
 
 		if State.state == "countdown" then
@@ -192,7 +192,7 @@ function  scene:createScene(event)
 			transition=easing.outExpo
 		})
 
-		wobble(bouncy)
+		utils.wobble(bouncy, 1)
 	end
 
 
@@ -204,7 +204,7 @@ function  scene:createScene(event)
 	local prison = utils.createBallPrison()
 
 	--bouncy = display.newCircle(group, event.params.ballX, event.params.ballY, 36)
-	bouncy = display.newCircle(group, display.contentWidth/2, display.contentHeight/2, 36)
+	bouncy = display.newCircle(group, display.contentWidth/2, display.contentHeight/2, 48)
 	bouncy.xScale = 2
 	bouncy.yScale = 2
 	bouncy:setFillColor(189, 195, 199)

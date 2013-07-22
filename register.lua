@@ -110,10 +110,6 @@ function scene:createScene( event )
 
 	topBar.forwardClick(forwardCallback)
 
-	group:insert(firstNameGroup)
-	group:insert(lastNameGroup)
-	group:insert(emailGroup)
-	group:insert(passwordGroup)
 end
 
 
@@ -133,6 +129,12 @@ function scene:exitScene( event )
 	passwordGroup:removeEventListener("userInput", genericFieldListener)
 	
 	native.setKeyboardFocus(nil)
+
+	firstNameGroup:removeSelf()
+	lastNameGroup:removeSelf()
+	emailGroup:removeSelf()
+	passwordGroup:removeSelf()
+
 end
 
 

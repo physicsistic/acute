@@ -19,7 +19,10 @@ local physics = require "physics"
 local math = require "math"
 local native = require "native"
 local animate = require "animate"
--- local analysis = require "analysis"
+
+
+print(system.getInfo("model"))
+print(display.pixelHeight)
 
 
 -- persistent states that go between screens 
@@ -27,14 +30,14 @@ local animate = require "animate"
 storyboard.states = {}
 
 
-storyboard.states.upAPILoginTokenPath = system.pathForFile( "react_upapi_token", system.CachesDirectory )
-storyboard.states.userXIDPath = system.pathForFile( "react_user_xid", system.CachesDirectory )
+storyboard.states.upAPILoginTokenPath = system.pathForFile( "react_upapi_token.txt", system.DocumentsDirectory )
+storyboard.states.userXIDPath = system.pathForFile( "react_user_xid.txt", system.DocumentsDirectory )
 storyboard.states.loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
 
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
-storyboard.states.userInfoFilePath = system.pathForFile("react_user_info", system.CachesDirectory )
+storyboard.states.userInfoFilePath = system.pathForFile("react_user_info.txt", system.DocumentsDirectory )
 
 -- Font states
 storyboard.states.font = {}

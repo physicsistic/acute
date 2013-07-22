@@ -30,17 +30,6 @@ local moodSchemes = {
 
 local bannerHeight = display.contentHeight/10
 
-function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, xScale = 1 + deltaX, yScale = 1 + deltaY})
-end
-
-function wobble(obj, scale)
-	moveBouncy(obj, .3*scale, -.3*scale)
-	timer.performWithDelay(100, function () moveBouncy(obj, -.2*scale, .2*scale) end)
-	timer.performWithDelay(200, function () moveBouncy(obj, .1*scale, -.1*scale) end)
-	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
-end
-
 function scene:createScene( event )
 	local group = self.view
 	
@@ -119,7 +108,7 @@ function scene:createScene( event )
 			local index = math.floor((event.y - bannerHeight)/ ((display.contentHeight - bannerHeight)/7)) + 1
 			if index > 0 and index < 8 then
 				if index ~= bouncyMood.curFrame and system.getTimer()-bouncyMood.lastAnimation > 300 then
-					wobble(bouncyMood, (8-index)/3)
+					utils.wobble(bouncyMood, (8-index)/3)
 					bouncyMood.curFrame = index
 					bouncyMood.lastAnimation = system.getTimer()
 				end

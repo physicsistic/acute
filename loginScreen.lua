@@ -69,11 +69,8 @@ function scene:createScene( event )
 	local topBar = utils.createTopBar("login")
 
 
-
-
 	emailGroup = createTextField("email", display.contentWidth/8, bannerHeight + 20, fieldParams.width, fieldParams.height)
 	passwordGroup = createTextField("password", display.contentWidth/8, emailGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
-	-- passwordGroup[3].isSecure = true
 
 
 	function genericFieldListener(event)
@@ -170,8 +167,7 @@ function scene:createScene( event )
 
 	topBar.backwardClick(backwardCallback)
 	topBar.forwardClick(forwardCallback)
-	group:insert(emailGroup)
-	group:insert(passwordGroup)
+
 
 
 end
