@@ -28,12 +28,10 @@ function createTextField(name, x, y, width, height) -- where x and y are both to
 	field.font = native.newFont(storyboard.states.font.regular, 24)
 	field.hasBackground = false
 	field:setTextColor(189, 195, 199)
-	fieldGroup:insert(field)
 	field.align = "center"
+	if name == "password" then field.isSecure = true end
 
 	local fieldBackground = display.newRect(x, y, width, height)
-	-- fieldBackground:setFillColor(189, 195, 199)
-	
 
 	local fieldLabel = display.newText(name, 0, 0, storyboard.states.font.regular, 16)
 	fieldLabel:setReferencePoint(display.CenterReferencePoint)
@@ -42,6 +40,7 @@ function createTextField(name, x, y, width, height) -- where x and y are both to
 	fieldLabel:setTextColor(189, 195, 199)
 	fieldGroup:insert(fieldBackground)
 	fieldGroup:insert(fieldLabel)
+	fieldGroup:insert(field)
 
 	return fieldGroup
 end
@@ -54,17 +53,7 @@ end
 --	unless storyboard.removeScene() is called.
 -- 
 ---------------------------------------------------------------------------------
-local function createButton(label, x, y, width, height)
-	local button = display.newGroup()
-	button.x = x
-	button.y = y
-	local buttonBackground = display.newRect(0, 0, width, height)
-	buttonBackground:setFillColor(46, 204, 113)
-	local buttonLabel = display.newText(label, 0, 0, storyboard.states.font.bold, 20)
-	button:insert(buttonLabel, true)
-	button:insert(1, buttonBackground, true)
-	return button
-end
+
 ---------------------------------------------------------------------------------
 -- BEGINNING OF IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -84,39 +73,26 @@ function scene:createScene( event )
 
 	emailGroup = createTextField("email", display.contentWidth/8, bannerHeight + 20, fieldParams.width, fieldParams.height)
 	passwordGroup = createTextField("password", display.contentWidth/8, emailGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
-	passwordGroup[1].isSecure = true
+	-- passwordGroup[3].isSecure = true
 
-	group:insert(emailGroup)
-	group:insert(passwordGroup)
 
 	function genericFieldListener(event)
 		local field = event.target
 		local phase = event.phase
 
 		if phase == "began" then
-			field.parent[3].alpha = 0
+			field.parent[2].alpha = 0
 		elseif phase == "submitted" then
 			print( field.text )
 		elseif phase == "ended" then
 			if string.len(field.text) == 0 then
-				field.parent[3].alpha = 1
+				field.parent[2].alpha = 1
 			end
 		end
 	end
 
-	function fieldTouchHandler(event)
-		local phase = event.phase
-		local field = event.target
-		if phase == "began" then
-			native.setKeyboardFocus(field)
-		end
-	end
-
-	emailGroup[1]:addEventListener("userInput", genericFieldListener)
-	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
-
-	emailGroup[1]:addEventListener("touch", fieldTouchHandler)
-	passwordGroup[1]:addEventListener("touch", fieldTouchHandler)
+	emailGroup[3]:addEventListener("userInput", genericFieldListener)
+	passwordGroup[3]:addEventListener("userInput", genericFieldListener)
 
 	-- Navigation
 	function backwardCallback(event)
@@ -130,7 +106,7 @@ function scene:createScene( event )
 	-- Login button handler
 	function forwardCallback( event )
 		if event.phase == "ended" then
-			if (string.len(passwordGroup[1].text) > 0) and (string.len(emailGroup[1].text) > 0) then
+			if (string.len(passwordGroup[3].text) > 0) and (string.len(emailGroup[3].text) > 0) then
 				-- Login callback
 				local function loginCallback(loginError, result)
 					print("Are there any login errors?")
@@ -143,7 +119,7 @@ function scene:createScene( event )
 							local wrongInfoPrompt = display.newText("darn. check what you typed!", 0, 0, storyboard.states.font.regular, 16)
 							wrongInfoPrompt:setReferencePoint(display.TopCenterReferencePoint)
 							wrongInfoPrompt.x = display.contentWidth / 2
-							wrongInfoPrompt.y = passwordGroup[1].y + fieldParams.height
+							wrongInfoPrompt.y = passwordGroup[3].y + fieldParams.height
 							wrongInfoPrompt:setTextColor(39, 174, 96)
 
 							timer.performWithDelay(750, function() wrongInfoPrompt:removeSelf() end)
@@ -177,25 +153,26 @@ function scene:createScene( event )
 						print( "Error in getting response.")
 					end
 				end
-				upapi.login(emailGroup[1].text, passwordGroup[1].text, loginCallback)
+				upapi.login(emailGroup[3].text, passwordGroup[3].text, loginCallback)
 			else
 				print("Missing login information called")
 				local missingInfoPrompt = display.newText("oops. you forgot something!", 0, 0, storyboard.states.font.regular, 16)
 				missingInfoPrompt:setReferencePoint(display.TopCenterReferencePoint)
 				missingInfoPrompt.x = display.contentWidth / 2
-				missingInfoPrompt.y = passwordGroup[1].y + fieldParams.height
+				missingInfoPrompt.y = passwordGroup[3].y + fieldParams.height
 				missingInfoPrompt:setTextColor(39, 174, 96)
 				timer.performWithDelay(750, function() missingInfoPrompt:removeSelf() end)
 			end
-			passwordGroup[1].text = nil
-			emailGroup[1].text = nil
+			passwordGroup[3].text = nil
+			emailGroup[3].text = nil
 		end
 	end
-	emailGroup[1]:addEventListener("userInput", genericFieldListener)
-	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
 
 	topBar.backwardClick(backwardCallback)
 	topBar.forwardClick(forwardCallback)
+	group:insert(emailGroup)
+	group:insert(passwordGroup)
+
 
 end
 
@@ -211,16 +188,14 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	passwordGroup[1]:removeEventListener( "userInput", genericFieldListener )
-	emailGroup[1]:removeEventListener( "userInput", genericFieldListener)
-	passwordGroup[1]:removeEventListener( "touch", fieldTouchHandler)
-	emailGroup[1]:removeEventListener( "touch", fieldTouchHandler)
+	passwordGroup[3]:removeEventListener( "userInput", genericFieldListener )
+	emailGroup[3]:removeEventListener( "userInput", genericFieldListener)
 
 	native.setKeyboardFocus(nil)
 
 	-- Manually remove all field objects
-	passwordGroup[1]:removeSelf()
-	emailGroup[1]:removeSelf()
+	passwordGroup:removeSelf()
+	emailGroup:removeSelf()
 end
 
 

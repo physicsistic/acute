@@ -30,12 +30,10 @@ function createTextField(name, x, y, width, height) -- where x and y are both to
 	field.font = native.newFont(storyboard.states.font.regular, 24)
 	field.hasBackground = false
 	field:setTextColor(189, 195, 199)
-	fieldGroup:insert(field)
 	field.align = "center"
+	if name == "password" then field.isSecure = true end
 
 	local fieldBackground = display.newRect(x, y, width, height)
-	-- fieldBackground:setFillColor(189, 195, 199)
-	
 
 	local fieldLabel = display.newText(name, 0, 0, storyboard.states.font.regular, 16)
 	fieldLabel:setReferencePoint(display.CenterReferencePoint)
@@ -44,25 +42,11 @@ function createTextField(name, x, y, width, height) -- where x and y are both to
 	fieldLabel:setTextColor(189, 195, 199)
 	fieldGroup:insert(fieldBackground)
 	fieldGroup:insert(fieldLabel)
+	fieldGroup:insert(field)
 
 	return fieldGroup
 end
 
-function createButton(label, x, y, width, height)
-	local buttonGroup = display.newGroup()
-
-	local background = display.newRect(x, y, width, height)
-	background:setFillColor(46, 204, 113)
-	
-
-	local label = display.newText(label, 0, 0, storyboard.states.font.regular, 16)
-	label:setReferencePoint(display.CenterReferencePoint)
-	label.x = background.x 
-	label.y = background.y
-	label:setTextColor(236, 240, 241)
-	buttonGroup:insert(background)
-	buttonGroup:insert(label)
-end
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -75,36 +59,13 @@ function scene:createScene( event )
 
 	local topBar = utils.createTopBar("signup")
 
-	-- local banner = display.newRect(group, 0, 0, display.contentWidth, bannerHeight)
-	-- banner:setFillColor(189, 195, 199)
-
-	-- local backButton = display.newImageRect(group, "arrow_left_clouds.png", bannerHeight/2, bannerHeight/2)
-	-- backButton.x = bannerHeight/2
-	-- backButton.y = bannerHeight/2
-	
-	-- local checkMarkBackground = display.newRect(group, display.contentWidth - bannerHeight, 0, bannerHeight, bannerHeight)
-	-- checkMarkBackground:setFillColor(46, 204, 113)
-
-	-- local checkMark = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
-	-- checkMark.x = display.contentWidth - bannerHeight/2
-	-- checkMark.y = bannerHeight/2
-
-	-- local signupText = display.newText(group, "signup", 0, 0, storyboard.states.font.bold, 24)
-	-- signupText:setReferencePoint(display.CenterReferencePoint)
-	-- signupText.x = display.contentWidth/2
-	-- signupText.y = bannerHeight/2
-
 
 	firstNameGroup = createTextField("first", display.contentWidth/8, bannerHeight + 20, fieldParams.width/2-5, fieldParams.height)
 	lastNameGroup = createTextField("last", display.contentWidth/2+5, bannerHeight + 20, fieldParams.width/2-5, fieldParams.height)
 	emailGroup = createTextField("email", display.contentWidth/8, firstNameGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
 	passwordGroup = createTextField("password", display.contentWidth/8, emailGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
-	passwordGroup[1].isSecure = true
 
-	group:insert(firstNameGroup)
-	group:insert(lastNameGroup)
-	group:insert(emailGroup)
-	group:insert(passwordGroup)
+
 	-- signupButton = createButton("signup", display.contentWidth/8, passwordGroup[2].y+10+fieldParams.height/2, fieldParams.width, fieldParams.height)
 
 	function genericFieldListener(event)
@@ -112,23 +73,23 @@ function scene:createScene( event )
 		local phase = event.phase
 
 		if phase == "began" then
-			field.parent[3].alpha = 0
+			field.parent[2].alpha = 0
 		elseif phase == "submitted" then
 			print( field.text )
 		elseif phase == "ended" then
 			if string.len(field.text) == 0 then
-				field.parent[3].alpha = 1
+				field.parent[2].alpha = 1
 			else
-				print(field.parent[3].text)
-				signupInfo[field.parent[3].text] = field.text
+				print(field.parent[2].text)
+				signupInfo[field.parent[2].text] = field.text
 			end
 		end
 	end
 
-	firstNameGroup[1]:addEventListener("userInput", genericFieldListener)
-	lastNameGroup[1]:addEventListener("userInput", genericFieldListener)
-	emailGroup[1]:addEventListener("userInput", genericFieldListener)
-	passwordGroup[1]:addEventListener("userInput", genericFieldListener)
+	firstNameGroup[3]:addEventListener("userInput", genericFieldListener)
+	lastNameGroup[3]:addEventListener("userInput", genericFieldListener)
+	emailGroup[3]:addEventListener("userInput", genericFieldListener)
+	passwordGroup[3]:addEventListener("userInput", genericFieldListener)
 
 	-- Navigation
 	function backwardCallback(event)
@@ -149,19 +110,29 @@ function scene:createScene( event )
 
 	topBar.forwardClick(forwardCallback)
 
+	group:insert(firstNameGroup)
+	group:insert(lastNameGroup)
+	group:insert(emailGroup)
+	group:insert(passwordGroup)
 end
 
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
-        local group = self.view
+	local group = self.view
 
 end
 
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
-        local group = self.view
+	local group = self.view
+	firstNameGroup:removeEventListener("userInput", genericFieldListener)
+	lastNameGroup:removeEventListener("userInput", genericFieldListener)
+	emailGroup:removeEventListener("userInput", genericFieldListener)
+	passwordGroup:removeEventListener("userInput", genericFieldListener)
+	
+	native.setKeyboardFocus(nil)
 end
 
 

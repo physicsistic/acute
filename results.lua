@@ -158,25 +158,6 @@ function scene:destroyScene( event )
 end
 
 
--- Called if/when overlay scene is displayed via storyboard.showOverlay()
-function scene:overlayBegan( event )
-        local group = self.view
-        local overlay_name = event.sceneName  -- name of the overlay scene
-
-
-end
-
-
--- Called if/when overlay scene is hidden/removed via storyboard.hideOverlay()
-function scene:overlayEnded( event )
-        local group = self.view
-        local overlay_name = event.sceneName  -- name of the overlay scene
-
-
-end
-
-
-
 ---------------------------------------------------------------------------------
 -- END OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
