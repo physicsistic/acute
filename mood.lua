@@ -47,15 +47,15 @@ function scene:createScene( event )
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local topBar = utils.createTopBar("how ya feeling?", false)
-
-	function backwardCallback(event)
-		if event.phase == "ended" then
-			event.target.parent:removeSelf()
-			storyboard.gotoScene("home",  {effect="slideRight"})
-		end
-	end
-	topBar.backwardClick(backwardCallback)
+	local banner = display.newGroup()
+	local bannerHeight = display.contentHeight/10
+	local bannerBackground = display.newRect(banner, 0, 0, display.contentWidth, bannerHeight)
+	bannerBackground:setFillColor(189, 195, 199)
+	local bannerText = display.newText(banner, "how ya feeling?", 0, 0, storyboard.states.font.bold, 24)
+	bannerText:setReferencePoint(display.CenterReferencePoint)
+	bannerText.x = display.contentWidth/2
+	bannerText.y = bannerHeight/2
+	group:insert(banner)
 
 
 	-- instruction group for the slider
@@ -74,7 +74,7 @@ function scene:createScene( event )
 	downArrow.y = 50
 
 	utils.fadeIn(instructionGroup)
-	utils.fadeIn(topBar)
+	utils.fadeIn(banner)
 
 
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
@@ -116,7 +116,7 @@ function scene:createScene( event )
 	function checkTouchHeight(event)
 		if event.phase == "moved" or event.phase == "began" then
 			local offset = display.contentHeight/12
-			local index = math.floor((event.y - topBar.height)/ ((display.contentHeight-topBar.height)/7)) + 1
+			local index = math.floor((event.y - bannerHeight)/ ((display.contentHeight - bannerHeight)/7)) + 1
 			if index > 0 and index < 8 then
 				if index ~= bouncyMood.curFrame and system.getTimer()-bouncyMood.lastAnimation > 300 then
 					wobble(bouncyMood, (8-index)/3)
@@ -131,7 +131,6 @@ function scene:createScene( event )
 
 		if event.phase == "ended" then
 			group:removeSelf()
-			topBar:removeSelf()
 			storyboard.gotoScene("game", {effects="fade"})
 		end
 	end
