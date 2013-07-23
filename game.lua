@@ -14,11 +14,11 @@ local ball = require("ball")
 local analysis = require("analysis")
 
 local roundSounds = {
-	audio.loadSound("round1.mp3"),
-	audio.loadSound("round2.mp3"),
-	audio.loadSound("round3.mp3"),
-	audio.loadSound("round4.mp3"),
-	audio.loadSound("round5.mp3")
+	audio.loadStream("round1.mp3"),
+	audio.loadStream("round2.mp3"),
+	audio.loadStream("round3.mp3"),
+	audio.loadStream("round4.mp3"),
+	audio.loadStream("round5.mp3")
 }
 
 local badRoundSound = audio.loadSound("badround.mp3")
@@ -30,16 +30,6 @@ local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
 local gScale = 9.8/4
 
--- function moveBouncy(obj, deltaX, deltaY)
--- 	transition.to(obj, {time = 100, xScale = 1.5 + deltaX, yScale = 1.5 + deltaY})
--- end
-
--- function wobble(obj)
--- 	moveBouncy(obj, .3, -.3)
--- 	timer.performWithDelay(100, function () moveBouncy(obj, -.2, .2) end)
--- 	timer.performWithDelay(200, function () moveBouncy(obj, .1, -.1) end)
--- 	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
--- end
 
 function  scene:createScene(event)
 	local group = self.view
