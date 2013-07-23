@@ -28,7 +28,7 @@ storyboard.purgeOnSceneChange = true
 
 local user_xid = upapi.readFile(storyboard.states.userXIDPath)
 
-local gScale = 9.8/4
+local gScale = 9.8
 
 
 function  scene:createScene(event)
@@ -50,8 +50,8 @@ function  scene:createScene(event)
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
-		minCountDownTime = 2700,
-		maxCountDownTime = 6000, 
+		minCountDownTime = 1200,
+		maxCountDownTime = 4000, 
 		state = "waiting",
 		gameOver = false
 	}

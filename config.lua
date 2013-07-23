@@ -8,11 +8,11 @@ if string.sub(system.getInfo("model"),1,4) == "iPad" then
             scale = "letterBox",
             xAlign = "center",
             yAlign = "center",
-            imageSuffix = 
-            {
-                ["@2x"] = 1.5,
-                ["@4x"] = 3.0,
-            },
+            -- imageSuffix = 
+            -- {
+            --     ["@2x"] = 1.5,
+            --     ["@4x"] = 3.0,
+            -- },
         },
         notification = 
         {
@@ -34,11 +34,11 @@ elseif string.sub(system.getInfo("model"),1,2) == "iP" and display.pixelHeight >
             scale = "letterBox",
             xAlign = "center",
             yAlign = "center",
-            imageSuffix = 
-            {
-                ["@2x"] = 1.5,
-                ["@4x"] = 3.0,
-            },
+            -- imageSuffix = 
+            -- {
+            --     ["@2x"] = 1.5,
+            --     ["@4x"] = 3.0,
+            -- },
         },
         notification = 
         {
@@ -60,11 +60,11 @@ elseif string.sub(system.getInfo("model"),1,2) == "iP" then
             scale = "letterBox",
             xAlign = "center",
             yAlign = "center",
-            imageSuffix = 
-            {
-                ["@2x"] = 1.5,
-                ["@4x"] = 3.0,
-            },
+            -- imageSuffix = 
+            -- {
+            --     ["@2x"] = 1.5,
+            --     ["@4x"] = 3.0,
+            -- },
         },
         notification = 
         {
@@ -85,11 +85,11 @@ elseif display.pixelHeight / display.pixelWidth > 1.72 then
             scale = "letterBox",
             xAlign = "center",
             yAlign = "center",
-            imageSuffix = 
-            {
-                ["@2x"] = 1.5,
-                ["@4x"] = 3.0,
-            },
+            -- imageSuffix = 
+            -- {
+            --     ["@2x"] = 1.5,
+            --     ["@4x"] = 3.0,
+            -- },
         },
     }
 else
@@ -102,11 +102,11 @@ else
             scale = "letterBox",
             xAlign = "center",
             yAlign = "center",
-            imageSuffix = 
-            {
-                ["@2x"] = 1.5,
-                ["@4x"] = 3.0,
-            },
+            -- imageSuffix = 
+            -- {
+            --     ["@2x"] = 1.5,
+            --     ["@4x"] = 3.0,
+            -- },
         },
         notification = 
         {

@@ -3,8 +3,9 @@
 <html>
 <head>
     <title>Hammer.js</title>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<script src="http://d3js.org/d3.v3.min.js"></script>
+    <link href="bootstrap.css" rel="stylesheet">
+<script src="d3.js"></script>
+<script src="sessionStats.js"></script>
 
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -175,7 +176,7 @@ img, audio, video, canvas { max-width: 100%; }
             font-size: 64px;
             padding-top: 65px;
             padding-bottom: 0px;
-            margin: 20px 0px;
+            margin: 0px 0px;
             font-weight: 700;
             line-height: 15%;
         }
@@ -186,7 +187,7 @@ img, audio, video, canvas { max-width: 100%; }
         }
 
         .bottom {
-            bottom: 0px;
+            bottom: 20px;
             position: absolute;
             width: 240px;
         }
@@ -198,7 +199,7 @@ img, audio, video, canvas { max-width: 100%; }
 
         .half h1 {
             font-size: 40px;
-            padding-top: 10px;
+            padding-top: 30px;
             padding-bottom: -10px;
             line-height: 25%;
             font-weight: 700;
@@ -206,8 +207,8 @@ img, audio, video, canvas { max-width: 100%; }
 
         .half h3 {
             font-size: 12px;
-            line-height: 90%;
-            margin-bottom: 20px;
+            line-height: 200%;
+            margin-bottom: 10px;
             font-weight: 400;
 
         }
@@ -263,10 +264,6 @@ height: 33px;        }
 fill: rgb(161, 168, 170);
 }
 
-.userCircle {
-    fill: #ecf0f1;
-}
-
 .lastGame {
     fill: #2ecc71;
 }
@@ -314,7 +311,7 @@ font-size: 10px;
 
 #scatter-icons-horiz {
     position: absolute;
-    bottom: 50px;
+    bottom: 30px;
     left: 60px;
 }
 
@@ -344,7 +341,7 @@ font-size: 10px;
                     </div>
                 </div>
             </li>
-            <li class="pane pane2">
+            <li class="pane pane2" style="margin-top: -20px;">
                 <div class="data-square">
                     <div class="section" id="bar-icons">
                         <img src="maleUser2.png" /><br />you
@@ -370,7 +367,7 @@ font-size: 10px;
                 </div>
 
             </li>
-            <li class="pane pane3" style="margin-top: 20px;">
+            <li class="pane pane3">
                 <div class="data-square" id="scatter">
                     <div id="scatter-icons-vertical">
                         <img src="smile.png" /><br />
@@ -665,6 +662,7 @@ svg.selectAll("circle")
      return 16;
      });
 
+var colors = ["", "#1F2F3E", "#35506C", "#7F8C8D", "#EEEEEE", "#F1C40F", "#E67E22", "#E74C3C"];
 svg.selectAll("circle")
      .data(scatterData)
    .enter()
@@ -672,6 +670,9 @@ svg.selectAll("circle")
    .attr("class", "userCircle")
      .attr("cx", function(d) {
        return xScale(d[0]);
+     })
+     .attr("fill", function(d) {
+        return colors[d[1]];
      })
      .attr("cy", function(d) {
        return yScale(d[1]);
