@@ -68,7 +68,7 @@ function scene:createScene( event )
 	aveCard:insert(1, aveCardBackground, true)
 	aveCard:insert(aveCardLabel, true)
 	aveCard:insert(aveCardInfo, true)
-	aveCard.x = display.contentWidth/4 - 2
+	aveCard.x = display.contentWidth/4 - 5
 	aveCard.y = banner.y + bannerHeight + cardHeight/2
 	aveCardLabel.y = cardHeight / 4
 	aveCardInfo.y = (-1) * cardHeight / 8
@@ -94,7 +94,7 @@ function scene:createScene( event )
 
 
 	-- webview scorecards
-	local webView = native.newWebView(0, bestCard.y + cardHeight * 2/3, display.contentWidth, display.contentHeight/2)
+	local webView = native.newWebView(0, bestCard.y + cardHeight/2 + 10, display.contentWidth, 260)
 	webView:request("stats.html", system.ResourceDirectory)
 	webView.hasBackground = false
 	group:insert(webView)

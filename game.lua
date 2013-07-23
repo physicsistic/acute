@@ -118,7 +118,7 @@ function  scene:createScene(event)
 
 	function Ball:touchDown(e)
 		-- print("TOUCH DOWN")
-		utils.wobble(bouncy, 1)
+		utils.wobble(bouncy)
 		bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
 
 		if State.state == "countdown" then

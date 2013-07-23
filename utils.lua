@@ -19,15 +19,17 @@ function physicsStateHandler(event, callback)
 	end
 end
 
-function moveBouncy(obj, deltaX, deltaY)
-	transition.to(obj, {time = 100, xScale = 1 + deltaX, yScale = 1 + deltaY})
+function moveBouncy(obj, deltaX, deltaY, objScale)
+	transition.to(obj, {time = 100, xScale = objScale + deltaX, yScale = objScale + deltaY})
 end
 
-function M.wobble(obj, scale)
-	moveBouncy(obj, .3*scale, -.3*scale)
-	timer.performWithDelay(100, function () moveBouncy(obj, -.2*scale, .2*scale) end)
-	timer.performWithDelay(200, function () moveBouncy(obj, .1*scale, -.1*scale) end)
-	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0) end)
+function M.wobble(obj, wobbleScale, objScale)
+	if objScale == nil then objScale = 1 end
+	if wobbleScale == nil then wobbleScale = 1 end
+	moveBouncy(obj, .3*wobbleScale, -.3*wobbleScale, objScale)
+	timer.performWithDelay(100, function () moveBouncy(obj, -.2*wobbleScale, .2*wobbleScale, objScale) end)
+	timer.performWithDelay(200, function () moveBouncy(obj, .1*wobbleScale, -.1*wobbleScale, objScale) end)
+	timer.performWithDelay(300, function () moveBouncy(obj, 0, 0, objScale) end)
 end
 
 function M.fadeIn( obj, time )

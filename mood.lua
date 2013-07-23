@@ -85,9 +85,9 @@ function scene:createScene( event )
 		end
 	end
 
-    local moodSheet = graphics.newImageSheet( "Moods@2x.png", {
-        width = 144,
-        height = 144,
+    local moodSheet = graphics.newImageSheet( "Moods@4x.png", {
+        width = 288,
+        height = 288,
         numFrames = 7,
     })
 
@@ -99,6 +99,7 @@ function scene:createScene( event )
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2
+    transition.to(bouncyMood, {time=10, xScale = 0.5, yScale = 0.5})
     group:insert(bouncyMood)
 
 
@@ -108,7 +109,7 @@ function scene:createScene( event )
 			local index = math.floor((event.y - bannerHeight)/ ((display.contentHeight - bannerHeight)/7)) + 1
 			if index > 0 and index < 8 then
 				if index ~= bouncyMood.curFrame and system.getTimer()-bouncyMood.lastAnimation > 300 then
-					utils.wobble(bouncyMood, (8-index)/3)
+					utils.wobble(bouncyMood, (8-index)/3, 0.5)
 					bouncyMood.curFrame = index
 					bouncyMood.lastAnimation = system.getTimer()
 				end
