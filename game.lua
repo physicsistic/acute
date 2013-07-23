@@ -37,8 +37,8 @@ function  scene:createScene(event)
 	display.setStatusBar(display.HiddenStatusBar)
 
 	-- Set background to Sublime black
-	display.setDefault( "background", 39, 40, 33) -- black
-	-- display.setDefault( "background", 236, 240, 241 ) -- clouds
+	-- display.setDefault( "background", 39, 40, 33) -- black
+	display.setDefault( "background", 236, 240, 241 ) -- clouds
 
 
 	local Ball = {}

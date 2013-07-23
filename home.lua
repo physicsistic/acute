@@ -65,10 +65,11 @@ function scene:createScene( event )
 		transition.to( bouncy, {
 			x = display.contentWidth/2,
 			y = display.contentHeight/2,
-			xScale = 2,
-			yScale = 2,
+			xScale = 1,
+			yScale = 1,
 			time = 700,
 			transition = easing.outExpo,
+			rotation = 0, 
 			onComplete = function()
 				storyboard.gotoScene( "mood" )
 			end

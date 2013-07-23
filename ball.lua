@@ -6,13 +6,14 @@ local utils = require("utils")
 local M = {}
 
 function M.create(x,y)
-    local sheet = graphics.newImageSheet( "sphere-sheet.png", {
-        width = 72,
-        height = 72,
+    local sheet = graphics.newImageSheet( "deadBouncy.png", {
+        width = 144,
+        height = 144,
         numFrames = 2,
     })
 
     local bouncy = display.newSprite( sheet, {start=1, count=2} )
+    transition.to(bouncy, {time =10, xScale=0.5, yScale=0.5})
     bouncy:setReferencePoint(display.CenterReferencePoint)
 
     if x == nil then x = display.contentWidth/2 end
