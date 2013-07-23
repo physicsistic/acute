@@ -85,7 +85,7 @@ function scene:createScene( event )
 		end
 	end
 
-    local moodSheet = graphics.newImageSheet( "Moods@4x.png", {
+    local moodSheet = graphics.newImageSheet( "Moods@2x.png", {
         width = 288,
         height = 288,
         numFrames = 7,

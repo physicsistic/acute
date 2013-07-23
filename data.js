@@ -14,16 +14,18 @@ function round(num, places) {
  	$(".bottom").remove();
  	$("#justNowScore").html("");
  	$(".pane1 h3").html("Buy an UP to log your sleep and learn more about how your sleep affects your mental acuity.");
- 	$(".pane1 h3").attr("style", "font-size: 18px; line-height: 140%;");
+ 	$(".pane1 h3").attr("style", "font-size: 16px; line-height: 140%; padding: 0px 15px;");
  	$(".pane1 h1").append("<img src='moon.png' />");
-
  }
+
  else {
  	$('#justNowScore').html(round(latestReactionTime, 3));
-$('#moreSleepScore').html(round(screen1["moreSleep"], 3));
-$('#lessSleepScore').html(round(screen1["lessSleep"], 3));
+	$('#moreSleepScore').html(round(screen1["moreSleep"], 3));
+	$('#lessSleepScore').html(round(screen1["lessSleep"], 3));
  }
+ 
  var scatterData = [];
+ 
  for (var i = 0; i < screen3["timings"].length; i++) {
  	var temp = [];
  	temp.push(screen3["timings"][i]);

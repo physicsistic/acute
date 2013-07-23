@@ -89,8 +89,7 @@ img, audio, video, canvas { max-width: 100%; }
             padding: 0;
             margin: 0;
             position: relative;
-            overflow-y: hidden;
-            overflow-x: scroll;
+            overflow: hidden;
         }
 
         #debug {
@@ -133,8 +132,6 @@ img, audio, video, canvas { max-width: 100%; }
         }
 
         #carousel ul {
-            -webkit-box-shadow: 0 0 20px rgba(0,0,0,.2);
-            box-shadow: 0 0 20px rgba(0,0,0,.2);
             position: relative;
             width: 1200px;
         }
@@ -275,7 +272,7 @@ fill: rgb(161, 168, 170);
 }
 
 
-#icons {
+#bar-icons {
     width: 14%;
     float: left;
     padding-left: 8%;
@@ -285,7 +282,7 @@ fill: rgb(161, 168, 170);
             text-align: center;
 }
 
-#icons img {
+#bar-icons img {
 padding: 5px 0px;
 margin: 0 auto;
 height: 20px;
@@ -304,6 +301,23 @@ font-size: 10px;
 .legend img {
     height: 15px;
 }
+
+#scatter-icons-vertical {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+#scatter-icons-vertical img {
+    padding-bottom: 130px;
+}
+
+#scatter-icons-horiz {
+    position: absolute;
+    bottom: 50px;
+    left: 60px;
+}
+
     </style>
 </head>
 
@@ -332,7 +346,7 @@ font-size: 10px;
             </li>
             <li class="pane pane2">
                 <div class="data-square">
-                    <div class="section" id="icons">
+                    <div class="section" id="bar-icons">
                         <img src="maleUser2.png" /><br />you
                         <img src="maleIcon.png" /><br />same gender
                         <img src="ageIcon.png" /><br />same age
@@ -358,6 +372,15 @@ font-size: 10px;
             </li>
             <li class="pane pane3" style="margin-top: 20px;">
                 <div class="data-square" id="scatter">
+                    <div id="scatter-icons-vertical">
+                        <img src="smile.png" /><br />
+                        <img src="frown.png" />
+                    </div>
+                    <div id="scatter-icons-horiz">
+                        <img src="turtle.png" style="padding-right: 80px;" />
+                        <img src="rabbit.png" />
+                    </div>
+
                 </div>
 
             </li>

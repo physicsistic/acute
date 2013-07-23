@@ -35,7 +35,11 @@ function  scene:createScene(event)
 	local group = self.view
 	-- Display and graphics
 	display.setStatusBar(display.HiddenStatusBar)
-	display.setDefault( "background", 236, 240, 241 )
+
+	-- Set background to Sublime black
+	display.setDefault( "background", 39, 40, 33) -- black
+	-- display.setDefault( "background", 236, 240, 241 ) -- clouds
+
 
 	local Ball = {}
 
