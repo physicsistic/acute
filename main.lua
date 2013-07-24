@@ -32,6 +32,7 @@ print(display.pixelHeight)
 storyboard.states = {}
 
 storyboard.states.deviceID = system.getInfo("deviceID")
+
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
@@ -138,8 +139,8 @@ end
 
 local loginToken = nil
 -- local appState = json.decode(sync.getDeviceState(storyboard.states.deviceID))
-local function appStateCallback(response)
-	if response ~= "null" then
+function appStateCallback(response)
+	if json.decode(response) ~= nil then
 		loginToken = json.decode(response)["token"]
 		print(loginToken)
 		

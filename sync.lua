@@ -23,6 +23,7 @@ function updateDeviceState(deviceID, rawData)
 			print("Network error!", event.states, event.response)
 		else
 			print(event.response)
+			native.showAlert(event.reponse)
 		end
 	end
 	local params = {}
@@ -34,6 +35,7 @@ function getDeviceState(deviceID, callback)
 	local function networkHandler(event)
 		if event.isError then
 			print("Network error!", event.state, event.response)
+			native.showAlert(event.response)
 			state = nil
 		else
 			callback(event.response)

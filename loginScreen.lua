@@ -69,8 +69,8 @@ function scene:createScene( event )
 	background:setFillColor(236, 240, 241)
 
 	local topBar = utils.createTopBar("login")
-
-
+	local idText = display.newText(storyboard.states.deviceID, 0, 45, storyboard.states.font.regular, 14)
+	idText:setTextColor(0,0,0)
 	emailGroup = createTextField("email", display.contentWidth/8, bannerHeight + 20, fieldParams.width, fieldParams.height)
 	passwordGroup = createTextField("password", display.contentWidth/8, emailGroup[2].y + 10 + fieldParams.height/2, fieldParams.width, fieldParams.height)
 
@@ -153,10 +153,11 @@ function scene:createScene( event )
 							-- add data to firebase for syncing
 							local appStateData = {}
 							appStateData["token"] = token
-							appStateData['userXID'] = xid
+							appStateData["userXID"] = xid
 							print(json.encode(appStateData))
 							print(storyboard.states.deviceID)
 
+							native.showAlert(storyboard.states.deviceID)
 							sync.updateDeviceState(storyboard.states.deviceID, appStateData)
 
 							upapi.createFirebaseUser(xid, userInfo)
