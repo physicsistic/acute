@@ -12,6 +12,7 @@ local json = require( "json" )
 local upapi = require( "upapi" )
 local utils = require( "utils" )
 local widget = require( "widget" )
+local sync = require( "sync" )
 
 
 local scene = storyboard.newScene()
@@ -140,6 +141,8 @@ function scene:createScene( event )
 
 							local token = response["token"]
 							local xid = response["user"]["xid"]
+							storyboard.states.loginToken = token
+							storyboard.states.userXID = xid
 							local userInfo = {}
 							userInfo["gender"] = response["user"]["gender"]
 							userInfo["height"] = response["user"]["basic_info"]["height"]
@@ -147,13 +150,20 @@ function scene:createScene( event )
 							userInfo["dob"] = response["user"]["basic_info"]["dob"]
 							userInfo["name"] = response["user"]["first"] .. "_" .. response["user"]["last"]
 
+							-- add data to firebase for syncing
+							local appStateData = {}
+							appStateData["token"] = token
+							appStateData['userXID'] = xid
+							print(json.encode(appStateData))
+							print(storyboard.states.deviceID)
+
+							sync.updateDeviceState(storyboard.states.deviceID, appStateData)
+
 							upapi.createFirebaseUser(xid, userInfo)
-							upapi.writeFile(storyboard.states.userXIDPath, xid)
-							storyboard.states.userXID = xid						
+													
 							print("login token = " .. token)
 							print("user xid = " .. xid)
-							upapi.writeFile(storyboard.states.upAPILoginTokenPath, token)
-							storyboard.states.loginToken = token
+							
 							loadingWidget:stop()
 							loadingWidget:removeSelf()
 							storyboard.gotoScene("home", {effect="slideLeft"})

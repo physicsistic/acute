@@ -26,7 +26,7 @@ local badRoundSound = audio.loadSound("badround.mp3")
 local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
-local user_xid = upapi.readFile(storyboard.states.userXIDPath)
+local user_xid = storyboard.states.userXID
 
 local gScale = 9.8
 

@@ -19,9 +19,11 @@ local physics = require "physics"
 local math = require "math"
 local native = require "native"
 local animate = require "animate"
+local sync = require "sync"
 
 
 print(system.getInfo("model"))
+print(system.getInfo("deviceID"))
 print(display.pixelHeight)
 
 
@@ -29,11 +31,7 @@ print(display.pixelHeight)
 
 storyboard.states = {}
 
-
-storyboard.states.upAPILoginTokenPath = system.pathForFile( "react_upapi_token.txt", system.DocumentsDirectory )
-storyboard.states.userXIDPath = system.pathForFile( "react_user_xid.txt", system.DocumentsDirectory )
-storyboard.states.loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
-
+storyboard.states.deviceID = system.getInfo("deviceID")
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
@@ -45,8 +43,6 @@ storyboard.states.font.regular = "Montserrat-Regular"
 storyboard.states.font.bold = "Montserrat-Bold"
 -- Storing session data
 storyboard.states.sessionTimings = {}
--- Firebase user data
-storyboard.states.userXID = upapi.readFile(storyboard.states.userXIDPath)
 -- Session timing
 storyboard.states.timings = {}
 -- Number of rounds to play (default set to 5)
@@ -140,14 +136,28 @@ function gotoWelcomeScreen()
 	magicTransition('welcome')
 end
 
-
-local loginToken = upapi.readFile(storyboard.states.upAPILoginTokenPath)
-
-if loginToken == nil then
-	gotoWelcomeScreen()
-else 
-	-- check if user is logged in
-	checkLoginToken()
+local loginToken = nil
+-- local appState = json.decode(sync.getDeviceState(storyboard.states.deviceID))
+local function appStateCallback(response)
+	if response ~= "null" then
+		loginToken = json.decode(response)["token"]
+		print(loginToken)
+		
+	end
+	if loginToken == nil then
+		gotoWelcomeScreen()
+	else
+		print("user device found in db")
+		-- Firebase user data
+		storyboard.states.userXID = json.decode(response)["userXID"]
+		storyboard.states.loginToken = loginToken
+		-- check if user is logged in
+		checkLoginToken()
+	end
 end
+sync.getDeviceState(storyboard.states.deviceID, appStateCallback)
+-- local loginToken = appState["token"]
+
+
 
 
