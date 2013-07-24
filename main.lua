@@ -36,7 +36,7 @@ storyboard.states.deviceID = tostring(system.getInfo("deviceID"))
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
-storyboard.states.userInfoFilePath = system.pathForFile("react_user_info.txt", system.DocumentsDirectory )
+-- storyboard.states.userInfoFilePath = system.pathForFile("react_user_info.txt", system.DocumentsDirectory )
 
 -- Font states
 storyboard.states.font = {}
