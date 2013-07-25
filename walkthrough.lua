@@ -21,7 +21,7 @@ function scene:createScene( event )
 	local bannerHeight = display.contentHeight/10
 
 	local walkthroughView = native.newWebView( 0, bannerHeight, display.contentWidth, display.contentHeight-bannerHeight)
-	walkthroughView:request("walkthrough.html", system.ResourceDirectory)
+	walkthroughView:request("index.html", system.ResourceDirectory)
 
 	local bannerBackground = display.newRect(group, 0,0, display.contentWidth, bannerHeight)
 	bannerBackground:setFillColor(189, 195, 199)
