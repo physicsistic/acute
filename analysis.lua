@@ -85,6 +85,11 @@ function sleepPattern(rawdata)
 		end
 	end
 
+	local sessionStats = {}
+	sessionStats.screen1 = storyboard.states.screen1
+	sessionStats.screen3 = storyboard.states.screen3
+
+
 	print("less sleep count = " .. lessSleep.count)
 	print("more sleep count = " .. moreSleep.count)
 

@@ -366,6 +366,7 @@ function scene:enterScene( event )
 	local group = self.view
 
 	analysis.getUserHistory(storyboard.states.userXID )
+	
 
 end
 

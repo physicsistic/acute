@@ -158,6 +158,13 @@ function updateBehavior( behaviorData )
 
 end
 
+function updateSessionStats( sessionStats )
+	local xid = storyboard.states.userXID
+	local userStatsJSON = json.encode(sessionStats)
+	rawPUTRequest(storyboard.states.firebaseURL .. "/" .. xid .."/stats.json", userStatsJSON, genericCallback)
+
+end
+
 function login( email, pwd, callback )
 
 	local loginURL = "https://jawbone.com/user/signin/login"
