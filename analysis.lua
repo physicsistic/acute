@@ -67,7 +67,6 @@ function sleepPattern(rawdata)
 	end
 
 
-
 	for k, v in pairs(sessionHistory) do
 		if v["sleepDuration"] ~= nil then
 			if v["sleepDuration"] <= medianSleepDuration then

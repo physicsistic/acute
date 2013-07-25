@@ -13,13 +13,6 @@ local math = require "math"
 
 local scene = storyboard.newScene()
 
-local function secToHour(seconds)
-	local time = {}
-	local totalMinutes = math.round(seconds / 60)
-	time.hour = math.floor(totalMinutes/60)
-	time.minute = totalMinutes % 60
-	return time
-end
 
 local bannerHeight = display.contentHeight / 15
 local cardHeight = display.contentHeight / 6

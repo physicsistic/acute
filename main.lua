@@ -147,6 +147,10 @@ function gotoWelcomeScreen()
 	magicTransition('welcome')
 end
 
+function gotoWalkthroughScreen()
+	magicTransition('walkthrough1')
+end
+
 -- local loginToken = nil
 -- local appState = json.decode(sync.getDeviceState(storyboard.states.deviceID))
 -- function appStateCallback(response)
@@ -173,7 +177,7 @@ if loginTokenFile then
 	checkLoginToken(token)
 	io.close(loginTokenFile)
 else
-	gotoWelcomeScreen()
+	gotoWalkthroughScreen()
 end
 
 
