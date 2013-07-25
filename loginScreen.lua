@@ -167,6 +167,10 @@ function scene:createScene( event )
 							file:write(xid)
 							io.close(file)
 
+							local file = io.open(storyboard.states.userReturnedFilePath, "w")
+							file:write("logged")
+							io.close(file)
+
 							loadingWidget:stop()
 							loadingWidget:removeSelf()
 							storyboard.gotoScene("home", {effect="slideLeft"})

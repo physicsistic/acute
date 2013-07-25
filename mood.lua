@@ -93,7 +93,7 @@ function scene:createScene( event )
 
 
     local bouncyMood = display.newSprite( moodSheet, {start=1, count=7, loopCount=0} )
-    bouncyMood:setFrame(4)
+    bouncyMood:setFrame(2)
     bouncyMood.curFrame = 2
     bouncyMood.lastAnimation = 0
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
@@ -116,6 +116,7 @@ function scene:createScene( event )
 				bouncyMood:setFrame(index)
 				moodText.text = moodSchemes[index]
 				moodText.x = display.contentWidth/2
+				storyboard.states.userMood = index
 			end
 		end
 

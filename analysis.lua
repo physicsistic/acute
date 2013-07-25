@@ -14,6 +14,7 @@ local math = require( "math" )
 local network = require( "network" )
 local upapi = require( "upapi" )
 local json = require( "json" )
+local upapi = require( "upapi" )
 
 local storyboard = require( "storyboard" )
 
@@ -87,6 +88,7 @@ function sleepPattern(rawdata)
 	local sessionStats = {}
 	sessionStats.screen1 = storyboard.states.screen1
 	sessionStats.screen3 = storyboard.states.screen3
+	upapi.updateSessionStats(sessionStats)
 
 
 	print("less sleep count = " .. lessSleep.count)

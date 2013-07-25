@@ -42,6 +42,7 @@ storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 storyboard.states.userInfoFilePath = system.pathForFile("user_info.txt", system.DocumentsDirectory )
 storyboard.states.userTokenFilePath = system.pathForFile("user_token.txt", system.DocumentsDirectory )
 storyboard.states.userXIDFilePath = system.pathForFile("user_xid.txt", system.DocumentsDirectory)
+storyboard.states.userReturnedFilePath = system.pathForFile("user_returned.txt", system.DocumentsDirectory)
 -- Font states
 storyboard.states.font = {}
 storyboard.states.font.regular = "Montserrat-Regular"
@@ -142,47 +143,42 @@ function gotoHomeScreen()
 	magicTransition('home')
 end
 
-
 function gotoWelcomeScreen()
 	magicTransition('welcome')
 end
 
 function gotoWalkthroughScreen()
-	magicTransition('walkthrough1')
+	magicTransition('walkthrough')
 end
 
--- local loginToken = nil
--- local appState = json.decode(sync.getDeviceState(storyboard.states.deviceID))
--- function appStateCallback(response)
--- 	if json.decode(response) ~= nil then
--- 		loginToken = json.decode(response)["token"]
--- 		print(loginToken)
-		
--- 	end
--- 	if loginToken == nil then
--- 		gotoWelcomeScreen()
--- 	else
--- 		print("user device found in db")
--- 		-- Firebase user data
--- 		storyboard.states.userXID = json.decode(response)["userXID"]
--- 		storyboard.states.loginToken = loginToken
--- 		-- check if user is logged in
--- 		checkLoginToken()
--- 	end
--- end
 
 local loginTokenFile = io.open(storyboard.states.userTokenFilePath, "r")
+
 if loginTokenFile then
 	local token = loginTokenFile:read( "*a" )
 	checkLoginToken(token)
 	io.close(loginTokenFile)
 else
-	gotoWalkthroughScreen()
+	local returnedUserFile = io.open(storyboard.states.userReturnedFilePath, "r")
+	if returnedUserFile then
+		if returnedUserFile:read("*a") == "logged" then
+			io.close(returnedUserFile)
+			gotoWelcomeScreen()
+		else
+			-- io.open(system.pathForFile("returnedUser.txt", system.DocumentsDirectory), "w"):write("logged")
+			group:removeSelf()
+			storyboard.gotoScene("walkthrough")
+		end
+	else
+		-- io.open(system.pathForFile("returnedUser.txt", system.DocumentsDirectory), "w"):write("logged")
+		group:removeSelf()
+		storyboard.gotoScene("walkthrough")
+	end
+
 end
 
 
--- sync.getDeviceState(storyboard.states.deviceID, appStateCallback)
--- local loginToken = appState["token"]
+
 
 
 

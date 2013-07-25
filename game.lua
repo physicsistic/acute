@@ -282,7 +282,7 @@ function  scene:createScene(event)
 		reactionTimingInstance.timestamp = t
 		reactionTimingInstance.reactionTime = newTime
 		upapi.insertTimingToDatabase(reactionTimingInstance)
-		sessionData.timings[State.currentRound]=newTime
+		sessionData.timings[State.currentRound]=newTime/1000
 	end
 
 
@@ -366,7 +366,7 @@ function scene:enterScene( event )
 	local group = self.view
 
 	analysis.getUserHistory(storyboard.states.userXID )
-	
+
 
 end
 

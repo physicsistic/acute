@@ -15,10 +15,34 @@ local scene = storyboard.newScene()
 storyboard.purgeOnSceneChange = true
 
 
+
 function scene:createScene( event )
 	local group = self.view
-	local walkthroughView = native.newWebView( 0, 0, display.contentWidth, display.contentHeight*8/9)
+	local bannerHeight = display.contentHeight/10
+
+	local walkthroughView = native.newWebView( 0, bannerHeight, display.contentWidth, display.contentHeight-bannerHeight)
 	walkthroughView:request("walkthrough.html", system.ResourceDirectory)
+
+	local bannerBackground = display.newRect(group, 0,0, display.contentWidth, bannerHeight)
+	bannerBackground:setFillColor(189, 195, 199)
+
+	local check = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
+	check.x = display.contentWidth-bannerHeight/2
+	check.y = bannerHeight/2
+	function check:touch(event)
+		if event.phase == "ended" then
+			-- check:removeEventListener("touch", check)
+			walkthroughView:removeSelf()
+			storyboard.gotoScene("welcome", {effect="slideLeft"})
+		end
+	end
+	check:addEventListener("touch", check)
+
+	local text = display.newText(group, "swipe for walkthrough", 0, 0, storyboard.states.font.regular, 14)
+	text:setReferencePoint(display.CenterReferencePoint)
+	text.x = (display.contentWidth-bannerHeight)/2
+	text.y = bannerHeight/2
+
 
 end
 
