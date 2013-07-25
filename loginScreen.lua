@@ -136,17 +136,13 @@ function scene:createScene( event )
 						else
 							event.target.parent:removeSelf()
 							print("Program should only come here when there is no login error.\n Login succeeded.")
-							-- upapi.writeFile(storyboard.states.userInfoFilePath, result)
+							upapi.writeFile(storyboard.states.userInfoFilePath, result)
 
 							local token = response["token"]
 							local xid = response["user"]["xid"]
 							storyboard.states.loginToken = token
 							storyboard.states.userXID = xid
-							local tokenText = display.newText(token, 0, 5, storyboard.states.font.regular, 14)
-							tokenText:setTextColor(0,0,0)
 
-							local xidText = display.newText(xid, 0, 25, storyboard.states.font.regular, 14)
-							xidText:setTextColor(0,0,0)
 							local userInfo = {}
 							userInfo["gender"] = response["user"]["gender"]
 							userInfo["height"] = response["user"]["basic_info"]["height"]
@@ -158,20 +154,19 @@ function scene:createScene( event )
 							local appStateData = {}
 							appStateData["token"] = token
 							appStateData["userXID"] = xid
-							local idText = display.newText(storyboard.states.deviceID, 0, 45, storyboard.states.font.regular, 14)
-							idText:setTextColor(0,0,0)
-							local appStateDataText = display.newText(json.encode(appStateData), 0, 65, storyboard.states.font.regular, 14)
-							appStateDataText:setTextColor(0,0,0)
 
-							native.showAlert(storyboard.states.deviceID)
-							sync.updateDeviceState(storyboard.states.deviceID, appStateData)
-							local text = display.newText("uploaded to appStateData", 0, 100, storyboard.states.font.regular, 14)
-							text:setTextColor(0,0,0)
 							upapi.createFirebaseUser(xid, userInfo)
-													
-							-- print("login token = " .. token)
-							-- print("user xid = " .. xid)
-							
+
+							-- store data locally
+							local file = io.open(storyboard.states.userTokenFilePath, "w")
+							file:write(token)
+							io.close(file)
+
+
+							local file = io.open(storyboard.states.userXIDFilePath, "w")
+							file:write(xid)
+							io.close(file)
+
 							loadingWidget:stop()
 							loadingWidget:removeSelf()
 							storyboard.gotoScene("home", {effect="slideLeft"})

@@ -38,8 +38,10 @@ print(system.getInfo("deviceID"))
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
--- storyboard.states.userInfoFilePath = system.pathForFile("react_user_info.txt", system.DocumentsDirectory )
-
+-- System Documents Directory Files
+storyboard.states.userInfoFilePath = system.pathForFile("user_info.txt", system.DocumentsDirectory )
+storyboard.states.userTokenFilePath = system.pathForFile("user_token.txt", system.DocumentsDirectory )
+storyboard.states.userXIDFilePath = system.pathForFile("user_xid.txt", system.DocumentsDirectory)
 -- Font states
 storyboard.states.font = {}
 storyboard.states.font.regular = "Montserrat-Regular"
@@ -77,7 +79,7 @@ text.y = display.contentHeight * 5/6
 flash(bouncy, 500)
 flashingTimer = timer.performWithDelay(1000, function() flash(bouncy, 500)end, 0)
 
-function checkLoginToken()
+function checkLoginToken(token)
 	local function networkListener( event )
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
@@ -85,6 +87,9 @@ function checkLoginToken()
 			local meta = json.decode(event.response)["meta"]
 			if meta["code"] == 200 then
 				print("user is logged in")
+				local file = io.open(storyboard.states.userTokenFilePath, "r")
+				storyboard.states.loginToken = file:read("*a")
+				io.close(file)
 				gotoHomeScreen()
 			else 
 				print("user session token doesn't exist")
@@ -98,7 +103,7 @@ function checkLoginToken()
 	headers["Accept"] = "application/json"
 
 
-	headers["x-nudge-token"] = loginToken
+	headers["x-nudge-token"] = token
 	
 	params.headers = headers
 	network.request( "https://jawbone.com/nudge/api/users/@me/", "GET", networkListener, params)
@@ -139,26 +144,37 @@ function gotoWelcomeScreen()
 	magicTransition('welcome')
 end
 
-local loginToken = nil
+-- local loginToken = nil
 -- local appState = json.decode(sync.getDeviceState(storyboard.states.deviceID))
-function appStateCallback(response)
-	if json.decode(response) ~= nil then
-		loginToken = json.decode(response)["token"]
-		print(loginToken)
+-- function appStateCallback(response)
+-- 	if json.decode(response) ~= nil then
+-- 		loginToken = json.decode(response)["token"]
+-- 		print(loginToken)
 		
-	end
-	if loginToken == nil then
-		gotoWelcomeScreen()
-	else
-		print("user device found in db")
-		-- Firebase user data
-		storyboard.states.userXID = json.decode(response)["userXID"]
-		storyboard.states.loginToken = loginToken
-		-- check if user is logged in
-		checkLoginToken()
-	end
+-- 	end
+-- 	if loginToken == nil then
+-- 		gotoWelcomeScreen()
+-- 	else
+-- 		print("user device found in db")
+-- 		-- Firebase user data
+-- 		storyboard.states.userXID = json.decode(response)["userXID"]
+-- 		storyboard.states.loginToken = loginToken
+-- 		-- check if user is logged in
+-- 		checkLoginToken()
+-- 	end
+-- end
+
+local loginTokenFile = io.open(storyboard.states.userTokenFilePath, "r")
+if loginTokenFile then
+	local token = loginTokenFile:read( "*a" )
+	checkLoginToken(token)
+	io.close(loginTokenFile)
+else
+	gotoWelcomeScreen()
 end
-sync.getDeviceState(storyboard.states.deviceID, appStateCallback)
+
+
+-- sync.getDeviceState(storyboard.states.deviceID, appStateCallback)
 -- local loginToken = appState["token"]
 
 
