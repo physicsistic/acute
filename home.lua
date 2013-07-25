@@ -88,7 +88,7 @@ function scene:createScene( event )
 	signoutButton.onClick(function(e)
 		physics.removeBody( playButton )
 		physics.removeBody( bouncy )
-
+		playButton.fadeOut()
 		signoutButton.fadeOut()
 		insightsButton.fadeOut()
 
