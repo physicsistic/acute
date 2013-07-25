@@ -104,7 +104,49 @@ function scene:createScene( event )
 	function forwardCallback(event)
 		if event.phase == "ended" then
 			print("user clicked signup check mark")
-			upapi.signup(signupInfo, callback)
+			local function registrationCallback(loginError, result)
+				event.target.parent:removeSelf()
+				print("Program should only come here when there is no login error.\n Login succeeded.")
+				upapi.writeFile(storyboard.states.userInfoFilePath, result)
+
+				local token = response["token"]
+				local xid = response["user"]["xid"]
+				storyboard.states.loginToken = token
+				storyboard.states.userXID = xid
+
+				local userInfo = {}
+				userInfo["gender"] = response["user"]["gender"]
+				userInfo["height"] = response["user"]["basic_info"]["height"]
+				userInfo["weight"] = response["user"]["basic_info"]["weight"]
+				userInfo["dob"] = response["user"]["basic_info"]["dob"]
+				userInfo["name"] = response["user"]["first"] .. "_" .. response["user"]["last"]
+
+				-- add data to firebase for syncing
+				local appStateData = {}
+				appStateData["token"] = token
+				appStateData["userXID"] = xid
+
+				upapi.createFirebaseUser(xid, userInfo)
+
+				-- store data locally
+				local file = io.open(storyboard.states.userTokenFilePath, "w")
+				file:write(token)
+				io.close(file)
+
+
+				local file = io.open(storyboard.states.userXIDFilePath, "w")
+				file:write(xid)
+				io.close(file)
+
+				local file = io.open(storyboard.states.userReturnedFilePath, "w")
+				file:write("logged")
+				io.close(file)
+
+				loadingWidget:stop()
+				loadingWidget:removeSelf()
+				storyboard.gotoScene("home", {effect="slideLeft"})
+			end
+			upapi.signup(signupInfo, registrationCallback)
 		end
 	end
 

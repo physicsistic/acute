@@ -40,6 +40,8 @@ storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
 -- System Documents Directory Files
 storyboard.states.userInfoFilePath = system.pathForFile("user_info.txt", system.DocumentsDirectory )
+print(storyboard.states.userInfoFilePath)
+print(system.pathForFile("main.lua", system.ResourceDirectory))
 storyboard.states.userTokenFilePath = system.pathForFile("user_token.txt", system.DocumentsDirectory )
 storyboard.states.userXIDFilePath = system.pathForFile("user_xid.txt", system.DocumentsDirectory)
 storyboard.states.userReturnedFilePath = system.pathForFile("user_returned.txt", system.DocumentsDirectory)

@@ -134,14 +134,14 @@ end
 
 function signup(params, callback)
 
-	local signupURL = "https://nudgestage.jawbone.com/user/signin/login"
+	local signupURL = "https://nudgestage.jawbone.com/user/signin/account_create_action"
 
-	local signupInfo = ""
-	for key, value in pairs(params) do
-		signupInfo = signupInfo .. key .. "=" .. value .. "&"
-	end
+	local signupInfo = "new-account-first-name="..params["first"].."&new-account-last-name="..params["last"].."&new-account-email="..params["email"].."&new-account-password="..params["password"]
+
+	print(signupInfo)
 
 
+	print(signupURL)
 	rawPOSTRequest(signupURL, signupInfo, callback)
 end
 

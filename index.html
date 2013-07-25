@@ -125,7 +125,7 @@ img, audio, video, canvas { max-width: 100%; }
 
         }
         .pane h3 {
-            font-size: 1em;
+            font-size: 1.1em;
                 position: absolute;
                 text-align: center;
             width: 100%;
@@ -156,7 +156,7 @@ img, audio, video, canvas { max-width: 100%; }
 }
 
 .bottom-header {
-    bottom: 4%;
+    bottom: 5%;
 
 }
 
@@ -171,12 +171,12 @@ img, audio, video, canvas { max-width: 100%; }
 
 
 #ballWrapper {
-  width: 140px;
+  width: 100px;
   height: 300px;
   position: fixed;
   left: 50%;
-  top: 25%;
-  margin-left: -70px;
+  top: 20%;
+  margin-left: -50px;
   z-index: 100;
   -webkit-transform: scale(1);
   -moz-transform: scale(1);
@@ -198,8 +198,8 @@ img, audio, video, canvas { max-width: 100%; }
 }*/
 
 #ball {
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 70px;
   background: rgb(187,187,187);
 
@@ -265,12 +265,12 @@ img, audio, video, canvas { max-width: 100%; }
   }
   40% {}
   50% {top: 140px;
-    height: 140px;
+    height: 100px;
     -webkit-animation-timing-function: ease-out;
   }
-  55% {top: 160px; height: 120px; border-radius: 70px / 60px;
+  55% {top: 160px; height: 80px; border-radius: 50px / 40px;
     -webkit-animation-timing-function: ease-in;}
-  65% {top: 120px; height: 140px; border-radius: 70px;
+  65% {top: 120px; height: 100px; border-radius: 50px;
     -webkit-animation-timing-function: ease-out;}
   95% {
     top: 0;   
@@ -287,12 +287,12 @@ img, audio, video, canvas { max-width: 100%; }
   }
   40% {}
   50% {top: 140px;
-    height: 140px;
+    height: 100px;
     -moz-animation-timing-function: ease-out;
   }
-  55% {top: 160px; height: 120px; border-radius: 70px / 60px;
+  55% {top: 160px; height: 80px; border-radius: 50px / 40px;
     -moz-animation-timing-function: ease-in;}
-  65% {top: 120px; height: 140px; border-radius: 70px;
+  65% {top: 120px; height: 100px; border-radius: 50px;
     -moz-animation-timing-function: ease-out;}
   95% {
     top: 0;   
@@ -309,12 +309,12 @@ img, audio, video, canvas { max-width: 100%; }
   }
   40% {}
   50% {top: 140px;
-    height: 140px;
+    height: 100px;
     -o-animation-timing-function: ease-out;
   }
-  55% {top: 160px; height: 120px; border-radius: 70px / 60px;
+  55% {top: 160px; height: 80px; border-radius: 50px / 40px;
     -o-animation-timing-function: ease-in;}
-  65% {top: 120px; height: 140px; border-radius: 70px;
+  65% {top: 120px; height: 100px; border-radius: 50px;
     -o-animation-timing-function: ease-out;}
   95% {
     top: 0;   
@@ -331,12 +331,12 @@ img, audio, video, canvas { max-width: 100%; }
   }
   40% {}
   50% {top: 140px;
-    height: 140px;
+    height: 100px;
     -ms-animation-timing-function: ease-out;
   }
-  55% {top: 160px; height: 120px; border-radius: 70px / 60px;
+  55% {top: 160px; height: 80px; border-radius: 50px / 40px;
     -ms-animation-timing-function: ease-in;}
-  65% {top: 120px; height: 140px; border-radius: 70px;
+  65% {top: 120px; height: 100px; border-radius: 50px;
     -ms-animation-timing-function: ease-out;}
   95% {
     top: 0;   
@@ -354,19 +354,19 @@ img, audio, video, canvas { max-width: 100%; }
   }
   50% {
     top: 140px;
-    height: 140px;
+    height: 100px;
     animation-timing-function: ease-out;
   }
   55% {
     top: 160px; 
-    height: 120px; 
-    border-radius: 70px / 60px;
+    height: 80px; 
+    border-radius: 50px / 40px;
     animation-timing-function: ease-in;
   }
   65% {
     top: 120px; 
-    height: 140px; 
-    border-radius: 70px;
+    height: 100px; 
+    border-radius: 50px;
     animation-timing-function: ease-out;
   }
   95% {
@@ -385,8 +385,8 @@ img, audio, video, canvas { max-width: 100%; }
   0% {
     bottom: 0;
     margin-left: -30px;
-    width: 60px;
-    height: 75px;
+    width: 40px;
+    height: 55px;
     background: rgba(20, 20, 20, .1);
     box-shadow: 0px 0 20px 35px rgba(20,20,20,.1);
     border-radius: 30px / 40px;
@@ -405,8 +405,8 @@ img, audio, video, canvas { max-width: 100%; }
   100% {
     bottom: 0;
     margin-left: -30px;
-    width: 60px;
-    height: 75px;
+    width: 40px;
+    height: 55px;
     background: rgba(20, 20, 20, .1);
     box-shadow: 0px 0 20px 35px rgba(20,20,20,.1);
     border-radius: 30px / 40px;
@@ -595,7 +595,7 @@ left: 10%;
                 <div class="data-square">
                     <h1 class="top-header">Bouncy is smarter<br />with Jawbone's UP.</h1>
                     <div class="ball-partner" id="up-band"><img src="up-band.png" /></div>
-                    <h1 class="bottom-header">He knows how sleep changes<br />your mental acuity.</h1>
+                    <h1 class="bottom-header">He knows sleep affects<br />your mental acuity.</h1>
                     <h3>Get it? Acute ball? Acuity? Ha.</h3>
                 </div>                
             </li>
@@ -745,10 +745,12 @@ function slideAnimationRelative(offset) {
 
               case 2:
                 $("#ball").css("background-image", "url(redBouncy.png)");
+                $("#ball").show();
                 break;
 
               case 3:
-                $("#ball").css("background-image", "url(orangeBouncy.png)");
+                //$("#ball").css("background-image", "url(orangeBouncy.png)");
+                $("#ball").hide();
                 //slideAnimationRelative(-100);
 
                 break;
@@ -756,6 +758,8 @@ function slideAnimationRelative(offset) {
               case 4:
                 $("#ball").css("background-image", "url(blueBouncy.png)");
                 //slideAnimationRelative(100);
+                $("#ball").show();
+
 
                 break;
 

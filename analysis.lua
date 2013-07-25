@@ -61,7 +61,7 @@ function sleepPattern(rawdata)
 		if v["userMood"] ~= nil then
 			print(v["userMood"])
 			if v["aveReactTime"] < 1.5 then
-				table.insert(storyboard.states.screen3.moods, moodSchemes[v["userMood"]])
+				table.insert(storyboard.states.screen3.moods, v["userMood"])
 				table.insert(storyboard.states.screen3.timings, v["aveReactTime"])
 			end
 		end
@@ -88,14 +88,12 @@ function sleepPattern(rawdata)
 	local sessionStats = {}
 	sessionStats.screen1 = storyboard.states.screen1
 	sessionStats.screen3 = storyboard.states.screen3
+	local sessionStatsData = "var screen1 = " .. json.encode(sessionStats.screen1) .. ";\n" .. "var screen3 = ".. json.encode(sessionStats.screen3) .. ";\n"
+	local file = io.open(system.pathForFile("sessionStats.js", system.DocumentsDirectory), "w")
+	file:write(sessionStatsData)
+	print(sessionStatsData)
+
 	upapi.updateSessionStats(sessionStats)
-
-
-	print("less sleep count = " .. lessSleep.count)
-	print("more sleep count = " .. moreSleep.count)
-
-	print(json.encode(storyboard.states.screen3))
-	print(json.encode(storyboard.states.screen1))
 
 end
 
@@ -110,9 +108,9 @@ end
 
 function getUserHistory(xid)
 	-- sample data from Zach for testing
-	if xid == nil then
-		xid = "RGaCBFg9CsBWTbPeM_ZTiw"
-	end
+	-- if xid == nil then
+	-- 	xid = "RGaCBFg9CsBWTbPeM_ZTiw"
+	-- end
 	print("user xid is " .. xid)
 	network.request(userFirebaseURL .. xid .. "/sessions.json", "GET", networkErrorHandler)
 end
