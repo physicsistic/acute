@@ -364,17 +364,24 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
-
-	analysis.getUserHistory(storyboard.states.userXID )
-
-
 end
 
 function scene:exitScene( event )
 	local group = self.view
 	-- Update user performance if relevant
 
-	
+	if storyboard.states.newUser == true then
+		local filename = system.pathForFile( "sessionStats.js", system.CachesDirectory )
+		local filedata = "var screen1 = " .. json.encode(storyboard.states.screen1) .. ";\n"
+		filedata = filedata .. "var screen3 = " .. json.encode(storyboard.states.screen3) .. ";\n"
+		filedata = filedata .. "var latestReactionTime = " .. sessionData.aveReactTime .. ";\n"
+
+		print(filedata)
+
+		upapi.writeFile(filename, filedata)
+	else
+		analysis.getUserHistory(storyboard.states.userXID )
+	end
 
 end
 

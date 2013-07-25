@@ -122,37 +122,37 @@ function scene:createScene( event )
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
 
-	-- Get user information and trends for analysis later
-	local function userTrendsCallback(failed, result)
-		if failed then
-			print("Network failure. Please try again.")
-		else
-			-- print("printing user call back result: " .. result)
-			local userTrend = json.decode(result)
+	-- -- Get user information and trends for analysis later
+	-- local function userTrendsCallback(failed, result)
+	-- 	if failed then
+	-- 		print("Network failure. Please try again.")
+	-- 	else
+	-- 		-- print("printing user call back result: " .. result)
+	-- 		local userTrend = json.decode(result)
 
-			local recentData = ((userTrend.data).data)[8]
+	-- 		local recentData = ((userTrend.data).data)[8]
 
-			if recentData == nil then
-			else
-				-- get sleep quality if possible
-				if recentData[2]["s_quality"] then
-					storyboard.states.sleepQuality = recentData[2]["s_quality"]
-				else
-					storyboard.states.sleepQuality = nil
-				end
+	-- 		if recentData == nil then
+	-- 		else
+	-- 			-- get sleep quality if possible
+	-- 			if recentData[2]["s_quality"] then
+	-- 				storyboard.states.sleepQuality = recentData[2]["s_quality"]
+	-- 			else
+	-- 				storyboard.states.sleepQuality = nil
+	-- 			end
 
-				if recentData[2]["s_duration"] then
-					storyboard.states.sleepDuration = recentData[2]["s_duration"]
-				else
-					storyboard.states.sleepDuration = nil
-				end
-				print(storyboard.states.sleepQuality)
-			end
+	-- 			if recentData[2]["s_duration"] then
+	-- 				storyboard.states.sleepDuration = recentData[2]["s_duration"]
+	-- 			else
+	-- 				storyboard.states.sleepDuration = nil
+	-- 			end
+	-- 			print(storyboard.states.sleepQuality)
+	-- 		end
 
-		end
-	end
+	-- 	end
+	-- end
 
-	upapi.getUserMetrics("trends", userTrendsCallback)
+	-- upapi.getUserMetrics("trends", userTrendsCallback)
 
 
 end

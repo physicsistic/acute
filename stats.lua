@@ -112,14 +112,7 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
-	local filename = system.pathForFile( "sessionStats", system.CachesDirectory )
-	local filedata = "var screen1 = " .. json.encode(storyboard.states.screen1) .. ";\n"
-	filedata = filedata .. "var screen3 = " .. json.encode(storyboard.states.screen3) .. ";\n"
-	filedata = filedata .. "var latestReactionTime = " .. sessionData.aveReactTime .. ";\n"
 
-	print(filedata)
-
-	upapi.writeFile(filename, filedata)
 end
 
 

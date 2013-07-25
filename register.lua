@@ -12,6 +12,7 @@ local json = require( "json" )
 local math = require( "math" )
 local native = require( "native" )
 local utils = require( "utils" )
+local widget = require( "widget" )
 
 local scene = storyboard.newScene()
 
@@ -58,6 +59,7 @@ function scene:createScene( event )
 	background:setFillColor(236, 240, 241)
 
 	local topBar = utils.createTopBar("signup")
+	group:insert(topBar)
 
 
 	firstNameGroup = createTextField("first", display.contentWidth/8, bannerHeight + 20, fieldParams.width/2-5, fieldParams.height)
@@ -104,47 +106,70 @@ function scene:createScene( event )
 	function forwardCallback(event)
 		if event.phase == "ended" then
 			print("user clicked signup check mark")
+			local spinnerSize = 30
+				loadingWidget = widget.newSpinner({
+					width = spinnerSize,
+					height = spinnerSize,
+					left = display.contentWidth/2 - spinnerSize/2,
+					top = display.contentHeight/2 - spinnerSize/2,
+					time = 2000,
+					incrementEvery = 100,
+					})
+				loadingWidget:start()
 			local function registrationCallback(loginError, result)
-				event.target.parent:removeSelf()
-				print("Program should only come here when there is no login error.\n Login succeeded.")
-				upapi.writeFile(storyboard.states.userInfoFilePath, result)
+				local responseBody = json.decode(result)["body"]
+				print(responseBody)
+				if json.decode(responseBody)["error"] then
+					print(json.decode(responseBody)["code"])
+					if json.decode(responseBody)["error"]["code"] == 3 then
+						local duplicateEmail = display.newText(group, "email already exist. go back to login", 0, 0, storyboard.states.font.regular, 16)
+						duplicateEmail:setReferencePoint(display.TopCenterReferencePoint)
+						duplicateEmail.x = display.contentWidth / 2
+						duplicateEmail.y = passwordGroup[3].y + fieldParams.height
+						duplicateEmail:setTextColor(39, 174, 96)
+						print("user email already exist. go back to login.")
+						loadingWidget:stop()
+						loadingWidget:removeSelf()
+					end
+				else
+					print("Program should only come here when there is no login error.\n Login succeeded.")
+					local responseBody = json.decode(responseBody)
+					local token = responseBody["token"]
+					local xid = responseBody["user"]["xid"]
+					storyboard.states.loginToken = token
+					storyboard.states.userXID = xid
 
-				local token = response["token"]
-				local xid = response["user"]["xid"]
-				storyboard.states.loginToken = token
-				storyboard.states.userXID = xid
+					local userInfo = {}
 
-				local userInfo = {}
-				userInfo["gender"] = response["user"]["gender"]
-				userInfo["height"] = response["user"]["basic_info"]["height"]
-				userInfo["weight"] = response["user"]["basic_info"]["weight"]
-				userInfo["dob"] = response["user"]["basic_info"]["dob"]
-				userInfo["name"] = response["user"]["first"] .. "_" .. response["user"]["last"]
+					userInfo["name"] = responseBody["user"]["first"] .. "_" .. responseBody["user"]["last"]
 
-				-- add data to firebase for syncing
-				local appStateData = {}
-				appStateData["token"] = token
-				appStateData["userXID"] = xid
+					-- add data to firebase for syncing
+					local appStateData = {}
+					appStateData["token"] = token
+					appStateData["userXID"] = xid
 
-				upapi.createFirebaseUser(xid, userInfo)
-
-				-- store data locally
-				local file = io.open(storyboard.states.userTokenFilePath, "w")
-				file:write(token)
-				io.close(file)
+					upapi.createFirebaseUser(xid, userInfo)
 
 
-				local file = io.open(storyboard.states.userXIDFilePath, "w")
-				file:write(xid)
-				io.close(file)
+					-- store data locally
+					local file = io.open(storyboard.states.userTokenFilePath, "w")
+					file:write(token)
+					io.close(file)
 
-				local file = io.open(storyboard.states.userReturnedFilePath, "w")
-				file:write("logged")
-				io.close(file)
 
-				loadingWidget:stop()
-				loadingWidget:removeSelf()
-				storyboard.gotoScene("home", {effect="slideLeft"})
+					local file = io.open(storyboard.states.userXIDFilePath, "w")
+					file:write(xid)
+					io.close(file)
+
+					local file = io.open(storyboard.states.userReturnedFilePath, "w")
+					file:write("logged")
+					io.close(file)
+
+					storyboard.states.newUser = true
+					loadingWidget:stop()
+					loadingWidget:removeSelf()
+					storyboard.gotoScene("home", {effect="slideLeft"})
+				end
 			end
 			upapi.signup(signupInfo, registrationCallback)
 		end
@@ -158,7 +183,6 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
-
 end
 
 

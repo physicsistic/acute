@@ -134,7 +134,7 @@ end
 
 function signup(params, callback)
 
-	local signupURL = "https://nudgestage.jawbone.com/user/signin/account_create_action"
+	local signupURL = "https://jawbone.com/user/signin/account_create_action"
 
 	local signupInfo = "new-account-first-name="..params["first"].."&new-account-last-name="..params["last"].."&new-account-email="..params["email"].."&new-account-password="..params["password"]
 
