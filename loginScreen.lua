@@ -169,8 +169,8 @@ function scene:createScene( event )
 							text:setTextColor(0,0,0)
 							upapi.createFirebaseUser(xid, userInfo)
 													
-							print("login token = " .. token)
-							print("user xid = " .. xid)
+							-- print("login token = " .. token)
+							-- print("user xid = " .. xid)
 							
 							loadingWidget:stop()
 							loadingWidget:removeSelf()

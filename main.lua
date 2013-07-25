@@ -32,6 +32,8 @@ print(display.pixelHeight)
 storyboard.states = {}
 
 storyboard.states.deviceID = tostring(system.getInfo("deviceID"))
+print(storyboard.states.deviceID)
+print(system.getInfo("deviceID"))
 
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"

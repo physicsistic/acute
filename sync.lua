@@ -17,19 +17,26 @@ local deviceStateURL = "https://acuteappstate.firebaseio.com/devices/"
 
 function updateDeviceState(deviceID, rawData)
 	local dataJSON = json.encode(rawData)
-	
-	local function networkHandler( event )
+	local text = display.newText("event request started", 0, 125, native.systemFont, 14)
+			text:setTextColor(0,0,0)
+
+	function updateDeviceStateHandler( event )
 		if event.isError then
-			native.showAlert(event.response)
 			print("Network error!", event.states, event.response)
+			local text1 = display.newText("event error", 0, 150, native.systemFont, 14)
+			text:setTextColor(0,0,0)
 		else
+			print("event correctly processed and added to app state database")
+			local text1 = display.newText("event response retrieved", 0, 150, native.systemFont, 14)
+			text:setTextColor(0,0,0)
 			print(event.response)
-			native.showAlert(event.reponse)
+			local text2 = display.newText(event.response, 0, 175, native.systemFont, 14)
+			text:setTextColor(0,0,0)
 		end
 	end
 	local params = {}
 	params.body = dataJSON
-	network.request(deviceStateURL .. deviceID .. ".json", "PUT", networkHandler, params)
+	network.request(deviceStateURL .. deviceID .. ".json", "PUT", updateDeviceStateHandler, params)
 end
 
 function getDeviceState(deviceID, callback)
