@@ -46,7 +46,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 5,
+		totalNumberOfRounds = 1,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
@@ -375,6 +375,9 @@ function scene:exitScene( event )
 		local filedata = "var screen1 = " .. json.encode(storyboard.states.screen1) .. ";\n"
 		filedata = filedata .. "var screen3 = " .. json.encode(storyboard.states.screen3) .. ";\n"
 		filedata = filedata .. "var latestReactionTime = " .. sessionData.aveReactTime .. ";\n"
+		storyboard.states.screen3 = {}
+		storyboard.states.screen3.timings = []
+		storyboard.states.screen3.moods = []
 
 		print(filedata)
 

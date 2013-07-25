@@ -88,9 +88,22 @@ function scene:createScene( event )
 
 	-- webview scorecards
 	local webView = native.newWebView(0, bestCard.y + cardHeight/2 + 10, display.contentWidth, 260)
-	webView:request("stats.html", system.ResourceDirectory)
+	local screen1URL = "screen1=" .. tostring(storyboard.states.screen1.moreSleep) .. "+" .. tostring(storyboard.states.screen1.lessSleep)
+	-- if storyboard.states.screen1.moreSleep == nil or 
+	local timingsURL = "&timings="
+	for i=1,table.getn(storyboard.states.screen3.timings) do timingsURL = timingsURL ..  storyboard.states.screen3.timings[i] .. "+" end
+	timingsURL = timingsURL .. sessionData.aveReactTime
+	local moodsURL = "&moods="
+	for i=1,table.getn(storyboard.states.screen3.moods) do moodsURL = moodsURL ..  storyboard.states.screen3.moods[i] .. "+" end
+
+	moodsURL = moodsURL .. storyboard.states.userMood
+	local parsedURL = "stats.html?" .. screen1URL .. timingsURL .. moodsURL .. "&recent=" .. sessionData.aveReactTime
+	print(parsedURL)
+	webView:request("stats.html?" .. parsedURL, system.ResourceDirectory)
 	webView.hasBackground = false
 	group:insert(webView)
+	
+
 
 	-- button to replay
 	local replayButton = createButton("home", display.contentWidth/2, display.contentHeight * 10/11, display.contentWidth/2, display.contentHeight/11)

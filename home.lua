@@ -46,6 +46,11 @@ function scene:createScene( event )
 	local playButton = utils.createButton("play", display.contentWidth/2, display.contentHeight*3/5)
 	local insightsButton = utils.createButton("insights", display.contentWidth/2, playButton.y + utils.buttonSep + playButton.height)	
 	insightsButton.setActive( false )
+	local signoutButton = utils.createButton("log out", display.contentWidth/2, display.contentHeight*11/12)
+	signoutButton.setWidth(display.contentWidth/3)
+	signoutButton.setHeight(display.contentHeight/15)
+	signoutButton.setColor(230, 126, 34)
+	signoutButton.setFontSize(14)
 
 	group:insert(prison)
 	group:insert(bouncy)
@@ -54,6 +59,7 @@ function scene:createScene( event )
 
 	playButton.fadeIn()
 	insightsButton.fadeIn()
+	signoutButton.fadeIn()
 
 	playButton.onClick(function(e)
 		physics.removeBody( playButton )
@@ -61,6 +67,7 @@ function scene:createScene( event )
 
 		playButton.fadeOut()
 		insightsButton.fadeOut()
+		signoutButton.fadeOut()
 
 		transition.to( bouncy, {
 			x = display.contentWidth/2,
@@ -76,6 +83,39 @@ function scene:createScene( event )
 		})
 		
 		
+	end)
+
+	signoutButton.onClick(function(e)
+		physics.removeBody( playButton )
+		physics.removeBody( bouncy )
+
+		signoutButton.fadeOut()
+		insightsButton.fadeOut()
+
+		transition.to( bouncy, {
+			x = display.contentWidth/2,
+			y = display.contentHeight/2,
+			xScale = 1,
+			yScale = 1,
+			time = 700,
+			transition = easing.outExpo,
+			rotation = 0, 
+			onComplete = function()
+				local file = io.open(storyboard.states.userTokenFilePath, "w")
+				file:write("")
+				io.close(file)
+
+
+				local file = io.open(storyboard.states.userXIDFilePath, "w")
+				file:write("")
+				io.close(file)
+
+				local file = io.open(storyboard.states.userReturnedFilePath, "w")
+				file:write("")
+				io.close(file)
+				storyboard.gotoScene( "welcome" )
+			end
+		})
 	end)
 
 	insightsButton.onClick(function(e)
@@ -121,38 +161,6 @@ function scene:createScene( event )
 	end
 
 	Runtime:addEventListener("accelerometer", onAccelerate)
-
-	-- -- Get user information and trends for analysis later
-	-- local function userTrendsCallback(failed, result)
-	-- 	if failed then
-	-- 		print("Network failure. Please try again.")
-	-- 	else
-	-- 		-- print("printing user call back result: " .. result)
-	-- 		local userTrend = json.decode(result)
-
-	-- 		local recentData = ((userTrend.data).data)[8]
-
-	-- 		if recentData == nil then
-	-- 		else
-	-- 			-- get sleep quality if possible
-	-- 			if recentData[2]["s_quality"] then
-	-- 				storyboard.states.sleepQuality = recentData[2]["s_quality"]
-	-- 			else
-	-- 				storyboard.states.sleepQuality = nil
-	-- 			end
-
-	-- 			if recentData[2]["s_duration"] then
-	-- 				storyboard.states.sleepDuration = recentData[2]["s_duration"]
-	-- 			else
-	-- 				storyboard.states.sleepDuration = nil
-	-- 			end
-	-- 			print(storyboard.states.sleepQuality)
-	-- 		end
-
-	-- 	end
-	-- end
-
-	-- upapi.getUserMetrics("trends", userTrendsCallback)
 
 
 end

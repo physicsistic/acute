@@ -5,7 +5,7 @@
     <title>Hammer.js</title>
     <link href="bootstrap.css" rel="stylesheet">
     <script src="d3.js"></script>
-    <script src="/AppData/Documents/sessionStats.js"></script>
+    
 
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <style>
@@ -574,6 +574,10 @@ font-size: 10px;
 
     </script>
 <script>
+document.querySelector('#moreSleepScore').innerHTML = document.URL.split('?')[1]
+//alert(document.URL)
+
+
 var w = 240,
     h = 280,
     padding = 30,
@@ -681,6 +685,7 @@ svg.selectAll("circle")
        //return rScale(d[1]);
      return 6;
      });
+
 
 /*
 svg.selectAll("circle")

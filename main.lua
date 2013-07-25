@@ -107,10 +107,7 @@ function checkLoginToken(token)
 	local params = {}
 	local headers = {}
 	headers["Accept"] = "application/json"
-
-
 	headers["x-nudge-token"] = token
-	
 	params.headers = headers
 	network.request( "https://jawbone.com/nudge/api/users/@me/", "GET", networkListener, params)
 end
@@ -158,8 +155,13 @@ local loginTokenFile = io.open(storyboard.states.userTokenFilePath, "r")
 
 if loginTokenFile then
 	local token = loginTokenFile:read( "*a" )
-	checkLoginToken(token)
 	io.close(loginTokenFile)
+	if string.len(token) == 0 then
+		gotoWelcomeScreen()
+	else
+		checkLoginToken(token)
+	end
+	
 else
 	local returnedUserFile = io.open(storyboard.states.userReturnedFilePath, "r")
 	if returnedUserFile then

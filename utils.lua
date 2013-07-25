@@ -88,6 +88,21 @@ function M.createButton(label, x, y, width, height)
 		end)
 	end
 
+	function button.setWidth( width )
+		buttonBackground.width = width
+	end
+
+	function  button.setHeight( height )
+		buttonBackground.height = height
+	end
+	function button.setColor(r, g, b)
+		buttonBackground:setFillColor(r, g, b)
+	end
+
+	function button.setFontSize(size)
+		buttonLabel.size = size
+		-- body
+	end
 	button.setActive( true )
 
 	return button
