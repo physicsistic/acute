@@ -92,30 +92,6 @@ function scene:createScene( event )
 		signoutButton.fadeOut()
 		insightsButton.fadeOut()
 
-		transition.to( bouncy, {
-			x = display.contentWidth/2,
-			y = display.contentHeight/2,
-			xScale = 1,
-			yScale = 1,
-			time = 700,
-			transition = easing.outExpo,
-			rotation = 0, 
-			onComplete = function()
-				local file = io.open(storyboard.states.userTokenFilePath, "w")
-				file:write("")
-				io.close(file)
-
-
-				local file = io.open(storyboard.states.userXIDFilePath, "w")
-				file:write("")
-				io.close(file)
-
-				local file = io.open(storyboard.states.userReturnedFilePath, "w")
-				file:write("")
-				io.close(file)
-				storyboard.gotoScene( "welcome" )
-			end
-		})
 	end)
 
 	insightsButton.onClick(function(e)
