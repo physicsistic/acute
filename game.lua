@@ -376,8 +376,8 @@ function scene:exitScene( event )
 		filedata = filedata .. "var screen3 = " .. json.encode(storyboard.states.screen3) .. ";\n"
 		filedata = filedata .. "var latestReactionTime = " .. sessionData.aveReactTime .. ";\n"
 		storyboard.states.screen3 = {}
-		storyboard.states.screen3.timings = []
-		storyboard.states.screen3.moods = []
+		storyboard.states.screen3.timings = {}
+		storyboard.states.screen3.moods = {}
 
 		print(filedata)
 
