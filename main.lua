@@ -22,7 +22,7 @@ local animate = require "animate"
 local sync = require "sync"
 
 
-print(system.getInfo("model"))
+print(system.getInfo("platformName"))
 print(system.getInfo("deviceID"))
 print(display.pixelHeight)
 
@@ -31,7 +31,7 @@ print(display.pixelHeight)
 
 storyboard.states = {}
 
-storyboard.states.deviceID = tostring(system.getInfo("deviceID"))
+storyboard.states.deviceID = "id" .. tostring(system.getInfo("deviceID"))
 print(storyboard.states.deviceID)
 print(system.getInfo("deviceID"))
 

@@ -36,7 +36,13 @@ function updateDeviceState(deviceID, rawData)
 	end
 	local params = {}
 	params.body = dataJSON
-	network.request(deviceStateURL .. deviceID .. ".json", "PUT", updateDeviceStateHandler, params)
+	local text3 = display.newText(dataJSON, 0, 200, native.systemFont, 14)
+	text3:setTextColor(0,0,0)
+
+	local URL = deviceStateURL .. deviceID .. ".json"
+	local text4 = display.newText(URL, 0, 225, 200, 200, native.systemFont, 14)
+	text4:setTextColor(0,0,0)
+	network.request(URL, "PUT", updateDeviceStateHandler, params)
 end
 
 function getDeviceState(deviceID, callback)
