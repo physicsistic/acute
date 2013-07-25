@@ -91,6 +91,7 @@ function scene:createScene( event )
 		playButton.fadeOut()
 		signoutButton.fadeOut()
 		insightsButton.fadeOut()
+		storyboard.gotoScene( "welcome" )
 
 	end)
 
