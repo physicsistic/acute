@@ -318,7 +318,7 @@ height: 80%;
 width: 70%;
 position: absolute;
 bottom: 30px;
-left: 0;
+right: 10px;
 }
     </style>
 </head>
@@ -329,15 +329,15 @@ left: 0;
         <ul>
             <li class="pane pane1">
                 <div class="data-square">
-                    <h1 id="justNowScore">421</h1>
+                    <h1 id="justNowScore"></h1>
                     <h3>just now</h3>
                     <div class="bottom">
                         <div class="half" id="left-half" style="float: left;">
-                            <h1 id="moreSleepScore">310</h1>
+                            <h1 id="moreSleepScore"></h1>
                             <h3>with more sleep</h3>
                         </div>
                         <div class="half" id="right-half">
-                            <h1 id="lessSleepScore">760</h1>
+                            <h1 id="lessSleepScore"></h1>
                             <h3>with less sleep</h3>
 
                         </div>
@@ -354,13 +354,13 @@ left: 0;
                     </div>
                     <div class="section" style="padding-top: 50px;">
                         <div class="graph">
-                            <div class="graph-bar world" style="width: 90%;"></div>
+                            <div class="graph-bar world" id="user-bar" style="width: 90%;"></div>
                         </div>
                         <div class="graph">
-                            <div class="graph-bar user" style="width: 40%;"></div>
+                            <div class="graph-bar user" id="gender-bar" style="width: 40%;"></div>
                         </div>
                         <div class="graph">
-                            <div class="graph-bar user" style="width: 10%;"></div>
+                            <div class="graph-bar user" id="age-bar" style="width: 10%;"></div>
                         </div>
                     </div>
                 </div>
@@ -424,7 +424,7 @@ left: 0;
         // no sleep data
         $(".bottom").remove();
         $("#justNowScore").html("");
-        $(".pane1 h3").html("Buy an UP to log your sleep and learn more about how your sleep affects your mental acuity.");
+        $(".pane1 h3").html("Hmm, doesn't look like you logged sleep! Log your sleep tonight to learn how it affects your mental acuity.");
         $(".pane1 h3").attr("style", "font-size: 16px; line-height: 140%; padding: 0px 15px;");
         $(".pane1 h1").append("<img src='moon.png' />");
     }
@@ -434,6 +434,10 @@ left: 0;
         document.querySelector('#lessSleepScore').innerHTML = round(lessSleep,3);
         document.querySelector('#justNowScore').innerHTML = round(recent,3);
     }
+
+    document.getElementById("user-bar").style.cssText = "width: " + round(recent/1.5, 3) * 100 + "%;";
+    document.getElementById("gender-bar").style.cssText = "width: " + round(genderTime/1.5, 3) * 100+ "%;";
+    document.getElementById("age-bar").style.cssText = "width: " + round(ageTime/1.5, 3) * 100 + "%;";
 
     var debug_el = $("#debug");
     function debug(text) {
