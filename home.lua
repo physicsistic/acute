@@ -144,6 +144,10 @@ end
 
 function scene:enterScene( event )
 	local group = self.view	
+	-- collect a bunc of information about the user
+	function friendsCallback(error, result) print(result) end
+	-- upapi.getUserMetrics("friends", friendsCallback)
+	upapi.getUserMetrics("trends", friendsCallback)
 end
 
 function scene:exitScene( event )

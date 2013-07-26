@@ -117,9 +117,6 @@ function scene:createScene( event )
 				loadingWidget:start()
 				-- Login callback
 				local function loginCallback(loginError, result)
-					
-					print("Are there any login errors?")
-					print(loginError)
 					if not loginError then
 						response = json.decode(result)
 						if response["error"] then

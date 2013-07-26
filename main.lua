@@ -22,26 +22,17 @@ local animate = require "animate"
 local sync = require "sync"
 
 
-print(system.getInfo("platformName"))
-print(system.getInfo("deviceID"))
-print(display.pixelHeight)
-
-
 -- persistent states that go between screens 
 
 storyboard.states = {}
 
-storyboard.states.deviceID = "id" .. tostring(system.getInfo("deviceID"))
-print(storyboard.states.deviceID)
-print(system.getInfo("deviceID"))
+
 
 -- Firebase attributes
 storyboard.states.firebaseURL = "https://react.firebaseio.com/users"
 
 -- System Documents Directory Files
 storyboard.states.userInfoFilePath = system.pathForFile("user_info.txt", system.DocumentsDirectory )
-print(storyboard.states.userInfoFilePath)
-print(system.pathForFile("main.lua", system.ResourceDirectory))
 storyboard.states.userTokenFilePath = system.pathForFile("user_token.txt", system.DocumentsDirectory )
 storyboard.states.userXIDFilePath = system.pathForFile("user_xid.txt", system.DocumentsDirectory)
 storyboard.states.userReturnedFilePath = system.pathForFile("user_returned.txt", system.DocumentsDirectory)
@@ -96,6 +87,8 @@ function checkLoginToken(token)
 				local file = io.open(storyboard.states.userXIDFilePath, "r")
 				storyboard.states.userXID = file:read("*a")
 				io.close(file)
+
+				
 				gotoHomeScreen()
 			else 
 				print("user session token doesn't exist")
@@ -169,12 +162,10 @@ else
 			io.close(returnedUserFile)
 			gotoWelcomeScreen()
 		else
-			-- io.open(system.pathForFile("returnedUser.txt", system.DocumentsDirectory), "w"):write("logged")
 			group:removeSelf()
 			storyboard.gotoScene("walkthrough")
 		end
 	else
-		-- io.open(system.pathForFile("returnedUser.txt", system.DocumentsDirectory), "w"):write("logged")
 		group:removeSelf()
 		storyboard.gotoScene("walkthrough")
 	end
