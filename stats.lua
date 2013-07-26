@@ -91,15 +91,26 @@ function scene:createScene( event )
 	local screen1URL = "screen1=" .. tostring(storyboard.states.screen1.moreSleep) .. "+" .. tostring(storyboard.states.screen1.lessSleep)
 	-- if storyboard.states.screen1.moreSleep == nil or 
 	local timingsURL = "&timings="
-	for i=1,table.getn(storyboard.states.screen3.timings) do timingsURL = timingsURL ..  storyboard.states.screen3.timings[i] .. "+" end
+	print(json.encode(storyboard.states.screen3.timings))
+	for i=1,table.getn(storyboard.states.screen3.timings) do 
+		print(storyboard.states.screen3.timings[i])
+		timingsURL = timingsURL ..  storyboard.states.screen3.timings[i] .. "+" 
+	end
 	timingsURL = timingsURL .. sessionData.aveReactTime
+	print(timingsURL)
 	local moodsURL = "&moods="
-	for i=1,table.getn(storyboard.states.screen3.moods) do moodsURL = moodsURL ..  storyboard.states.screen3.moods[i] .. "+" end
+	print(json.encode(storyboard.states.screen3.moods))
+	for i=1,table.getn(storyboard.states.screen3.moods) do 
+
+		print(storyboard.states.screen3.moods[i])
+		moodsURL = moodsURL ..  storyboard.states.screen3.moods[i] .. "+" 
+	end
+	print(moodsURL)
 
 	moodsURL = moodsURL .. storyboard.states.userMood
 	local parsedURL = "stats.html?" .. screen1URL .. timingsURL .. moodsURL .. "&recent=" .. sessionData.aveReactTime
 	print(parsedURL)
-	webView:request("stats.html?" .. parsedURL, system.ResourceDirectory)
+	webView:request(parsedURL, system.ResourceDirectory)
 	webView.hasBackground = false
 	group:insert(webView)
 	

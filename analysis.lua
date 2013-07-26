@@ -91,7 +91,7 @@ function sleepPattern(rawdata)
 	local sessionStatsData = "var screen1 = " .. json.encode(sessionStats.screen1) .. ";\n" .. "var screen3 = ".. json.encode(sessionStats.screen3) .. ";\n"
 	local file = io.open(system.pathForFile("sessionStats.js", system.DocumentsDirectory), "w")
 	file:write(sessionStatsData)
-	print(sessionStatsData)
+	-- print(sessionStatsData)
 
 	upapi.updateSessionStats(sessionStats)
 

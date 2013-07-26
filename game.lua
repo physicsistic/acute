@@ -364,12 +364,6 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
-end
-
-function scene:exitScene( event )
-	local group = self.view
-	-- Update user performance if relevant
-
 	if storyboard.states.newUser == true then
 		local filename = system.pathForFile( "sessionStats.js", system.CachesDirectory )
 		local filedata = "var screen1 = " .. json.encode(storyboard.states.screen1) .. ";\n"
@@ -385,6 +379,13 @@ function scene:exitScene( event )
 	else
 		analysis.getUserHistory(storyboard.states.userXID )
 	end
+end
+
+function scene:exitScene( event )
+	local group = self.view
+	-- Update user performance if relevant
+
+
 
 end
 

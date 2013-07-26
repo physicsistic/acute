@@ -5,8 +5,6 @@
     <title>Hammer.js</title>
     <link href="bootstrap.css" rel="stylesheet">
     <script src="d3.js"></script>
-    
-
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <style>
 /* =============================================================
@@ -142,7 +140,6 @@ img, audio, video, canvas { max-width: 100%; }
             overflow: hidden;
             -webkit-transform-style: preserve-3d;
             -webkit-transform: translate3d(0,0,0);
-            /*margin: 0px 10px;*/
             margin-left: 0px;
             margin-right: 10px;
         }
@@ -241,10 +238,11 @@ img, audio, video, canvas { max-width: 100%; }
         }
 
         .data-square .graph {
-margin-right: 20px;
-background-color: transparent;
-margin-bottom: 24px;
-height: 33px;        }
+            margin-right: 20px;
+            background-color: transparent;
+            margin-bottom: 24px;
+            height: 33px;
+        }
 
         .data-square .section {
             padding: 10px 0px;
@@ -261,32 +259,32 @@ height: 33px;        }
         }
 
         .worldCircle {
-fill: rgb(161, 168, 170);
-}
+            fill: rgb(161, 168, 170);
+        }
 
-.lastGame {
-    fill: #2ecc71;
-}
+        .lastGame {
+            fill: #2ecc71;
+        }
 
 
-#bar-icons {
-    width: 14%;
-    float: left;
-    padding-left: 8%;
-    padding-top: 16px;
-                font-size: 10px;
-            line-height: 12px;
-            text-align: center;
-}
+    #bar-icons {
+        width: 14%;
+        float: left;
+        padding-left: 8%;
+        padding-top: 16px;
+        font-size: 10px;
+        line-height: 12px;
+        text-align: center;
+    }
 
-#bar-icons img {
-padding: 5px 0px;
-margin: 0 auto;
-height: 20px;
-position: relative;
-margin-bottom: -3px;
-margin-top: 8px;
-}
+    #bar-icons img {
+    padding: 5px 0px;
+    margin: 0 auto;
+    height: 20px;
+    position: relative;
+    margin-bottom: -3px;
+    margin-top: 8px;
+    }
 
 .legend {
     height: 40px;
@@ -319,8 +317,6 @@ font-size: 10px;
 </head>
 
 <body>
-
-    <!--<div id="debug">Log</div>-->
 
     <div id="carousel">
         <ul>
@@ -391,9 +387,36 @@ font-size: 10px;
     <!--<script src="modernizr.js"></script>-->
 
     <script src="hammer.min.js"></script>
-<script src="data.js"></script>
-
+<!-- <script src="data.js"></script>
+ -->
     <script>
+
+    function round(num, places) {
+        var multiplier = Math.pow(10, places);
+        return Math.round(num * multiplier) / multiplier;
+    }
+ 
+
+    var queryString = document.URL.split('?')[1]
+    var moreSleep = queryString.split('&')[0].split('=')[1].split('+')[0]
+    var lessSleep = queryString.split('&')[0].split('=')[1].split('+')[1]
+    var timings = queryString.split('&')[1].split('=')[1].split('+')
+    var moods = queryString.split('&')[2].split('=')[1].split('+')
+    var recent = queryString.split('&')[3].split('=')[1].split('+')
+
+
+    var scatterData = [];
+     
+    for (var i = 0; i < timings.length; i++) {
+        var temp = [];
+        temp.push(timings[i]);
+        temp.push(moods[i]);
+        scatterData.push(temp);
+     }
+
+    document.querySelector('#moreSleepScore').innerHTML = moreSleep
+    document.querySelector('#lessSleepScore').innerHTML = lessSleep
+    document.querySelector('#justNowScore').innerHTML = round(recent,3)
 
     var debug_el = $("#debug");
     function debug(text) {
@@ -574,7 +597,7 @@ font-size: 10px;
 
     </script>
 <script>
-document.querySelector('#moreSleepScore').innerHTML = document.URL.split('?')[1]
+
 //alert(document.URL)
 
 
