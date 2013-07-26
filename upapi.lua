@@ -228,7 +228,7 @@ function updateAgeStats(year, data)
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
 		else
-			print ( "RESPONSE: " .. event.response )
+			-- print ( "RESPONSE: " .. event.response )
 		end
 	end
 	local params = {}

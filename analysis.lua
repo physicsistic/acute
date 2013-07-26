@@ -102,7 +102,7 @@ function networkErrorHandler(event)
 		print( "Network error!" .. event.stats, event.response)
 	else
 		sleepPattern(event.response)
-		print(event.response)
+		-- print(event.response)
 	end
 
 end

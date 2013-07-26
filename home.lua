@@ -69,6 +69,7 @@ function scene:createScene( event )
 		insightsButton.fadeOut()
 		signoutButton.fadeOut()
 
+
 		transition.to( bouncy, {
 			x = display.contentWidth/2,
 			y = display.contentHeight/2,
@@ -92,6 +93,20 @@ function scene:createScene( event )
 		signoutButton.fadeOut()
 		insightsButton.fadeOut()
 		storyboard.gotoScene( "welcome" )
+
+		local file = io.open(storyboard.states.userInfoFilePath, "w")
+		file:write("")
+		io.close(file)
+		
+		local file = io.open(storyboard.states.userTokenFilePath, "w")
+		file:write("")
+		io.close(file)
+
+
+		local file = io.open(storyboard.states.userXIDFilePath, "w")
+		file:write("")
+		io.close(file)
+
 
 	end)
 
@@ -184,15 +199,17 @@ function scene:enterScene( event )
 	-- get current gender data
 	local function parseCurrentGenderStats(error, response)
 		storyboard.states.currentGenderStats = json.decode(response)
+
 	end
 	upapi.getGenderStats(tostring(storyboard.states.userInfo.gender), parseCurrentGenderStats)
 
-	-- get current gender data
+	-- get current age data
 	local function parseCurrentAgeStats(error, response)
-		print(response)
-		if reponse then
-			storyboard.states.currentAgeStats = json.decode(response)
+		response = json.decode(response)
+		if response ~= nil then
+			storyboard.states.currentAgeStats = response
 		else
+			print("setting up a new set of data")
 			local stats = {}
 			stats.time = 0
 			stats.count = 0 

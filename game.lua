@@ -46,7 +46,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 5,
+		totalNumberOfRounds = 1,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
@@ -381,7 +381,6 @@ function scene:enterScene( event )
 		storyboard.states.screen3.timings = {}
 		storyboard.states.screen3.moods = {}
 
-		print(filedata)
 
 		upapi.writeFile(filename, filedata)
 	else
