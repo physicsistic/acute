@@ -401,12 +401,14 @@ left: 0;
     }
  
 
-    var queryString = document.URL.split('?')[1]
-    var moreSleep = queryString.split('&')[0].split('=')[1].split('+')[0]
-    var lessSleep = queryString.split('&')[0].split('=')[1].split('+')[1]
-    var timings = queryString.split('&')[1].split('=')[1].split('+')
-    var moods = queryString.split('&')[2].split('=')[1].split('+')
-    var recent = queryString.split('&')[3].split('=')[1].split('+')
+    var queryString = document.URL.split('?')[1];
+    var moreSleep = queryString.split('&')[0].split('=')[1].split('+')[0];
+    var lessSleep = queryString.split('&')[0].split('=')[1].split('+')[1];
+    var timings = queryString.split('&')[1].split('=')[1].split('+');
+    var moods = queryString.split('&')[2].split('=')[1].split('+');
+    var recent = queryString.split('&')[3].split('=')[1].split('+');
+    var genderTime = queryString.split('&')[4].split('=')[1].split('+')[0];
+    var ageTime = queryString.split('&')[4].split('=')[1].split('+')[1];
 
 
     var scatterData = [];

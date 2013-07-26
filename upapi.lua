@@ -219,10 +219,11 @@ function updateGenderStats(gender, data)
 end
 
 function getAgeStats(year, callback)
+	print("https://react.firebaseio.com/stats/birth_year/" .. year .. ".json")
 	rawGETRequest("https://react.firebaseio.com/stats/birth_year/" .. year .. ".json", callback)
 end
 
-function updateGenderStats(year, data)
+function updateAgeStats(year, data)
 	local function networkListener( event )
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
