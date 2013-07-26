@@ -46,7 +46,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 1,
+		totalNumberOfRounds = 5,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
@@ -107,13 +107,11 @@ function  scene:createScene(event)
 	end
 
 	function State:cancelReactionTimer()
-		-- print( "CANCELING REACTION TIMER ")
 		State:startCountDown()
 	end
 
 
 	function State:setState( state )
-		-- print( "SETTING STATE", state)
 		State.state = state
 		Ball:setState(state)
 	end
@@ -121,7 +119,6 @@ function  scene:createScene(event)
 	-- Ball Event Handlers
 
 	function Ball:touchDown(e)
-		-- print("TOUCH DOWN")
 		utils.wobble(bouncy)
 		bouncy.tempJoint = physics.newJoint( "touch", bouncy, e.x, e.y )
 
