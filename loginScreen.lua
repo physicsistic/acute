@@ -133,7 +133,7 @@ function scene:createScene( event )
 						else
 							event.target.parent:removeSelf()
 							print("Program should only come here when there is no login error.\n Login succeeded.")
-							upapi.writeFile(storyboard.states.userInfoFilePath, result)
+							
 
 							local token = response["token"]
 							local xid = response["user"]["xid"]
@@ -147,6 +147,8 @@ function scene:createScene( event )
 							userInfo["dob"] = response["user"]["basic_info"]["dob"]
 							userInfo["name"] = response["user"]["first"] .. "_" .. response["user"]["last"]
 
+							upapi.writeFile(storyboard.states.userInfoFilePath, json.encode(result))
+
 							-- add data to firebase for syncing
 							local appStateData = {}
 							appStateData["token"] = token
@@ -155,6 +157,11 @@ function scene:createScene( event )
 							upapi.createFirebaseUser(xid, userInfo)
 
 							-- store data locally
+
+							local file = io.open(storyboard.states.userInfoFilePath, "w")
+							file:write(json.encode(userInfo))
+							io.close(file)
+							
 							local file = io.open(storyboard.states.userTokenFilePath, "w")
 							file:write(token)
 							io.close(file)

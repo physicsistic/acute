@@ -46,7 +46,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 5,
+		totalNumberOfRounds = 1,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
@@ -334,7 +334,11 @@ function  scene:createScene(event)
 
 		upapi.updateBehavior(behavior)
 		upapi.updateTimings(sessionData)
-		
+		local count = storyboard.states.currentGenderStats.count
+		local time = storyboard.states.currentGenderStats.time
+		storyboard.states.currentGenderStats.count = count + 1
+		storyboard.states.currentGenderStats.time = (count*time + sessionData.aveReactTime)/(count + 1)
+		upapi.updateGenderStats(tostring(storyboard.states.userInfo.gender),storyboard.states.currentGenderStats)
 		
 
 		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end

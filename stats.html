@@ -195,7 +195,7 @@ img, audio, video, canvas { max-width: 100%; }
         }
 
         .half h1 {
-            font-size: 40px;
+            font-size: 32px;
             padding-top: 30px;
             padding-bottom: -10px;
             line-height: 25%;
@@ -234,7 +234,7 @@ img, audio, video, canvas { max-width: 100%; }
             background-color: #bdc3c7;
             border-radius: 3px;
             color: white;
-            font-family: "Montserrat";
+            font-family: "Montserrat-Regular";
         }
 
         .data-square .graph {
@@ -268,10 +268,10 @@ img, audio, video, canvas { max-width: 100%; }
 
 
     #bar-icons {
-        width: 14%;
+        width: 16%;
         float: left;
         padding-left: 8%;
-        padding-top: 16px;
+        padding-top: 40px;
         font-size: 10px;
         line-height: 12px;
         text-align: center;
@@ -304,7 +304,7 @@ font-size: 10px;
 }
 
 #scatter-icons-vertical img {
-    padding-bottom: 130px;
+    padding-bottom: 160px;
 }
 
 #scatter-icons-horiz {
@@ -313,6 +313,13 @@ font-size: 10px;
     left: 60px;
 }
 
+#scatter-data {
+height: 80%;
+width: 70%;
+position: absolute;
+bottom: 30px;
+left: 0;
+}
     </style>
 </head>
 
@@ -343,10 +350,9 @@ font-size: 10px;
                         <img src="maleUser2.png" /><br />you
                         <img src="maleIcon.png" /><br />same gender
                         <img src="ageIcon.png" /><br />same age
-                        <img src="locationIcon.png" />same place
 
                     </div>
-                    <div class="section" style="padding-top: 26px;">
+                    <div class="section" style="padding-top: 50px;">
                         <div class="graph">
                             <div class="graph-bar world" style="width: 90%;"></div>
                         </div>
@@ -356,15 +362,13 @@ font-size: 10px;
                         <div class="graph">
                             <div class="graph-bar user" style="width: 10%;"></div>
                         </div>
-                        <div class="graph">
-                            <div class="graph-bar user" style="width: 50%;"></div>
-                        </div>
                     </div>
                 </div>
 
             </li>
             <li class="pane pane3">
-                <div class="data-square" id="scatter">
+                <div class="data-square" id="scatter" style="margin-top: -20px;">
+                    <div id="scatter-data"></div>
                     <div id="scatter-icons-vertical">
                         <img src="smile.png" /><br />
                         <img src="frown.png" />
@@ -414,9 +418,20 @@ font-size: 10px;
         scatterData.push(temp);
      }
 
-    document.querySelector('#moreSleepScore').innerHTML = moreSleep
-    document.querySelector('#lessSleepScore').innerHTML = lessSleep
-    document.querySelector('#justNowScore').innerHTML = round(recent,3)
+    if (moreSleep == "nil") {
+        // no sleep data
+        $(".bottom").remove();
+        $("#justNowScore").html("");
+        $(".pane1 h3").html("Buy an UP to log your sleep and learn more about how your sleep affects your mental acuity.");
+        $(".pane1 h3").attr("style", "font-size: 16px; line-height: 140%; padding: 0px 15px;");
+        $(".pane1 h1").append("<img src='moon.png' />");
+    }
+
+    else {
+        document.querySelector('#moreSleepScore').innerHTML = round(moreSleep,3);
+        document.querySelector('#lessSleepScore').innerHTML = round(lessSleep,3);
+        document.querySelector('#justNowScore').innerHTML = round(recent,3);
+    }
 
     var debug_el = $("#debug");
     function debug(text) {
@@ -601,9 +616,9 @@ font-size: 10px;
 //alert(document.URL)
 
 
-var w = 240,
-    h = 280,
-    padding = 30,
+var w = document.getElementById("scatter-data").offsetWidth,
+    h = document.getElementById("scatter-data").offsetHeight,
+    padding = 5,
     worldDataset = [],
     userDataset =[],
     lastGame = [],
@@ -668,7 +683,7 @@ var yAxis = d3.svg.axis()
                             //.tickFormat(formatAsPercentage);
 
 //Create SVG element
-var svg = d3.select("#scatter")
+var svg = d3.select("#scatter-data")
                         .append("svg")
                         .attr("width", w)
                         .attr("height", h);

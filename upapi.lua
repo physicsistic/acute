@@ -199,6 +199,45 @@ function insertTimingToDatabase( reactionTimingData )
 	network.request(databaseURL.."timings.json", "POST", genericCallback, params)
 end
 
+function getGenderStats(gender, callback)
+	print("https://react.firebaseio.com/stats/" .. gender .. ".json")
+	rawGETRequest("https://react.firebaseio.com/stats/gender/" .. gender .. ".json", callback)
+end
+
+function updateGenderStats(gender, data)
+	local function networkListener( event )
+		if event.isError then 
+			print ( "Network error!", event.status, event.response)
+		else
+			print ( "RESPONSE: " .. event.response )
+		end
+	end
+	local params = {}
+	params.body = json.encode(data)
+	network.request("https://react.firebaseio.com/stats/gender/".. gender.. ".json", "PUT", networkListener, params)
+	-- body
+end
+
+function getAgeStats(year, callback)
+	rawGETRequest("https://react.firebaseio.com/stats/birth_year/" .. year .. ".json", callback)
+end
+
+function updateGenderStats(year, data)
+	local function networkListener( event )
+		if event.isError then 
+			print ( "Network error!", event.status, event.response)
+		else
+			print ( "RESPONSE: " .. event.response )
+		end
+	end
+	local params = {}
+	params.body = json.encode(data)
+	network.request("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", "PUT", networkListener, params)
+	-- body
+end
+
+
+
 function getSleepGraph(callback)
 	local xid = storyboard.states.userXID
 	print("presenting user sleep graph")

@@ -145,9 +145,19 @@ end
 function scene:enterScene( event )
 	local group = self.view	
 	-- collect a bunc of information about the user
-	function friendsCallback(error, result) print(result) end
+	function friendsCallback(error, result)  end
 	-- upapi.getUserMetrics("friends", friendsCallback)
 	upapi.getUserMetrics("trends", friendsCallback)
+	local file = io.open(storyboard.states.userInfoFilePath, "r")
+	storyboard.states.userInfo = json.decode(file:read("*a"))
+	io.close(file)
+
+	-- get current gender data
+	local function parseCurrentGenderStats(error, response)
+		storyboard.states.currentGenderStats = json.decode(response)
+	end
+	upapi.getGenderStats(tostring(storyboard.states.userInfo.gender), parseCurrentGenderStats)
+
 end
 
 function scene:exitScene( event )
