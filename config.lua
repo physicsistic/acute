@@ -22,7 +22,6 @@ if string.sub(system.getInfo("model"),1,4) == "iPad" then
                 }
             }
         },
-        showRuntimeErrors = true, 
     }
 
 elseif string.sub(system.getInfo("model"),1,2) == "iP" and display.pixelHeight > 960 then
@@ -75,7 +74,6 @@ elseif string.sub(system.getInfo("model"),1,2) == "iP" then
                 }
             }
         },
-        showRuntimeErrors = true, 
     }
 elseif display.pixelHeight / display.pixelWidth > 1.72 then
     application = 
@@ -93,7 +91,6 @@ elseif display.pixelHeight / display.pixelWidth > 1.72 then
                 ["@4x"] = 3.0,
             },
         },
-        showRuntimeErrors = true, 
     }
 else
     application = 
@@ -119,6 +116,5 @@ else
                 }
             }
         },
-        showRuntimeErrors = true, 
     }
 end

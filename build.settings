@@ -29,6 +29,5 @@ settings =
     {
 		"android.permission.INTERNET",
 		"android.permission.VIBRATE",
-		"android.permission.READ_PHONE_STATE",
     },
 }
