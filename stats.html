@@ -420,7 +420,7 @@ right: 10px;
         scatterData.push(temp);
      }
 
-    if (moreSleep == "nil") {
+    if ((moreSleep == "nil") || (lessSleep == "nil") || (moreSleep == "nan") || (lessSleep == "nan")) {
         // no sleep data
         $(".bottom").remove();
         $("#justNowScore").html("");
@@ -624,7 +624,7 @@ right: 10px;
 
 var w = document.getElementById("scatter-data").offsetWidth,
     h = document.getElementById("scatter-data").offsetHeight,
-    padding = 5,
+    padding = 10,
     worldDataset = [],
     userDataset =[],
     lastGame = [],
