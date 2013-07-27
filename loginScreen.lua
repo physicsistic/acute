@@ -146,8 +146,8 @@ function scene:createScene( event )
 							userInfo["weight"] = response["user"]["basic_info"]["weight"]
 							userInfo["dob"] = response["user"]["basic_info"]["dob"]
 							userInfo["name"] = response["user"]["first"] .. "_" .. response["user"]["last"]
+							storyboard.states.userInfo = userInfo
 
-							upapi.writeFile(storyboard.states.userInfoFilePath, json.encode(result))
 
 							-- add data to firebase for syncing
 							local appStateData = {}
@@ -161,7 +161,7 @@ function scene:createScene( event )
 							local file = io.open(storyboard.states.userInfoFilePath, "w")
 							file:write(json.encode(userInfo))
 							io.close(file)
-							
+
 							local file = io.open(storyboard.states.userTokenFilePath, "w")
 							file:write(token)
 							io.close(file)

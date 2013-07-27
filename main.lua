@@ -87,6 +87,9 @@ function checkLoginToken(token)
 				local file = io.open(storyboard.states.userXIDFilePath, "r")
 				storyboard.states.userXID = file:read("*a")
 				io.close(file)
+				local file = io.open(storyboard.states.userInfoFilePath, "r")
+				storyboard.states.userInfo = file:read("*a")
+				io.close(file)
 
 				
 				gotoHomeScreen()
@@ -171,6 +174,7 @@ else
 	end
 
 end
+
 
 
 

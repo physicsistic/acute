@@ -29,27 +29,7 @@ storyboard.purgeOnSceneChange = true
 function scene:createScene( event )
 	local group = self.view
 
-	-- get current gender data
-	function parseCurrentGenderStats(error, response)
-		storyboard.states.currentGenderStats = json.decode(response)
 
-	end
-	upapi.getGenderStats(tostring(storyboard.states.userInfo.gender), parseCurrentGenderStats)
-
-	-- get current age data
-	function parseCurrentAgeStats(error, response)
-		response = json.decode(response)
-		if response ~= nil then
-			storyboard.states.currentAgeStats = response
-		else
-			print("setting up a new set of data")
-			local stats = {}
-			stats.time = 0
-			stats.count = 0 
-			storyboard.states.currentAgeStats = stats
-		end
-	end
-	upapi.getAgeStats(string.sub(tostring(storyboard.states.userInfo.dob),1,4), parseCurrentAgeStats)
 
 	---
 
