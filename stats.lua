@@ -34,6 +34,18 @@ end
 function scene:createScene( event )
 	local group = self.view
 
+	local count = storyboard.states.currentGenderStats.count
+	local time = storyboard.states.currentGenderStats.time
+	storyboard.states.currentGenderStats.count = count + 1
+	storyboard.states.currentGenderStats.time = (count*time + storyboard.sessionData.aveReactTime)/(count + 1)
+	upapi.updateGenderStats(tostring(storyboard.states.userInfo.gender),storyboard.states.currentGenderStats)
+	-- update global age stats
+	local count = storyboard.states.currentAgeStats.count
+	local time = storyboard.states.currentAgeStats.time
+	storyboard.states.currentAgeStats.count = count + 1
+	storyboard.states.currentAgeStats.time = (count*time + storyboard.sessionData.aveReactTime)/(count + 1)
+	upapi.updateAgeStats(string.sub(tostring(storyboard.states.userInfo.dob),1,4),storyboard.states.currentAgeStats)
+
 	local background = display.newRect( group, 0, 0, display.contentWidth, display.contentHeight)
 	background:setFillColor(236, 240, 241)
 

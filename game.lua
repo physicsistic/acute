@@ -348,6 +348,7 @@ function  scene:createScene(event)
 		sessionData.userMood = storyboard.states.userMood
 		sessionData.sleepQuality = storyboard.states.sleepQuality
 		sessionData.sleepDuration = storyboard.states.sleepDuration
+		storyboard.sessionData = sessionData
 		print("Encoded Timings", json.encode(sessionData.timings))
 		local behavior = {}
 		behavior.last_played = sessionData.endTime
@@ -355,18 +356,7 @@ function  scene:createScene(event)
 
 		upapi.updateBehavior(behavior)
 		upapi.updateTimings(sessionData)
-		--update global gender stats
-		local count = storyboard.states.currentGenderStats.count
-		local time = storyboard.states.currentGenderStats.time
-		storyboard.states.currentGenderStats.count = count + 1
-		storyboard.states.currentGenderStats.time = (count*time + sessionData.aveReactTime)/(count + 1)
-		upapi.updateGenderStats(tostring(storyboard.states.userInfo.gender),storyboard.states.currentGenderStats)
-		-- update global age stats
-		local count = storyboard.states.currentAgeStats.count
-		local time = storyboard.states.currentAgeStats.time
-		storyboard.states.currentAgeStats.count = count + 1
-		storyboard.states.currentAgeStats.time = (count*time + sessionData.aveReactTime)/(count + 1)
-		upapi.updateAgeStats(string.sub(tostring(storyboard.states.userInfo.dob),1,4),storyboard.states.currentAgeStats)
+
 		
 
 		if State.gracePeriodTimer then timer.cancel( State.gracePeriodTimer ) end
