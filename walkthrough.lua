@@ -26,17 +26,20 @@ function scene:createScene( event )
 	local bannerBackground = display.newRect(group, 0,0, display.contentWidth, bannerHeight)
 	bannerBackground:setFillColor(189, 195, 199)
 
+	local checkBackground = display.newRect(group, display.contentWidth-bannerHeight, 0, bannerHeight, bannerHeight)
+	checkBackground:setFillColor(189, 195, 199)
+
 	local check = display.newImageRect(group, "check.png", bannerHeight/2, bannerHeight/2)
 	check.x = display.contentWidth-bannerHeight/2
 	check.y = bannerHeight/2
-	function check:touch(event)
+	function checkBackground:touch(event)
 		if event.phase == "ended" then
 			-- check:removeEventListener("touch", check)
 			walkthroughView:removeSelf()
 			storyboard.gotoScene("welcome", {effect="slideLeft"})
 		end
 	end
-	check:addEventListener("touch", check)
+	checkBackground:addEventListener("touch", checkBackground)
 
 	local text = display.newText(group, "swipe for walkthrough", 0, 0, storyboard.states.font.regular, 14)
 	text:setReferencePoint(display.CenterReferencePoint)
