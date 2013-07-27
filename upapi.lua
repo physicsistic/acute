@@ -205,7 +205,7 @@ function getGenderStats(gender, callback)
 end
 
 function updateGenderStats(gender, data)
-	function networkListener( event )
+	local function networkListener( event )
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
 		else
@@ -224,7 +224,7 @@ function getAgeStats(year, callback)
 end
 
 function updateAgeStats(year, data)
-	function networkListener( event )
+	local function networkListener( event )
 		if event.isError then 
 			print ( "Network error!", event.status, event.response)
 		else
