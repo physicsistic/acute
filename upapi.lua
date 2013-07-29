@@ -205,17 +205,17 @@ function getGenderStats(gender, callback)
 end
 
 function updateGenderStats(gender, data)
-	local function networkListener( event )
-		if event.isError then 
-			print ( "Network error!", event.status, event.response)
-		else
-			print ( "RESPONSE: " .. event.response )
-		end
-	end
-	local params = {}
-	params.body = json.encode(data)
-	network.request("https://react.firebaseio.com/stats/gender/".. gender.. ".json", "PUT", networkListener, params)
-	-- body
+	-- local function networkListener( event )
+	-- 	if event.isError then 
+	-- 		print ( "Network error!", event.status, event.response)
+	-- 	else
+	-- 		print ( "RESPONSE: " .. event.response )
+	-- 	end
+	-- end
+	-- local params = {}
+	-- params.body = json.encode(data)
+	-- network.request("https://react.firebaseio.com/stats/gender/".. gender.. ".json", "PUT", networkListener, params)
+	rawPUTRequest("https://react.firebaseio.com/stats/gender/".. gender.. ".json", json.encode(data))
 end
 
 function getAgeStats(year, callback)
