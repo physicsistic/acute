@@ -67,7 +67,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 1,
+		totalNumberOfRounds = 5,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
