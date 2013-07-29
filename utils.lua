@@ -8,11 +8,12 @@ function physicsStateHandler(event, callback)
 		display.getCurrentStage():setFocus(event.target)
 	elseif event.phase == "moved" then
 		-- Threshold of 5 pixels
-		if math.sqrt(math.pow(event.x-event.xStart) + math.pow(event.y-event.yStart)) > 5 then
+		if math.sqrt(math.pow(event.x-event.xStart, 2) + math.pow(event.y-event.yStart, 2)) > 5 then
 			event.target.alpha = 1
 			event.target.cancelButton = true
 		end
 	elseif event.phase == "ended" or event.phase == "cancelled" then
+		print(event.target.cancelButton)
 		event.target.alpha = 1
 		display.getCurrentStage():setFocus(nil)	
 		if event.target.cancelButton == false then

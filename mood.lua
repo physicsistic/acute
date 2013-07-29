@@ -38,14 +38,6 @@ function scene:createScene( event )
 
 	local topBar = utils.createTopBar("how ya feeling?")
 
-	-- local banner = display.newGroup()
-	-- local bannerHeight = display.contentHeight/10
-	-- local bannerBackground = display.newRect(banner, 0, 0, display.contentWidth, bannerHeight)
-	-- bannerBackground:setFillColor(189, 195, 199)
-	-- local bannerText = display.newText(banner, "how ya feeling?", 0, 0, storyboard.states.font.bold, 24)
-	-- bannerText:setReferencePoint(display.CenterReferencePoint)
-	-- bannerText.x = display.contentWidth/2
-	-- bannerText.y = bannerHeight/2
 	group:insert(topBar)
 
 
