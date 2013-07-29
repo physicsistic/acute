@@ -36,15 +36,17 @@ function scene:createScene( event )
 	local background = display.newRect(group, 0,0,display.contentWidth,display.contentHeight)
 	background:setFillColor(236, 240, 241)
 
-	local banner = display.newGroup()
-	local bannerHeight = display.contentHeight/10
-	local bannerBackground = display.newRect(banner, 0, 0, display.contentWidth, bannerHeight)
-	bannerBackground:setFillColor(189, 195, 199)
-	local bannerText = display.newText(banner, "how ya feeling?", 0, 0, storyboard.states.font.bold, 24)
-	bannerText:setReferencePoint(display.CenterReferencePoint)
-	bannerText.x = display.contentWidth/2
-	bannerText.y = bannerHeight/2
-	group:insert(banner)
+	local topBar = utils.createTopBar("how ya feeling?")
+
+	-- local banner = display.newGroup()
+	-- local bannerHeight = display.contentHeight/10
+	-- local bannerBackground = display.newRect(banner, 0, 0, display.contentWidth, bannerHeight)
+	-- bannerBackground:setFillColor(189, 195, 199)
+	-- local bannerText = display.newText(banner, "how ya feeling?", 0, 0, storyboard.states.font.bold, 24)
+	-- bannerText:setReferencePoint(display.CenterReferencePoint)
+	-- bannerText.x = display.contentWidth/2
+	-- bannerText.y = bannerHeight/2
+	group:insert(topBar)
 
 
 	-- instruction group for the slider
@@ -63,7 +65,7 @@ function scene:createScene( event )
 	downArrow.y = 50
 
 	utils.fadeIn(instructionGroup)
-	utils.fadeIn(banner)
+	utils.fadeIn(topBar)
 
 
 	local moodText = display.newText("", 0, 0, storyboard.states.font.bold, 36)
@@ -95,11 +97,14 @@ function scene:createScene( event )
     local bouncyMood = display.newSprite( moodSheet, {start=1, count=7, loopCount=0} )
     bouncyMood:setFrame(2)
     bouncyMood.curFrame = 2
+    bouncyMood.alpha = 0
+    storyboard.states.userMood = 2 -- set default user mood to 2
     bouncyMood.lastAnimation = 0
     bouncyMood:setReferencePoint(display.CenterReferencePoint)
     bouncyMood.x = display.contentWidth/2
     bouncyMood.y = display.contentHeight/2
-    transition.to(bouncyMood, {time=10, xScale = 0.5, yScale = 0.5})
+    transition.to(bouncyMood, {time=5, xScale = 0.5, yScale = 0.5})
+    transition.to(bouncyMood, {time=10, alpha = 1})
     group:insert(bouncyMood)
 
 
@@ -120,11 +125,18 @@ function scene:createScene( event )
 			end
 		end
 
-		if event.phase == "ended" then
-			group:removeSelf()
-			storyboard.gotoScene("game", {effects="fade"})
-		end
 	end
+
+	function forwardCallback(event)
+		storyboard.gotoScene("game", {effects=fade})
+	end
+
+	function backwardCallback(event)
+		storyboard.gotoScene("home", {effects=fade})
+	end
+
+	topBar.forwardClick(forwardCallback)
+	topBar.backwardClick(backwardCallback)
 
 	Runtime:addEventListener("touch", checkTouchHeight)
 	Runtime:addEventListener("touch", onActivation)
