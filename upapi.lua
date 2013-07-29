@@ -224,17 +224,17 @@ function getAgeStats(year, callback)
 end
 
 function updateAgeStats(year, data)
-	local function networkListener( event )
-		if event.isError then 
-			print ( "Network error!", event.status, event.response)
-		else
-			-- print ( "RESPONSE: " .. event.response )
-		end
-	end
-	local params = {}
-	params.body = json.encode(data)
-	network.request("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", "PUT", networkListener, params)
-	-- body
+	-- local function networkListener( event )
+	-- 	if event.isError then 
+	-- 		print ( "Network error!", event.status, event.response)
+	-- 	else
+	-- 		-- print ( "RESPONSE: " .. event.response )
+	-- 	end
+	-- end
+	-- local params = {}
+	-- params.body = json.encode(data)
+	-- network.request("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", "PUT", networkListener, params)
+	rawPUTRequest("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", json.encode(data))
 end
 
 
