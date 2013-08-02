@@ -215,4 +215,13 @@ function M.createTopBar(text, needCheck)
 	return banner
 end
 
+function M.generateBackground(r, g, b)
+	local background = display.newRect(0, 0, display.contentWidth, display.contentHeight)
+	if r and g and b then
+		background:setFillColor(r, g, b)
+	else
+		background:setFillColor(236, 240, 241)
+	end
+end
+
 return M

@@ -166,11 +166,11 @@ else
 			gotoWelcomeScreen()
 		else
 			group:removeSelf()
-			storyboard.gotoScene("walkthrough")
+			storyboard.gotoScene("storyline")
 		end
 	else
 		group:removeSelf()
-		storyboard.gotoScene("walkthrough")
+		storyboard.gotoScene("storyline")
 	end
 
 end
