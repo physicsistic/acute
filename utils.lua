@@ -57,7 +57,6 @@ function M.createButton(label, x, y, width, height)
 	button.x = x
 	button.y = y
 	local buttonBackground = display.newRect(0, 0, width, height)
-	
 	buttonBackground:setStrokeColor(236, 240, 241)
 	buttonBackground.strokeWidth = 1
 	local buttonLabel = display.newText(label, 0, 0, storyboard.states.font.bold, 20)

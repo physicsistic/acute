@@ -52,8 +52,8 @@ storyboard.states.location = {}
 
 local group = display.newGroup()
 
-local background = display.newRect(group, 0, 0, display.contentWidth, display.contentHeight)
-background:setFillColor(236, 240, 241)
+	local background = display.newRect(group, 0, 0, display.contentWidth, display.contentHeight)
+	background:setFillColor(236, 240, 241)
 
 local bouncy = display.newImageRect(group, "Ball.png", 72, 72)
 bouncy.x = display.contentWidth/2

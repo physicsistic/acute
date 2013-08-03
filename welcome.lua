@@ -119,6 +119,7 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
+	print("entered welcome screen")
 end
 
 function scene:exitScene( event )
