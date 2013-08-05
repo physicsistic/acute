@@ -171,7 +171,7 @@ function scene:createScene( event )
 		friction = 0.3,
 		listener = scrollListener,
 	}
-
+	group:insert(scrollView)
 
 	for i=1,table.getn(topTexts) do
 		local line = display.newLine(i*display.contentWidth, 0, i*display.contentWidth, display.contentHeight)
@@ -231,6 +231,7 @@ function scene:createScene( event )
 	        end
 	    elseif event.phase == "ended" then
 		    display.getCurrentStage():setFocus(nil)
+		    event.target:removeEventListener("touch", ontouch)
 		    event.target:removeSelf()
 		    storyboard.gotoScene("welcome") 
 	        print("event ended")

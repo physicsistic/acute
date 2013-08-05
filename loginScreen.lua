@@ -90,6 +90,7 @@ function scene:createScene( event )
 	end
 
 	emailGroup[3]:addEventListener("userInput", genericFieldListener)
+	emailGroup[3].inputType = "email"
 	passwordGroup[3]:addEventListener("userInput", genericFieldListener)
 
 	-- Navigation
