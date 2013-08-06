@@ -63,6 +63,9 @@ img, audio, video, canvas { max-width: 100%; }
 
 /*  The actual bar itself */
 .graph-bar {
+    text-align: right;
+padding-right: 10px;
+padding-top: 6px;
     float: left;
     width: 0;
     height: 100%;
@@ -311,6 +314,7 @@ font-size: 10px;
     position: absolute;
     bottom: 30px;
     left: 60px;
+    color: #878787;
 }
 
 #scatter-data {
@@ -354,13 +358,13 @@ right: 10px;
                     </div>
                     <div class="section" style="padding-top: 50px;">
                         <div class="graph">
-                            <div class="graph-bar world" id="user-bar" style="width: 90%;"></div>
+                            <div class="graph-bar world" id="user-bar" style="width: 90%; color: #878787;"></div>
                         </div>
                         <div class="graph">
-                            <div class="graph-bar user" id="gender-bar" style="width: 40%;"></div>
+                            <div class="graph-bar user" id="gender-bar" style="width: 40%; color: #ffffff;"></div>
                         </div>
                         <div class="graph">
-                            <div class="graph-bar user" id="age-bar" style="width: 10%;"></div>
+                            <div class="graph-bar user" id="age-bar" style="width: 10%; color: #ffffff;"></div>
                         </div>
                     </div>
                 </div>
@@ -374,8 +378,8 @@ right: 10px;
                         <img src="frown.png" />
                     </div>
                     <div id="scatter-icons-horiz">
-                        <img src="turtle.png" style="padding-right: 80px;" />
-                        <img src="rabbit.png" />
+                        <span style="padding-right: 80px;">fast</span>
+                        <span>slow</span>
                     </div>
 
                 </div>
@@ -438,6 +442,10 @@ right: 10px;
     document.getElementById("user-bar").style.cssText = "width: " + round(recent/1.5, 3) * 100 + "%;";
     document.getElementById("gender-bar").style.cssText = "width: " + round(genderTime/1.5, 3) * 100+ "%;";
     document.getElementById("age-bar").style.cssText = "width: " + round(ageTime/1.5, 3) * 100 + "%;";
+
+    document.getElementById("user-bar").innerHTML = (round(recent, 2) + "s");
+    document.getElementById("gender-bar").innerHTML = (round(recent, 2) + "s");
+    document.getElementById("age-bar").innerHTML = (round(recent, 2) + "s");
 
     var debug_el = $("#debug");
     function debug(text) {

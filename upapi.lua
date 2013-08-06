@@ -205,16 +205,6 @@ function getGenderStats(gender, callback)
 end
 
 function updateGenderStats(gender, data)
-	-- local function networkListener( event )
-	-- 	if event.isError then 
-	-- 		print ( "Network error!", event.status, event.response)
-	-- 	else
-	-- 		print ( "RESPONSE: " .. event.response )
-	-- 	end
-	-- end
-	-- local params = {}
-	-- params.body = json.encode(data)
-	-- network.request("https://react.firebaseio.com/stats/gender/".. gender.. ".json", "PUT", networkListener, params)
 	rawPUTRequest("https://react.firebaseio.com/stats/gender/".. gender.. ".json", json.encode(data))
 end
 
@@ -224,19 +214,23 @@ function getAgeStats(year, callback)
 end
 
 function updateAgeStats(year, data)
-	-- local function networkListener( event )
-	-- 	if event.isError then 
-	-- 		print ( "Network error!", event.status, event.response)
-	-- 	else
-	-- 		-- print ( "RESPONSE: " .. event.response )
-	-- 	end
-	-- end
-	-- local params = {}
-	-- params.body = json.encode(data)
-	-- network.request("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", "PUT", networkListener, params)
 	rawPUTRequest("https://react.firebaseio.com/stats/birth_year/".. year.. ".json", json.encode(data))
 end
 
+function updateUserPerformance(fastestTime, xid)
+	local function callback(failed, result)
+		if not failed then 
+			local currentFastest = result
+			print(tonumber(currentFastest))
+			if fastestTime/1000 < tonumber(currentFastest) then 
+				local data = {}
+				data['fastest'] = fastestTime/1000 
+				rawPUTRequest("https://react.firebaseio.com/users/" .. xid .. "/performance.json", json.encode(data))
+			end
+		end
+	end
+	rawGETRequest("https://react.firebaseio.com/users/" .. xid .. "/performance/fastest.json", callback)
+end
 
 
 function getSleepGraph(callback)

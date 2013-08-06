@@ -301,6 +301,8 @@ function  scene:createScene(event)
 		reactionTimingInstance.reactionTime = newTime
 		upapi.insertTimingToDatabase(reactionTimingInstance)
 		sessionData.timings[State.currentRound]=newTime/1000
+
+
 	end
 
 
@@ -356,6 +358,8 @@ function  scene:createScene(event)
 
 		upapi.updateBehavior(behavior)
 		upapi.updateTimings(sessionData)
+		-- update rankings
+		upapi.updateUserPerformance(fastestReactTime, storyboard.states.userXID )
 
 		
 
