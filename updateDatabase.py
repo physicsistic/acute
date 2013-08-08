@@ -44,7 +44,7 @@ print(fastest)
 ranked = dict()
 print(sorted(fastest.iterkeys()))
 
-rank = 1
+rank = 0
 for key in sorted(fastest.iterkeys()):
 	instance = dict()
 	instance['value'] = key

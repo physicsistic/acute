@@ -143,6 +143,11 @@ function scene:createScene( event )
 
 							local userInfo = {}
 							userInfo["gender"] = response["user"]["gender"]
+							if userInfo["gender"] == "female" then
+								userInfo["gender"] = "Female"
+							elseif userInfo["gender"] == "male" then
+								userInfo["gender"] = "Male"
+							end
 							userInfo["height"] = response["user"]["basic_info"]["height"]
 							userInfo["weight"] = response["user"]["basic_info"]["weight"]
 							userInfo["dob"] = response["user"]["basic_info"]["dob"]

@@ -48,7 +48,6 @@ function scene:createScene( event )
 
 	local playButton = utils.createButton("play", display.contentWidth/2, display.contentHeight*3/5)
 	local insightsButton = utils.createButton("insights", display.contentWidth/2, playButton.y + utils.buttonSep + playButton.height)	
-	insightsButton.setActive( false )
 	local signoutButton = utils.createButton("log out", display.contentWidth/2, display.contentHeight*11/12)
 	signoutButton.setWidth(display.contentWidth/3)
 	signoutButton.setHeight(display.contentHeight/15)
@@ -85,8 +84,17 @@ function scene:createScene( event )
 				storyboard.gotoScene( "mood" )
 			end
 		})
-		
-		
+	end)
+
+	insightsButton.onClick(function(e)
+		physics.removeBody( playButton )
+		physics.removeBody( bouncy )
+
+		playButton.fadeOut()
+		insightsButton.fadeOut()
+		signoutButton.fadeOut()
+
+		storyboard.gotoScene("insights")
 	end)
 
 	signoutButton.onClick(function(e)
@@ -113,9 +121,9 @@ function scene:createScene( event )
 
 	end)
 
-	insightsButton.onClick(function(e)
-		native.showAlert( "Bouncy Doesn't Know You", "You'll need to play with bouncy more before you get deep insights.")
-	end)
+	-- insightsButton.onClick(function(e)
+	-- 	native.showAlert( "Bouncy Doesn't Know You", "You'll need to play with bouncy more before you get deep insights.")
+	-- end)
 
 -- Physics engine starts
 

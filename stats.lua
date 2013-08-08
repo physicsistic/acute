@@ -133,6 +133,44 @@ function scene:createScene( event )
 	end
 
 	replayButton:addEventListener("touch", replayButton)
+
+	-- update user ranking
+	local function updateRanking(failed, result)
+		if not failed then
+			local currentRankings = json.decode(result)
+			local newRankings = {}
+			local offset = 0
+
+			-- update ranking
+			for k, v in pairs(currentRankings) do
+				if sessionData.fastestReactTime < v.value then
+					if value.name == storyboard.states.userInfo.name then
+						-- nothing done here since the rank would have already been updated
+					else
+						if offset == 0 then
+							offset = 1
+							local newRank = {}
+							newRank.xid = storyboard.states.userXID
+							newRank.value = sessionData.fastestReactTime
+							newRank.name = storyboard.states.userInfo.name 
+							newRankings[k] = newRank
+						else
+							newRankings[k+offset] = v
+						end
+					end
+				else
+					newRankings[k] = v
+				end
+			end
+ 
+			-- insert back to data base
+			upapi.rawPUTRequest("https://react.firebaseio.com/stats/global_rank.json", json.encode(newRankings))
+		end
+
+	end
+	upapi.parseWorldRanking(updateRanking)
+
+
 end
 
 

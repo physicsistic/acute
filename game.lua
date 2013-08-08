@@ -67,7 +67,7 @@ function  scene:createScene(event)
 	-- State Object
 
 	local State = {
-		totalNumberOfRounds = 5,
+		totalNumberOfRounds = 1,
 		currentRound = 1,
 		misses = 0,
 		gracePeriod = 1500, -- in MS
@@ -358,8 +358,10 @@ function  scene:createScene(event)
 
 		upapi.updateBehavior(behavior)
 		upapi.updateTimings(sessionData)
-		-- update rankings
+		-- update user performance
 		upapi.updateUserPerformance(fastestReactTime, storyboard.states.userXID )
+
+
 
 		
 

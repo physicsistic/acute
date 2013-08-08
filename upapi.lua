@@ -220,18 +220,28 @@ end
 function updateUserPerformance(fastestTime, xid)
 	local function callback(failed, result)
 		if not failed then 
-			local currentFastest = result
-			print(tonumber(currentFastest))
-			if fastestTime/1000 < tonumber(currentFastest) then 
+			local currentFastest = json.decode(result)
+			print(currentFastest)
+			if tostring(currentFastest) == "nil" then 
 				local data = {}
 				data['fastest'] = fastestTime/1000 
 				rawPUTRequest("https://react.firebaseio.com/users/" .. xid .. "/performance.json", json.encode(data))
+			else
+				if fastestTime/1000 < tonumber(currentFastest) then
+					local data = {}
+					data['fastest'] = fastestTime/1000 
+					rawPUTRequest("https://react.firebaseio.com/users/" .. xid .. "/performance.json", json.encode(data))
+				end
 			end
 		end
 	end
 	rawGETRequest("https://react.firebaseio.com/users/" .. xid .. "/performance/fastest.json", callback)
 end
 
+
+function parseWorldRanking(callback)
+	rawGETRequest("https://react.firebaseio.com/stats/global_rank.json", callback)
+end
 
 function getSleepGraph(callback)
 	local xid = storyboard.states.userXID
